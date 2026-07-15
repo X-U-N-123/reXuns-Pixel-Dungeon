@@ -88,6 +88,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EyeOfNewt;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MossyClump;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrapMechanism;
@@ -637,6 +638,8 @@ public abstract class Level implements Bundlable {
 		if (foodImmune != null) foodImmune.detach();
 		ScrollOfChallenge.ChallengeArena arena = Dungeon.hero.buff(ScrollOfChallenge.ChallengeArena.class);
 		if (arena != null) arena.detach();
+		DwarvesTile.TileRockfall rock = Dungeon.hero.buff(DwarvesTile.TileRockfall.class);
+		if (rock != null) rock.detach();
 		//awareness also doesn't, honestly it's weird that it's a buff
 		Awareness awareness = Dungeon.hero.buff(Awareness.class);
 		if (awareness != null) awareness.detach();

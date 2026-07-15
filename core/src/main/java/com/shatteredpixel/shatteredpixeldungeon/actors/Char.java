@@ -156,6 +156,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfCha
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
@@ -351,6 +352,8 @@ public abstract class Char extends Actor {
 			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
 				Buff.prolong(c, Talent.MarchForwardTracker.class, 5f).step++;
 			}
+			DwarvesTile.TileRockTracker rock = hero.buff(DwarvesTile.TileRockTracker.class);
+			if (rock != null) rock.fx(true);
 
 			hero.justMoved = true;
 
@@ -1245,6 +1248,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Parasite.Parasitism.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(KindOfWeapon.BattleModule.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(SummoningBeacon.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(DwarvesTile.class);
 	}
 	
 	public void destroy() {

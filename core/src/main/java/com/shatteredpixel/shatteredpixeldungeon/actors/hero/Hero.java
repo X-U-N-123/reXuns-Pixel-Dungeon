@@ -151,6 +151,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.EmptyMagnifier;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StarPoxCover;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ThirteenLeafClover;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
@@ -1894,12 +1897,15 @@ public class Hero extends Char {
             sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
         }
 
-        if (hasTalent(Talent.ARCANE_ARMOR) && AntiMagic.RESISTS.contains(src.getClass())){
-            dmg -= Random.NormalIntRange(0, Math.round(0.2f * pointsInTalent(Talent.ARCANE_ARMOR) * lvl ));
-        }
+		if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage))
+			dmg = Math.max(dmg - StarPoxCover.dmgDecrement(), 0);
 
 		//temporarily assign to a float to avoid rounding a bunch
 		float damage = dmg;
+
+		if (hasTalent(Talent.ARCANE_ARMOR) && AntiMagic.RESISTS.contains(src.getClass())){
+			damage -= Random.NormalFloat(0, 0.2f * pointsInTalent(Talent.ARCANE_ARMOR) * lvl );
+		}
 
 		Endure.EndureTracker endure = buff(Endure.EndureTracker.class);
 		if (!(src instanceof Char)){
@@ -2194,6 +2200,8 @@ public class Hero extends Char {
 			if (Dungeon.hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(this)){
 				Buff.prolong(Dungeon.hero, Talent.MarchForwardTracker.class, 5f).step++;
 			}
+			DwarvesTile.TileRockTracker rock = Dungeon.hero.buff(DwarvesTile.TileRockTracker.class);
+			if (rock != null) rock.fx(true);
 			sprite.move(pos, step);
 			move(step);
 
@@ -2824,15 +2832,13 @@ public class Hero extends Char {
 		
 		boolean smthFound = false;
 
-		boolean circular = false;
-		int distance = heroClass == HeroClass.ROGUE ? 2 : 1;
+		boolean circular = EmptyMagnifier.isRound();
+		int distance = heroClass == HeroClass.ROGUE ? 2 : 1 + EmptyMagnifier.searchRadiusInc();
 		
 		boolean foresight = buff(Foresight.class) != null;
 		boolean foresightScan = foresight && !Dungeon.level.mapped[pos];
 
-		if (foresightScan){
-			Dungeon.level.mapped[pos] = true;
-		}
+		if (foresightScan) Dungeon.level.mapped[pos] = true;
 
 		if (foresight) {
 			distance = Foresight.DISTANCE;
@@ -2944,9 +2950,11 @@ public class Hero extends Char {
 			if (!Dungeon.level.locked && !foresight) {
 				if (cursed) {
 					GLog.n(Messages.get(this, "search_distracted"));
-					Buff.affect(this, Hunger.class).affectHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH));
+					Buff.affect(this, Hunger.class)
+						.affectHunger(TIME_TO_SEARCH - (2 * HUNGER_FOR_SEARCH) - EmptyMagnifier.extraHunger());
 				} else {
-					Buff.affect(this, Hunger.class).affectHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH);
+					Buff.affect(this, Hunger.class)
+						.affectHunger(TIME_TO_SEARCH - HUNGER_FOR_SEARCH - EmptyMagnifier.extraHunger());
 				}
 			}
 			if (foresight) next();
@@ -2960,13 +2968,9 @@ public class Hero extends Char {
 			interrupt();
 		}
 
-		if (foresight){
-			GameScene.updateFog(pos, Foresight.DISTANCE+1);
-		}
+		if (foresight) GameScene.updateFog(pos, Foresight.DISTANCE+1);
 
-		if (talisman != null){
-			talisman.checkAwareness();
-		}
+		if (talisman != null) talisman.checkAwareness();
 		
 		return smthFound;
 	}

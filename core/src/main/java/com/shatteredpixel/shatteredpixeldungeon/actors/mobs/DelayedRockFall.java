@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
@@ -41,21 +42,25 @@ import java.util.List;
 public class DelayedRockFall extends FlavourBuff {
 
 	private int[] rockPositions;
-	private ArrayList<Emitter> rockEmitters = new ArrayList<>();
+	private final ArrayList<Emitter> rockEmitters = new ArrayList<>();
+	private boolean overFOV = true;
 
-	public void setRockPositions( List<Integer> rockPositions ) {
+	public void setStatus(List<Integer> rockPositions, boolean overFOV, int depth) {
 		this.rockPositions = new int[rockPositions.size()];
 		for (int i = 0; i < rockPositions.size(); i++){
 			this.rockPositions[i] = rockPositions.get(i);
 		}
+		this.overFOV = overFOV;
 
 		fx(true);
 	}
 
 	@Override
 	public boolean act() {
+		boolean inFOV = false;
 		for (int i : rockPositions){
-			CellEmitter.get( i ).start( Speck.factory( Speck.ROCK ), 0.07f, 10 );
+			if (Dungeon.level.heroFOV[i] || overFOV)
+				CellEmitter.get(i).start(Speck.factory(Speck.ROCK), 0.07f, 10);
 
 			Char ch = Actor.findChar(i);
 			if (ch != null){
@@ -63,10 +68,13 @@ public class DelayedRockFall extends FlavourBuff {
 			} else {
 				affectCell(i);
 			}
+			if (Dungeon.level.heroFOV[i]) inFOV = true;
 		}
 
-		PixelScene.shake( 3, 0.7f );
-		Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+		if (inFOV || overFOV){
+			PixelScene.shake(3, 0.7f);
+			Sample.INSTANCE.play(Assets.Sounds.ROCKS);
+		}
 
 		detach();
 		return super.act();
@@ -84,11 +92,13 @@ public class DelayedRockFall extends FlavourBuff {
 	public void fx(boolean on) {
 		if (on && rockPositions != null){
 			for (int i : this.rockPositions){
-				Emitter e = CellEmitter.get(i);
-				e.y -= DungeonTilemap.SIZE*0.2f;
-				e.height *= 0.4f;
-				e.pour(EarthParticle.FALLING, 0.1f);
-				rockEmitters.add(e);
+				if (overFOV || Dungeon.level.heroFOV[i]){
+					Emitter e = CellEmitter.get(i);
+					e.y -= DungeonTilemap.SIZE * 0.2f;
+					e.height *= 0.4f;
+					e.pour(EarthParticle.FALLING, 0.1f);
+					rockEmitters.add(e);
+				}
 			}
 		} else {
 			for (Emitter e : rockEmitters){
@@ -98,17 +108,20 @@ public class DelayedRockFall extends FlavourBuff {
 	}
 
 	private static final String POSITIONS = "positions";
+	private static final String OVERFOV   = "overfov";
+	private static final String DEPTH     = "depth";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(POSITIONS, rockPositions);
+		bundle.put(OVERFOV, overFOV);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		rockPositions = bundle.getIntArray(POSITIONS);
+		overFOV = bundle.getBoolean(OVERFOV);
 	}
-
 }

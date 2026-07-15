@@ -712,6 +712,11 @@ public class ItemSpriteSheet {
 	public static final int CURSED_COIN     = TRINKETS+20;
 	public static final int SPYGLASS        = TRINKETS+21;
 	public static final int SOLID_METAL     = TRINKETS+22;
+	public static final int DYNAMITE        = TRINKETS+23;
+	public static final int MAGNIFIER       = TRINKETS+24;
+	public static final int BAIT            = TRINKETS+25;
+	public static final int TILE            = TRINKETS+26;
+	public static final int POX_COVER       = TRINKETS+27;
 	static{
 		assignItemRect(RAT_SKULL,       16, 11);
 		assignItemRect(PARCHMENT_SCRAP, 10, 14);
@@ -736,6 +741,11 @@ public class ItemSpriteSheet {
 		assignItemRect(CURSED_COIN,     14, 14);
 		assignItemRect(SPYGLASS,        15, 15);
 		assignItemRect(SOLID_METAL,     8,  15);
+		assignItemRect(DYNAMITE,        6,  15);
+		assignItemRect(MAGNIFIER,       15, 15);
+		assignItemRect(BAIT,            11, 9 );
+		assignItemRect(TILE,            12, 16);
+		assignItemRect(POX_COVER,       11, 11);
 	}
 
 	private static final int SCROLLS        = xy(1, 13);  //16 slots

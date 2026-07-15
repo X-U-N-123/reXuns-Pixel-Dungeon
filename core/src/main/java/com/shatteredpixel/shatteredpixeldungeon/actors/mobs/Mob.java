@@ -85,17 +85,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.PhantomBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BottledDynamite;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CursedCoin;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ExoticCrystals;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StarPoxCover;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
@@ -1114,6 +1117,14 @@ public abstract class Mob extends Char {
 			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 2);
         }
 
+		//bottled dynamite logic
+		if (Random.Float() <= BottledDynamite.dropBombChance() && Regeneration.regenOn()
+				&& (hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
+			if (Random.Int(10) == 0) new Bomb.ConjuredBomb().explode(pos);
+			else Dungeon.level.drop(new Bomb(), pos).sprite.drop();
+			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 2);
+		}
+
 		//soul eater talent
 		if (buff(SoulMark.class) != null &&
 				Random.Int(10) < hero.pointsInTalent(Talent.SOUL_EATER)){
@@ -1311,14 +1322,15 @@ public abstract class Mob extends Char {
 				target = Dungeon.level.randomDestination( Mob.this );
 			}
 
-			if (alignment == Alignment.ENEMY && Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE)) {
+			if (alignment == Alignment.ENEMY) {
+				int callEnemyRadius = StarPoxCover.callEnenmyRadius();
+				if (Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE))
+					callEnemyRadius = Math.max(8, callEnemyRadius);
 				for (Mob mob : Dungeon.level.mobs) {
 					if (mob.paralysed <= 0
-							&& Dungeon.level.distance(pos, mob.pos) <= 8
-							&& mob.state != mob.HUNTING
-							&& !(mob instanceof Barricade)) {
+							&& Dungeon.level.distance(pos, mob.pos) <= callEnemyRadius
+							&& mob.state != mob.HUNTING)
 						mob.beckon(target);
-					}
 				}
 			}
 			spend(TIME_TO_WAKE_UP * (1 + hero.pointsInTalent(Talent.SLEEPING_IN)));
@@ -1349,15 +1361,16 @@ public abstract class Mob extends Char {
 			alerted = true;
 			state = HUNTING;
 			target = enemy.pos;
-			
-			if (alignment == Alignment.ENEMY && Dungeon.isChallenged( Challenges.SWARM_INTELLIGENCE )) {
+
+			if (alignment == Alignment.ENEMY) {
+				int callEnemyRadius = StarPoxCover.callEnenmyRadius();
+				if (Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE))
+					callEnemyRadius = Math.max(8, callEnemyRadius);
 				for (Mob mob : Dungeon.level.mobs) {
 					if (mob.paralysed <= 0
-							&& Dungeon.level.distance(pos, mob.pos) <= 8
-							&& mob.state != mob.HUNTING
-							&& !(mob instanceof Barricade)) {
-						mob.beckon( target );
-					}
+							&& Dungeon.level.distance(pos, mob.pos) <= callEnemyRadius
+							&& mob.state != mob.HUNTING)
+						mob.beckon(target);
 				}
 			}
 			

@@ -804,7 +804,8 @@ public class GnollGeomancer extends Mob {
 			source.sprite.parent.add(new TargetedCell(i, 0xFF0000));
 		}
 		//don't want to overly punish players with slow move or attack speed
-		Buff.append(source, GnollRockFall.class, GameMath.gate(TICK, (int)Math.ceil(target.cooldown()), 3*TICK)).setRockPositions(rockCells);
+		Buff.append(source, GnollRockFall.class, GameMath.gate(TICK, (int)Math.ceil(target.cooldown()), 3*TICK))
+				.setStatus(rockCells, false, Dungeon.depth);
 
 		source.sprite.attack(target.pos, new Callback() {
 			@Override

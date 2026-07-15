@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.GoldenKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CrackedSpyglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FishingBait;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MimicTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.ShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.StatueRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.TowerRoom;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.AquariumRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.StandardRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ExitRoom;
@@ -144,6 +146,7 @@ public abstract class RegularLevel extends Level {
 			StandardRoom s;
 			do {
 				s = StandardRoom.createRoom();
+				if (i == 0 && Random.Float() < FishingBait.extraRoomChance()) s = new AquariumRoom();
 			} while (!s.setSizeCat( standards-i ));
 			i += s.sizeFactor()-1;
 			initRooms.add(s);
