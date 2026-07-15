@@ -863,6 +863,7 @@ public class ItemSpriteSheet {
 	public static final int BREW_REGROWING  = BREWS+7;
 	public static final int BREW_TRACKING   = BREWS+8;
 	public static final int BREW_CONFUSION  = BREWS+9;
+	public static final int BREW_PITFALL    = BREWS+10;
 
 	private static final int ELIXIRS        = xy(17, 17);  //16 slots
 	public static final int ELIXIR_HONEY    = ELIXIRS+0;
@@ -879,6 +880,7 @@ public class ItemSpriteSheet {
 	public static final int ELIXIR_TEMPERING= ELIXIRS+11;
 	public static final int ELIXIR_AMNESIA  = ELIXIRS+12;
 	public static final int ELIXIR_CONCEAL  = ELIXIRS+13;
+	public static final int ELIXIR_EARTH    = ELIXIRS+14;
 	static{
 		for (int i = BREWS; i < BREWS+32; i++)
 			assignItemRect(i, 12, 14);
@@ -887,6 +889,7 @@ public class ItemSpriteSheet {
 		assignItemRect(BREW_HEAT      ,9, 11);
 		assignItemRect(BREW_REGROWING ,9, 11);
 		assignItemRect(BREW_TRACKING  ,9, 11);
+		assignItemRect(BREW_PITFALL   ,9, 11);
 	}
 
 	private static final int SPELLS         = xy(1, 16);//32 slots

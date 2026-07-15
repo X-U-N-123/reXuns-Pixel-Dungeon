@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ConfusionBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.PitfallBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.RegrowingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ShockingBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.TrackingBrew;
@@ -44,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAr
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfConcealment;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfCrashCourse;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEarthenPower;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEnlightening;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
@@ -205,11 +207,13 @@ public abstract class Recipe {
 		new InfernalBrew.Recipe(),
 		new AquaBrew.Recipe(),
 		new HeatBrew.Recipe(),
+		new PitfallBrew.Recipe(),
 		new RegrowingBrew.Recipe(),
 		new TrackingBrew.Recipe(),
 		new ShockingBrew.Recipe(),
 		new ConfusionBrew.Recipe(),
 		new ElixirOfDragonsBlood.Recipe(),
+		new ElixirOfEarthenPower.Recipe(),
 		new ElixirOfIcyTouch.Recipe(),
 		new ElixirOfToxicEssence.Recipe(),
 		new ElixirOfMight.Recipe(),

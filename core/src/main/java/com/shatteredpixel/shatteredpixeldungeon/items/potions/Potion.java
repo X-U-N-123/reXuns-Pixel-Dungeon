@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfEarthenPower;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHoneyedHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfOverdraft;
@@ -153,6 +154,7 @@ public class Potion extends Item {
 		canThrowPots.add(ElixirOfIcyTouch.class);
 		canThrowPots.add(ElixirOfOverdraft.class);
 		canThrowPots.add(ElixirOfToxicEssence.class);
+		canThrowPots.add(ElixirOfEarthenPower.class);
 	}
 	
 	protected static ItemStatusHandler<Potion> handler;

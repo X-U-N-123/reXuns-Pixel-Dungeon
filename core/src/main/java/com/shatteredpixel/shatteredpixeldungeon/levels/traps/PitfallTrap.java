@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PitfallParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -57,7 +58,7 @@ public class PitfallTrap extends Trap {
 			return;
 		}
 		
-		if( Dungeon.bossLevel() || Dungeon.depth > 25 || Dungeon.branch != 0){
+		if(Dungeon.depth > 25 || Dungeon.branch != 0){
 			GLog.w(Messages.get(this, "no_pit"));
 			return;
 		}
@@ -110,15 +111,15 @@ public class PitfallTrap extends Trap {
 					CellEmitter.floor(cell).burst(PitfallParticle.FACTORY8, 12);
 
 					Char ch = Actor.findChar(cell);
-					//don't trigger on flying chars, or immovable neutral chars
-					if (ch != null && !ch.isFlying()
+					//don't trigger on flying chars, or immovable neutral chars or NPCs
+					if (ch != null && !ch.isFlying() && !(ch instanceof NPC)
 							&& !(ch.alignment == Char.Alignment.NEUTRAL && Char.hasProp(ch, Char.Property.IMMOVABLE))
-							&& !(ch.alignment == Char.Alignment.ALLY && ignoreAllies)) {
+							&& !(ch.alignment == Char.Alignment.ALLY && ignoreAllies)
+							&& !Char.hasProp(ch, Char.Property.BOSS) && !Char.hasProp(ch, Char.Property.MINIBOSS)) {
 						if (ch == Dungeon.hero) {
-							herofell = true;
-						} else {
+							if (!Dungeon.bossLevel()) herofell = true;
+						} else
 							Chasm.mobFall((Mob) ch);
-						}
 					}
 
 					Heap heap = Dungeon.level.heaps.get(cell);

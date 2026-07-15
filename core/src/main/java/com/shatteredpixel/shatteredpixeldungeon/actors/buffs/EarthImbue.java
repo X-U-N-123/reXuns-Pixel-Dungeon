@@ -21,42 +21,47 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.EarthParticle;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 
-public class Slow extends FlavourBuff {
+public class EarthImbue extends FlavourBuff {
 
 	{
-		type = buffType.NEGATIVE;
+		type = buffType.POSITIVE;
 		announced = true;
+
+		immunities.add( Paralysis.class );
+		immunities.add( Roots.class );
 	}
 
-	public static final float DURATION = 10f;
+	public static final float DURATION	= 50f;
+
+	public void proc(Char enemy){
+		Buff.affect(enemy, Cripple.class, 3);
+		CellEmitter.bottom(enemy.pos).start(EarthParticle.FACTORY, 0.05f, 8);
+	}
 
 	@Override
 	public int icon() {
-		return BuffIndicator.TIME;
+		return BuffIndicator.IMBUE;
 	}
 
 	@Override
 	public void tintIcon(Image icon) {
-		icon.hardlight(1f, 0.33f, 0.2f);
+		icon.hardlight(1f, 1f, 0);
 	}
 
 	@Override
-	public float iconFadePercent() {
-		return Math.max(0, (DURATION - visualcooldown()) / DURATION);
+	public boolean attachTo(Char target) {
+		if (super.attachTo(target)){
+			Buff.detach(target, Roots.class);
+			Buff.detach(target, Paralysis.class);
+			return true;
+		} else {
+			return false;
+		}
 	}
-
-	@Override
-	public void detach() {
-		super.detach();
-		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
-			Buff.affect(target, Adrenaline.class,
-					5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
-	}
-
 }
