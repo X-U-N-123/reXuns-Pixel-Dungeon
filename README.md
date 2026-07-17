@@ -20,7 +20,7 @@ A new Ring which increases hero's vision radius;
 
 A new artifact to replace ring of elements, which works like unstable spellbook in potions;
 
-7 new trinkets;
+11 new trinkets;
 
 A new extension bag used to hold foods;
 
@@ -28,7 +28,7 @@ A new extension bag used to hold foods;
 
 5 new bombs;
 
-4 new brews, 6 new elixirs;
+5 new brews, 7 new elixirs;
 
 11 new spells;
 
@@ -36,9 +36,11 @@ Gem powder, which works like arcane resin in rings;
 
 ### Adventure:
 
-2 new hero classes: Explorer and Wraith!
+3 new hero classes: Explorer, Wraith and Engineer!
 
 5 new challenges;
+
+Some new Enemies;
 
 Developer mode;
 
