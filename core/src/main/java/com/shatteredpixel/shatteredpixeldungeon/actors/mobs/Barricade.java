@@ -93,6 +93,9 @@ public class Barricade extends Mob {
     }
 
     @Override
+    public void beckon(int cell) {/*do nothing*/}
+
+    @Override
     public boolean heroShouldInteract() {
         return alignment == Alignment.ALLY;
     }

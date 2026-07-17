@@ -23,7 +23,7 @@ abstract public class Variable<T> {
     static void putFromInventory(String key) {
         GameScene.selectItem(new WndBag.ItemSelector() {
             @Override
-            public String textPrompt() { return "Select an item"; }
+            public String textPrompt() { return "选择一样物品"; }
             @Override
             public boolean itemSelectable(Item item) { return !(item instanceof ScrollOfDebug); }
             @Override
@@ -70,7 +70,7 @@ abstract public class Variable<T> {
                 }
             }
 
-            @Override public String prompt() { return "Choose a location to target"; }
+            @Override public String prompt() { return "选择目标位置"; }
         });
     }
 

@@ -43,7 +43,6 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.FileUtils;
 import com.watabou.utils.Reflection;
 
@@ -122,7 +121,7 @@ public class ScrollOfDebug extends Scroll {
         GOTO(null, "<depth>", "将英雄传送到指定楼层。"),
         WARP(null, "[<cell>]", "指定位置的传送。需要一格位置，易于被变量指定。"),
         MACRO(null, "<name>",
-                "Store a sequence of scroll of debug commands to a single name",
+                "储存一系列调试卷轴命令，并将其指向一个名称。",
                 "Macros are a way to store and reproduce multiple scroll of debug commands at once.",
                 "This is an experimental feature. Anything that prompts the player should be at the last line of a macro.",
                 "Macros can call other macros",
@@ -245,7 +244,7 @@ public class ScrollOfDebug extends Scroll {
                             if (e.getValue().isActive()) {
                                 s.append("\n_").append(e.getKey()).append("_ - ").append(e.getValue());
                             }
-                        GameScene.show(new HelpWindow("Active Variables: \n" + s));
+                        GameScene.show(new HelpWindow("可用变量：\n" + s));
                         return null;
                     }
                     input = Arrays.copyOfRange(input, 1, input.length);
@@ -282,9 +281,8 @@ public class ScrollOfDebug extends Scroll {
                 }
 
                 String[] initialInput = text.split(" ");
-                Callback init = null;
 
-                final String[] input = handleVariables(initialInput);
+				final String[] input = handleVariables(initialInput);
 
                 if (input == null || input.length == 0) return;
 
@@ -402,7 +400,7 @@ public class ScrollOfDebug extends Scroll {
                         StringBuilder msg = new StringBuilder();
                         msg.append(command.documentation());
                         if(!macros.isEmpty()) {
-                            msg.append("\n_Defined macros:_");
+                            msg.append("\n_已定义的宏:_");
                             for(String macro : macros.keySet()) {
                                 msg.append("\n_-_ ").append(macro);
                             }
@@ -414,14 +412,14 @@ public class ScrollOfDebug extends Scroll {
                     boolean macroExists = macros.containsKey(macro);
                     String failureReason =
                             macroExists ? null : // avoid checks if it already exists
-                            Command.get(macro) != null ? "existing command" :
+                            Command.get(macro) != null ? "已存在命令：" :
                             // should I print out the offending part???
                             !macro.matches("[A-Za-z_][\\w$_]*") ? " 必须是合规 Java 变量名(alphanumeric, first character must be a letter or underscore)"
                                     : null;
                     if (failureReason != null) {
                         GLog.n("非法变量名： - " + failureReason);
                     } else GameScene.show(new WndTextInput(
-                            "Macro " + input[1], "Enter macro.\n\nMacros consist of chains of scroll of debug commands separated by new lines. Please refrain from commands that prompt for input outside of the last line.",
+                            "Macro " + input[1], "输入宏。\n\n宏包含一系列以换行符分隔的调试卷轴命令。请避免使用在最后一行之外提示输入的命令。",
                             macroExists ? macros.get(macro) : "",
                             Integer.MAX_VALUE, // ????
                             true, "确定", "取消"
@@ -442,7 +440,7 @@ public class ScrollOfDebug extends Scroll {
                         return true;
                     }
                     else if (input.length > 1) {
-                        GLog.w("Invalid argument provided: " + (storedVariable == null ? input[1] : storedVariable));
+                        GLog.w("违规变量名：" + (storedVariable == null ? input[1] : storedVariable));
                     } else {
                         GameScene.selectCell(new CellSelector.Listener() {
                             @Override
@@ -558,7 +556,7 @@ public class ScrollOfDebug extends Scroll {
                             }
                             GameScene.show(new HelpWindow(
                                     "inspection of _"+input[1]+"_:"
-                                            + message.toString() ));
+                                            + message));
                             return false;
                         }
                     }
@@ -683,7 +681,7 @@ public class ScrollOfDebug extends Scroll {
                                 }
                                 else {
                                     if(!executeMethod(item,input,i)) {
-                                        GLog.w("Unrecognized option or method '%s'", input[i]);
+                                        GLog.w("未知选项或方法 '%s'", input[i]);
                                         return interpret("help", input[0]);
                                     }
                                     break;
@@ -864,6 +862,7 @@ public class ScrollOfDebug extends Scroll {
                     }
                 }
             }
+            Level.beforeTransition();
             switchLevel(level, -1);
             Game.switchScene(GameScene.class);
     }
@@ -1213,8 +1212,7 @@ public class ScrollOfDebug extends Scroll {
     }
 
     private static final String CHANGELOG
-        = ""
-        +"_2.1.0_:"
+        ="_2.1.0_:"
             +"\n_-_ Goto now loads intermediate depths. Load time is increased slightly, but is now seed-stable"
             +"\n_-_ Add warp command"
         +"_2.0.0_:"

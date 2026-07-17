@@ -503,6 +503,9 @@ public abstract class YogFist extends Mob {
 		//used so resistances can differentiate between melee and magical attacks
 		public static class LightBeam{
             public BrightFist fist;
+			public LightBeam(BrightFist fist){
+				this.fist = fist;
+			}
         }
 
 		@Override
@@ -513,7 +516,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam().fist = this );
+				enemy.damage( Random.NormalIntRange(10, 20), new LightBeam(this) );
 				Buff.prolong( enemy, Blindness.class, Blindness.DURATION/2f );
 
 				if (!enemy.isAlive() && enemy == Dungeon.hero) {
@@ -571,6 +574,9 @@ public abstract class YogFist extends Mob {
 		//used so resistances can differentiate between melee and magical attacks
 		public static class DarkBolt{
             public DarkFist fist;
+			public DarkBolt(DarkFist fist){
+				this.fist = fist;
+			}
         }
 
 		@Override
@@ -581,7 +587,7 @@ public abstract class YogFist extends Mob {
 			Char enemy = this.enemy;
 			if (hit( this, enemy, true )) {
 
-				enemy.damage( Random.NormalIntRange(10, 20), new DarkBolt().fist = this );
+				enemy.damage( Random.NormalIntRange(10, 20), new DarkBolt(this) );
 
 				Light l = enemy.buff(Light.class);
 				if (l != null){

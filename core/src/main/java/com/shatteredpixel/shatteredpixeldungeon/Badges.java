@@ -665,26 +665,13 @@ public class Badges {
 	public static void validateCatalogBadges(){
 
 		int totalSeen = 0;
-		int totalThings = 0;
 
-		for (Catalog cat : Catalog.values()){
-			totalSeen += cat.totalSeen();
-			totalThings += cat.totalItems();
-		}
+		for (Catalog cat : Catalog.values()) totalSeen += cat.totalSeen();
 
-		for (Bestiary cat : Bestiary.values()){
-			totalSeen += cat.totalSeen();
-			totalThings += cat.totalEntities();
-		}
+		for (Bestiary cat : Bestiary.values()) totalSeen += cat.totalSeen();
 
-		for (Document doc : Document.values()){
-			if (!doc.isLoreDoc()) {
-				for (String page : doc.pageNames()){
-					if (doc.isPageFound(page)) totalSeen++;
-					totalThings++;
-				}
-			}
-		}
+		for (Document doc : Document.values()) if (!doc.isLoreDoc())
+			for (String page : doc.pageNames()) if (doc.isPageFound(page)) totalSeen++;
 
 		//overall unlock badges
 		Badge badge = null;
@@ -703,7 +690,7 @@ public class Badges {
 			unlock(badge);
 			badge = Badge.RESEARCHER_4;
 		}
-		if (totalSeen == totalThings) {
+		if (totalSeen == 640) {
 			unlock(badge);
 			badge = Badge.RESEARCHER_5;
 		}
