@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -297,7 +297,7 @@ public class WndRanking extends WndTabbed {
 		}
 		
 		private float statSlot( Group parent, String label, String value, float pos ) {
-			
+
 			int size = 7;
 			RenderedTextBlock txt;
 			do {
@@ -307,7 +307,7 @@ public class WndRanking extends WndTabbed {
 			txt.setPos(0, pos + (6 - txt.height())/2);
 			PixelScene.align(txt);
 			parent.add( txt );
-			
+
 			size = 7;
 			do {
 				txt = PixelScene.renderTextBlock( value, size );

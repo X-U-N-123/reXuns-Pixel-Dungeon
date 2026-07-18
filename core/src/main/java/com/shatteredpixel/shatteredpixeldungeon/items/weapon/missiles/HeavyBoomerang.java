@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,15 +50,20 @@ public class HeavyBoomerang extends MissileWeapon {
 				tier * lvl;               //scaling unchanged
 	}
 
-	boolean circleBackhit = false;
+	boolean circlingBack = false;
 
 	@Override
 	protected float adjacentAccFactor(Char owner, Char target) {
-		if (circleBackhit){
-			circleBackhit = false;
+		if (circlingBack){
 			return 1.45f;
 		}
 		return super.adjacentAccFactor(owner, target);
+	}
+
+	@Override
+	public float pickupDelay() {
+		//pickup is instant when circling back
+		return circlingBack ? 0f : super.pickupDelay();
 	}
 
 	@Override
@@ -126,18 +131,15 @@ public class HeavyBoomerang extends MissileWeapon {
 										@Override
 										public void call() {
 											detach();
+											boomerang.circlingBack = true;
 											if (returnTarget == target){
 												if (!boomerang.spawnedForEffect) {
-													if (target instanceof Hero && boomerang.doPickUp((Hero) target)) {
-														//grabbing the boomerang takes no time
-														((Hero) target).spend(-TIME_TO_PICK_UP);
-													} else {
+													if (!(target instanceof Hero) || !boomerang.doPickUp((Hero) target)) {
 														Dungeon.level.drop(boomerang, returnPos).sprite.drop();
 													}
 												}
 												
 											} else if (returnTarget != null){
-												boomerang.circleBackhit = true;
 												if (((Hero)target).shoot( returnTarget, boomerang )) {
 													boomerang.decrementDurability();
 												}
@@ -148,6 +150,7 @@ public class HeavyBoomerang extends MissileWeapon {
 											} else if (!boomerang.spawnedForEffect) {
 												Dungeon.level.drop(boomerang, returnPos).sprite.drop();
 											}
+											boomerang.circlingBack = false;
 											CircleBack.this.next();
 										}
 									});

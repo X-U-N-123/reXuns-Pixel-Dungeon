@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,9 +111,10 @@ public class Feint extends ArmorAbility {
 				hero.pos = target;
 				Dungeon.level.occupyCell(hero);
 				Invisibility.dispel();
-				hero.spendAndNext(1f);
+				hero.next();
 			}
 		});
+		hero.spend(1f);
 
 		AfterImage image = new AfterImage();
 		image.pos = hero.pos;
@@ -171,6 +172,16 @@ public class Feint extends ArmorAbility {
 
 			//fades just before the hero's next action
 			actPriority = Actor.HERO_PRIO+1;
+		}
+
+		@Override
+		public String name() {
+			return ""; //shouldn't be examinable
+		}
+
+		@Override
+		public String description() {
+			return ""; //shouldn't be examinable
 		}
 
 		@Override

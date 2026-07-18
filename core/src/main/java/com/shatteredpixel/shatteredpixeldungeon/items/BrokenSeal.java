@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,14 +29,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -50,6 +47,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BrokenSeal extends Item {
 
@@ -273,7 +271,7 @@ public class BrokenSeal extends Item {
 
 		private static final int COOLDOWN_START = 100;
 
-        @Override
+		@Override
 		public int icon() {
 			if (getCooldown() > 0 || shielding() > 0 || cooldown < 0){
 				return BuffIndicator.SEAL_SHIELD;
@@ -298,6 +296,8 @@ public class BrokenSeal extends Item {
 				return GameMath.gate(0, 1f - shielding()/(float)initialShield, 1);
 			} else if (getCooldown() > 0){
 				return GameMath.gate(0, cooldown / (float)COOLDOWN_START, 1);
+			} else if (cooldown < 0) {
+				return GameMath.gate(0, (COOLDOWN_START+cooldown) / (float)COOLDOWN_START, 1);
 			} else {
 				return 0;
 			}

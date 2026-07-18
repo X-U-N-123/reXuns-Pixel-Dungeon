@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
@@ -90,6 +91,7 @@ public class Sunray extends TargetedClericSpell {
 
 		hero.sprite.parent.add(
 				new Beam.SunRay(hero.sprite.center(), DungeonTilemap.raisedTileCenterToWorld(aim.collisionPos)));
+		Sample.INSTANCE.play( Assets.Sounds.RAY );
 
 		Char ch = Actor.findChar( aim.collisionPos );
 		if (ch != null) {
@@ -103,9 +105,9 @@ public class Sunray extends TargetedClericSpell {
 				}
 			} else {
 				if (hero.pointsInTalent(Talent.SUNRAY) == 2) {
-					ch.damage(Random.NormalIntRange(6, 12), Sunray.this);
+					ch.damage(Hero.heroDamageIntRange(6, 12), Sunray.this);
 				} else {
-					ch.damage(Random.NormalIntRange(4, 8), Sunray.this);
+					ch.damage(Hero.heroDamageIntRange(4, 8), Sunray.this);
 				}
 			}
 
@@ -117,6 +119,9 @@ public class Sunray extends TargetedClericSpell {
 					Buff.prolong(ch, Blindness.class, 2f + 2f*hero.pointsInTalent(Talent.SUNRAY));
 					Buff.prolong(ch, SunRayRecentlyBlindedTracker.class, 2f + 2f*hero.pointsInTalent(Talent.SUNRAY));
 					Buff.affect(ch, SunRayUsedTracker.class);
+				}
+				if (hero.subClass == HeroSubClass.PRIEST){
+					Buff.affect(ch, GuidingLight.Illuminated.class);
 				}
 			}
 		}

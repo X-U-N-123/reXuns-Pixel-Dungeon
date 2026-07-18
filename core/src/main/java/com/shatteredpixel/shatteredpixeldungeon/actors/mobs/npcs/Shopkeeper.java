@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MemberCard;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -229,7 +230,7 @@ public class Shopkeeper extends NPC {
 
 		@Override
 		public void onSelect( Item item ) {
-			if (item != null) {
+			if (item != null && Dungeon.hero != null && Dungeon.hero.isAlive()) {
 				WndBag parentWnd = sell();
 				GameScene.show( new WndTradeItem( item, parentWnd ) );
 			}
@@ -268,6 +269,9 @@ public class Shopkeeper extends NPC {
 							Item returned = buybackItems.remove(index-2);
 							Dungeon.gold -= returned.value();
 							Statistics.goldCollected -= returned.value();
+							if (returned instanceof MissileWeapon && returned.isUpgradable()){
+								Buff.affect(Dungeon.hero, MissileWeapon.UpgradedSetTracker.class).levelThresholds.put(((MissileWeapon) returned).setID, returned.level());
+							}
 							if (!returned.doPickUp(Dungeon.hero)){
 								Dungeon.level.drop(returned, Dungeon.hero.pos);
 							}

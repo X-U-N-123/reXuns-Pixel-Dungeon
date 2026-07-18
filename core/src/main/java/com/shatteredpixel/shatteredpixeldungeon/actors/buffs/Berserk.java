@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.GameMath;
+import com.watabou.utils.Random;
 
 public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 
@@ -97,9 +98,12 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 		if (state == State.BERSERK){
 			if (target.shielding() > 0) {
 				//lose 2.5% of shielding per turn, but no less than 1
-				int dmg = (int)Math.ceil(target.shielding() * 0.025f);
+				float dmg = (float)Math.ceil(target.shielding() * 0.025f);
+				if (Random.Float() < dmg % 1){
+					dmg++;
+				}
 
-				dmg = ShieldBuff.processDamage(target, dmg, this);
+				ShieldBuff.processDamage(target, (int)dmg, this);
 
 				if (target.shielding() <= 0){
 					state = State.RECOVERING;
@@ -153,6 +157,9 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	@Override
 	public void detach() {
 		super.detach();
+		if (state == State.BERSERK) {
+			state = State.RECOVERING;
+		}
 		ActionIndicator.clearAction(this);
 	}
 

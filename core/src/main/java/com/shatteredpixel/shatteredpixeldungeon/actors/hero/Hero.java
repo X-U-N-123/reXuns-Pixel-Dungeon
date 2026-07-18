@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,6 +113,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WraithArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -243,7 +244,7 @@ public class Hero extends Char {
 	public ArrayList<LinkedHashMap<Talent, Integer>> talents = new ArrayList<>();
 	public LinkedHashMap<Talent, Talent> metamorphedTalents = new LinkedHashMap<>();
 	public Talent corroLostTalent = null;
-	
+
 	private int attackSkill = 10;
 	private int defenseSkill = 5;
 
@@ -260,8 +261,8 @@ public class Hero extends Char {
 	public Belongings belongings;
 	
 	public int STR;
-
-    public float awareness;
+	
+	public float awareness;
 	
 	public int lvl = 1;
 	public int fakeLvl = 0;
@@ -568,6 +569,20 @@ public class Hero extends Char {
 	}
 	
 	@Override
+	public boolean attack(Char enemy, float dmgMulti, float dmgBonus, float accMulti) {
+		boolean result = super.attack(enemy, dmgMulti, dmgBonus, accMulti);
+		if (!(belongings.attackingWeapon() instanceof MissileWeapon)){
+			if (buff(Talent.PreciseAssaultTracker.class) != null){
+				buff(Talent.PreciseAssaultTracker.class).detach();
+			} else if (buff(Talent.LiquidAgilACCTracker.class) != null
+						&& buff(Talent.LiquidAgilACCTracker.class).uses <= 0){
+				buff(Talent.LiquidAgilACCTracker.class).detach();
+			}
+		}
+		return result;
+	}
+
+	@Override
 	public int attackSkill( Char target ) {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		
@@ -606,16 +621,16 @@ public class Hero extends Char {
 						case 3:
 							accuracy *= Float.POSITIVE_INFINITY; break;
 					}
-					buff(Talent.PreciseAssaultTracker.class).detach();
 				} else if (buff(Talent.LiquidAgilACCTracker.class) != null){
 					// 3x/inf. ACC, depending on talent level
 					accuracy *= pointsInTalent(Talent.LIQUID_AGILITY) == 2 ? Float.POSITIVE_INFINITY : 3f;
 					Talent.LiquidAgilACCTracker buff = buff(Talent.LiquidAgilACCTracker.class);
 					buff.uses--;
-					if (buff.uses <= 0) {
-						buff.detach();
-					}
 				}
+			}
+		} else {
+			if (buff(Momentum.class) != null && buff(Momentum.class).freerunning()){
+				accuracy *= 1f + pointsInTalent(Talent.PROJECTILE_MOMENTUM)/5f;
 			}
 		}
 
@@ -641,7 +656,7 @@ public class Hero extends Char {
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor(this, target));
+			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
 			return (int)(attackSkill * accuracy);
 		}
@@ -654,7 +669,7 @@ public class Hero extends Char {
 	public int baseAttackSkill(){
 		return attackSkill;
 	}
-	
+
 	@Override
 	public int defenseSkill( Char enemy ) {
 
@@ -673,7 +688,7 @@ public class Hero extends Char {
 
 		SoulHandle handle = buff(SoulHandle.class);
 		if (handle != null) evasion += Math.max(0, handle.extraSoul());
-		
+
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
 		if (weight() > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
@@ -695,7 +710,7 @@ public class Hero extends Char {
 		if (buff(Feint.Evasiveafterimage.class) != null){
 			evasion *= 1 + 0.5f*pointsInTalent(Talent.EVASIVE_AFTERIMAGE);
 		}
-		
+
 		if (paralysed > 0) {
 			evasion /= 2;
 		}
@@ -707,6 +722,11 @@ public class Hero extends Char {
 
 		if (belongings.armor() != null) {
 			evasion = belongings.armor().evasionFactor(this, evasion);
+
+			//stone specifically overrides to 0 always, guaranteed hit
+			if (belongings.armor().hasGlyph(Stone.class, this) && !Stone.testingEvasion()){
+				return 0;
+			}
 		}
 
 		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
@@ -729,7 +749,7 @@ public class Hero extends Char {
 		Combo.ParryTracker parry = buff(Combo.ParryTracker.class);
 		if (parry != null){
 			parry.parried = true;
-			if (buff(Combo.class).getComboCount() < 9 || pointsInTalent(Talent.ENHANCED_COMBO) < 2){
+			if (buff(Combo.class) == null || buff(Combo.class).getComboCount() < 9 || pointsInTalent(Talent.ENHANCED_COMBO) < 2){
 				parry.detach();
 			}
 			return Messages.get(Monk.class, "parried");
@@ -855,7 +875,7 @@ public class Hero extends Char {
 				speed = 0.1f;
 			}
 		}
-		
+
 		Momentum momentum = buff(Momentum.class);
 		if (momentum != null){
 			((HeroSprite)sprite).sprint( momentum.freerunning() ? 1.5f : 1f );
@@ -1302,7 +1322,8 @@ public class Hero extends Char {
 							|| item instanceof TimekeepersHourglass.sandBag
 							|| item instanceof DriedRose.Petal
 							|| item instanceof Key
-							|| item instanceof Guidebook) {
+							|| item instanceof Guidebook
+							|| (item instanceof MissileWeapon && !MissileWeapon.UpgradedSetTracker.pickupValid(this, (MissileWeapon) item))) {
 						//Do Nothing
 					} else if (item instanceof DarkGold) {
 						DarkGold existing = belongings.getItem(DarkGold.class);
@@ -1880,6 +1901,11 @@ public class Hero extends Char {
 			return;
 		}
 
+		//TODO hero cannot take damage in the vault tester area
+		if (Dungeon.depth > 15 && Dungeon.branch == 1){
+			dmg = 0;
+		}
+
 		//regular damage interrupt, triggers on any damage except specific mild DOT effects
 		// unless the player recently hit 'continue moving', in which case this is ignored
 		if (!(src instanceof Hunger || src instanceof Viscosity.DeferedDamage) && damageInterrupt) {
@@ -2102,7 +2128,7 @@ public class Hero extends Char {
 	//FIXME this is a fairly crude way to track this, really it would be nice to have a short
 	//history of hero actions
 	public boolean justMoved = false;
-
+	
 	private boolean getCloser( final int target ) {
 
 		if (target == pos)
@@ -2290,7 +2316,10 @@ public class Hero extends Char {
 				curAction = new HeroAction.OpenChest( cell );
 			}
 
-		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR || Dungeon.level.map[cell] == Terrain.CRYSTAL_DOOR || Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
+		} else if (Dungeon.level.map[cell] == Terrain.LOCKED_DOOR
+				|| Dungeon.level.map[cell] == Terrain.HERO_LKD_DR
+				|| Dungeon.level.map[cell] == Terrain.CRYSTAL_DOOR
+				|| Dungeon.level.map[cell] == Terrain.LOCKED_EXIT) {
 
 			curAction = new HeroAction.Unlock( cell );
 
@@ -2437,8 +2466,8 @@ public class Hero extends Char {
 	@Override
 	public boolean add( Buff buff ) {
 
-		if (buff(TimekeepersHourglass.timeStasis.class) != null
-			|| buff(TimeStasis.class) != null) {
+		if (buff.type == Buff.buffType.NEGATIVE &&
+				(buff(TimekeepersHourglass.timeStasis.class) != null || buff(TimeStasis.class) != null)) {
 			return false;
 		}
 
@@ -2930,7 +2959,7 @@ public class Hero extends Char {
 							if (fieldOfView[curr]) smthFound = true;
 
 							Talent.secretForesightID(this);
-	
+
 							if (talisman != null){
 								if (oldValue == Terrain.SECRET_TRAP){
 									talisman.charge(2);

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,30 +231,30 @@ public class ShopRoom extends SpecialRoom {
 		ArrayList<Item> itemsToSpawn = new ArrayList<>();
 
 		MeleeWeapon w;
-		Armor a;
 		MissileWeapon m;
+		Armor a;
 		switch (Dungeon.depth) {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
-			m = (MissileWeapon) Generator.random(Generator.misTiers[1]).quantity(2).identify(false);
+			m = (MissileWeapon) Generator.random(Generator.misTiers[1]);
 			a = (Armor) new LeatherArmor().identify(false);
 			break;
 			
 		case 11:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
-			m = (MissileWeapon) Generator.random(Generator.misTiers[2]).quantity(2).identify(false);
+			m = (MissileWeapon) Generator.random(Generator.misTiers[2]);
 			a = (Armor) new MailArmor().identify(false);
 			break;
 			
 		case 16:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
-			m = (MissileWeapon) Generator.random(Generator.misTiers[3]).quantity(2).identify(false);
+			m = (MissileWeapon) Generator.random(Generator.misTiers[3]);
 			a = (Armor) new ScaleArmor().identify(false);
 			break;
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
-			m = (MissileWeapon) Generator.random(Generator.misTiers[4]).quantity(2).identify(false);
+			m = (MissileWeapon) Generator.random(Generator.misTiers[4]);
 			a = (Armor) new PlateArmor().identify(false);
 			itemsToSpawn.add( new Torch() );
 			itemsToSpawn.add( new Torch() );
@@ -275,7 +275,7 @@ public class ShopRoom extends SpecialRoom {
 			w.enchant();
 		}
 		itemsToSpawn.add(w);
-
+		
 		if (Random.Float() < MemberCard.betterItemChance()){
 			a.upgrade();
 		}
@@ -284,11 +284,18 @@ public class ShopRoom extends SpecialRoom {
 		}
 		itemsToSpawn.add(a);
 
-		while (Random.Float() < MemberCard.betterItemChance()){
-			m.quantity(m.quantity() +1);
+		m.enchant(null);
+		m.cursed = false;
+		m.level(0);
+		m.identify(false);
+		if (Random.Float() < MemberCard.betterItemChance()){
+			m.upgrade();
+		}
+		if (Random.Float() < MemberCard.betterItemChance()){
+			m.enchant();
 		}
 		itemsToSpawn.add(m);
-		
+
 		itemsToSpawn.add( TippedDart.randomTipped(2) );
 
         Support s = new Support();

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,9 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Ironball;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -61,9 +58,13 @@ public class TelekineticGrab extends TargetedSpell {
 	}
 
 	@Override
-	protected void affectTarget(Ballistica bolt, Hero hero) {
-		boolean spendTime = true;
+	protected float timeToCast() {
+		//time is processed in the spell's logic, as it relates to items picked up
+		return 0;
+	}
 
+	@Override
+	protected void affectTarget(Ballistica bolt, Hero hero) {
 		Char ch = Actor.findChar(bolt.collisionPos);
 
 		//special logic for DK when he is on his throne
@@ -74,23 +75,28 @@ public class TelekineticGrab extends TargetedSpell {
 			}
 		}
 
+		float totalpickupTime = 0;
+
 		if (ch != null && ch.buff(PinCushion.class) != null){
 
 			while (ch.buff(PinCushion.class) != null) {
-				spendTime = false;
-
 				Item item = ch.buff(PinCushion.class).grabOne();
 
 				if (item.doPickUp(hero, ch.pos)) {
-					hero.spend(-Item.TIME_TO_PICK_UP); //casting the spell already takes a turn
+					totalpickupTime += item.pickupDelay();
 					GLog.i( Messages.capitalize(Messages.get(hero, "you_now_have", item.name())) );
 
 				} else {
 					GLog.w(Messages.get(this, "cant_grab"));
 					Dungeon.level.drop(item, ch.pos).sprite.drop();
-					return;
+					break;
 				}
 
+			}
+
+			//casting the spell takes at most 1 turn
+			if (totalpickupTime > 1){
+				hero.spend(-(totalpickupTime-1));
 			}
 
 		} else if (Dungeon.level.heaps.get(bolt.collisionPos) != null){
@@ -99,36 +105,36 @@ public class TelekineticGrab extends TargetedSpell {
 
 			if (h.type != Heap.Type.HEAP){
 				GLog.w(Messages.get(this, "cant_grab"));
+				hero.spend(Actor.TICK);
 				h.sprite.drop();
-				return;
-			}
+			} else {
 
-			while (!h.isEmpty()) {
-				spendTime = false;
+				while (!h.isEmpty()) {
+					Item item = h.peek();
+					if (item.doPickUp(hero, h.pos)) {
+						h.pickUp();
+						totalpickupTime += item.pickupDelay();
+						GLog.i(Messages.capitalize(Messages.get(hero, "you_now_have", item.name())));
 
-				Item item = h.peek();
-				if (item.doPickUp(hero, h.pos)) {
-					h.pickUp();
-					hero.spend(-Item.TIME_TO_PICK_UP); //casting the spell already takes a turn
-					GLog.i( Messages.capitalize(Messages.get(hero, "you_now_have", item.name())) );
+					} else {
+						GLog.w(Messages.get(this, "cant_grab"));
+						h.sprite.drop();
+						break;
+					}
+				}
 
-					if (!(item instanceof ThrowingClub)
-							&& !(item instanceof ThrowingHammer) && !(item instanceof Ironball))
-						spendTime = true;
-
-				} else {
-					GLog.w(Messages.get(this, "cant_grab"));
-					h.sprite.drop();
-					return;
+				//casting the spell takes at most 1 turn
+				if (totalpickupTime > 1) {
+					hero.spend(-(totalpickupTime - 1));
 				}
 			}
 
 		} else {
 			GLog.w(Messages.get(this, "no_target"));
+			hero.spend(Actor.TICK);
 		}
 
-		if (spendTime) hero.spend(-1f);
-
+		onSpellused();
 	}
 
 	@Override

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,7 +295,7 @@ public abstract class Char extends Actor {
 	public boolean interact(Char c){
 
 		swapPos(c);
-		
+
 		return true;
 	}
 
@@ -352,9 +352,6 @@ public abstract class Char extends Actor {
 			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
 				Buff.prolong(c, Talent.MarchForwardTracker.class, 5f).step++;
 			}
-			DwarvesTile.TileRockTracker rock = hero.buff(DwarvesTile.TileRockTracker.class);
-			if (rock != null) rock.fx(true);
-
 			hero.justMoved = true;
 
 			hero.busy();
@@ -447,7 +444,7 @@ public abstract class Char extends Actor {
 				if (gasPos == -1) gasPos = enemy.pos;
 				GameScene.add( Blob.seed( gasPos, 15, ToxicGas.class ) );
 			}
-			
+
 			int dr = Math.round(enemy.drRoll() * AscensionChallenge.statModifier(enemy));
 			
 			if (this instanceof Hero){
@@ -691,7 +688,20 @@ public abstract class Char extends Actor {
 			
 		} else {
 
+			if (enemy.sprite != null){
+				if (hitMissIcon != -1){
+					//dooking is a playful sound Ferrets can make, like low pitched chirping
+					// I doubt this will translate, so it's only in English
+					if (hitMissIcon == FloatingText.MISS_TUFT && Messages.lang() == Languages.ENGLISH && Random.Int(10) == 0) {
+						enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "dooked", hitMissIcon);
+					} else {
+						enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, enemy.defenseVerb(), hitMissIcon);
+					}
+					hitMissIcon = -1;
+				} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
+				}
+			}
 			if (visibleFight) {
 				//Screw Evan for not doing such an easy thing!
 				if (enemy.useParry) Sample.INSTANCE.play(Assets.Sounds.HIT_PARRY);
@@ -753,8 +763,10 @@ public abstract class Char extends Actor {
 		//if accuracy or evasion are large enough, treat them as infinite.
 		//note that infinite evasion beats infinite accuracy
 		if (defStat >= INFINITE_EVASION){
+			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuStat, defender, INFINITE_EVASION);
 			return false;
 		} else if (acuStat >= INFINITE_ACCURACY){
+			hitMissIcon = FloatingText.getHitReasonIcon(attacker, INFINITE_ACCURACY, defender, defStat);
 			return true;
 		}
 
@@ -795,9 +807,17 @@ public abstract class Char extends Actor {
 			defRoll *= 1.02f + 0.02f*hero.pointsInTalent(Talent.BLESS);
 		}
 		defRoll *= FerretTuft.evasionMultiplier();
-		
-		return acuRoll >= defRoll;
+
+		if (acuRoll >= defRoll){
+			hitMissIcon = FloatingText.getHitReasonIcon(attacker, acuRoll, defender, defRoll);
+			return true;
+		} else {
+			hitMissIcon = FloatingText.getMissReasonIcon(attacker, acuRoll, defender, defRoll);
+			return false;
+		}
 	}
+
+	private static int hitMissIcon = -1;
 
 	public int attackSkill( Char target ) {
 		return 0;
@@ -1209,6 +1229,12 @@ public abstract class Char extends Actor {
 			if (src instanceof Corruption)                                icon = FloatingText.CORRUPTION;
 			if (src instanceof AscensionChallenge)                        icon = FloatingText.AMULET;
 			if (src instanceof Pulse)                                     icon = FloatingText.PULSE;
+
+			if ((icon == FloatingText.PHYS_DMG || icon == FloatingText.PHYS_DMG_NO_BLOCK) && hitMissIcon != -1){
+				if (icon == FloatingText.PHYS_DMG_NO_BLOCK) hitMissIcon += 18; //extra row
+				icon = hitMissIcon;
+			}
+			hitMissIcon = -1;
 
 			sprite.showStatusWithIcon(CharSprite.NEGATIVE, Integer.toString(dmg + shielded), icon);
 		}
@@ -1650,7 +1676,7 @@ public abstract class Char extends Actor {
 			immunes.add(Frost.class);
 			immunes.add(Chill.class);
 		}
-		
+
 		for (Class c : immunes){
 			if (c.isAssignableFrom(effect)){
 				return true;

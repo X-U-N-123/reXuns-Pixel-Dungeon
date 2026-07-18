@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -507,7 +507,7 @@ public class DriedRose extends Artifact {
 				return false;
 			} if ( rose.level() >= rose.levelCap ){
 				GLog.i( Messages.get(this, "no_room") );
-				hero.spendAndNext(TIME_TO_PICK_UP);
+				hero.spendAndNext(pickupDelay());
 				return true;
 			} else {
 
@@ -520,7 +520,7 @@ public class DriedRose extends Artifact {
 
 				Sample.INSTANCE.play( Assets.Sounds.DEWDROP );
 				GameScene.pickUp(this, pos);
-				hero.spendAndNext(TIME_TO_PICK_UP);
+				hero.spendAndNext(pickupDelay());
 				return true;
 
 			}
@@ -669,11 +669,11 @@ public class DriedRose extends Artifact {
 
 			if (weapon() != null) {
 				damage = weapon().proc(this, enemy, damage);
-					if (!enemy.isAlive() && enemy == Dungeon.hero) {
-						Dungeon.fail(this);
-						GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
-					}
+				if (!enemy.isAlive() && enemy == Dungeon.hero) {
+					Dungeon.fail(this);
+					GLog.n(Messages.capitalize(Messages.get(Char.class, "kill", name())));
 				}
+			}
 
 			return damage;
 		}

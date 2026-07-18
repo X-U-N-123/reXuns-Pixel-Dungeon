@@ -45,6 +45,7 @@ public class Challenges {
 	public static final int MANA_EXHAUSTION     = 32768;
 
 	public static final int MAX_VALUE           = 65535;
+	public static final int MAX_CHALS           = 16;
 
 	public static final String[] NAME_IDS = {
 			"champion_enemies",
@@ -71,9 +72,13 @@ public class Challenges {
 	};
 
 	public static int activeChallenges(){
+		return activeChallenges(Dungeon.challenges);
+	}
+
+	public static int activeChallenges(int mask){
 		int chCount = 0;
 		for (int ch : Challenges.MASKS){
-			if ((Dungeon.challenges & ch) != 0) chCount++;
+			if ((mask & ch) != 0) chCount++;
 		}
 		return chCount;
 	}

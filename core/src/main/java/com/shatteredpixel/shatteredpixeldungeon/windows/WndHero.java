@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,16 +252,16 @@ public class WndHero extends WndTabbed {
 		}
 
 		private void statSlot( String label, String value ) {
-			
+
 			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );
 			txt.setPos(0, pos);
 			add( txt );
-			
+
 			txt = PixelScene.renderTextBlock( value, 8 );
 			txt.setPos(WIDTH * 0.5f, pos);
 			PixelScene.align(txt);
 			add( txt );
-			
+
 			pos += GAP + txt.height();
 		}
 
@@ -314,13 +314,23 @@ public class WndHero extends WndTabbed {
 		}
 
 		private void statSlot( String label, String value ) {
-			
-			RenderedTextBlock txt = PixelScene.renderTextBlock( label, 8 );
-			txt.setPos(0, pos);
+
+			int size = 8;
+			RenderedTextBlock txt;
+			do {
+				txt = PixelScene.renderTextBlock( label, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.5f);
+			txt.setPos(0, pos + (6 - txt.height())/2);
+			PixelScene.align(txt);
 			add( txt );
-			
-			txt = PixelScene.renderTextBlock( value, 8 );
-			txt.setPos(WIDTH * 0.5f, pos);
+
+			size = 8;
+			do {
+				txt = PixelScene.renderTextBlock( value, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.5f);
+			txt.setPos(WIDTH * 0.5f, pos + (6 - txt.height())/2);
 			PixelScene.align(txt);
 			add( txt );
 			

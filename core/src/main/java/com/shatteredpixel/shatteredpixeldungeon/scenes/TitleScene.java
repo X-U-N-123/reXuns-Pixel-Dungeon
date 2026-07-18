@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.RectF;
 
 public class TitleScene extends PixelScene {
-
+	
 	private Image title;
 	private Fireball leftFB;
 	private Fireball rightFB;

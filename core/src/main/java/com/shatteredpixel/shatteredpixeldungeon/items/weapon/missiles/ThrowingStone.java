@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public class ThrowingStone extends MissileWeapon {
 		baseUses = 5;
 		sticky = false;
 	}
-
+	
 	@Override
 	public int damageRoll(Char owner) {
 		if (owner instanceof Hero) {
@@ -69,5 +69,9 @@ public class ThrowingStone extends MissileWeapon {
 	public float delayFactor(Char owner) {
 		if (owner instanceof Hero && ((Hero) owner).justMoved && ((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 2) return 0;
 		else                                                    return super.delayFactor(owner);
+	}
+	@Override
+	public int value() {
+		return Math.round(super.value()/2f); //half normal value
 	}
 }

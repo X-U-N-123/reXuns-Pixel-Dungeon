@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,6 +177,7 @@ public class Badges {
 		ITEM_LEVEL_5                ( 97 ),
 		LEVEL_REACHED_5             ( 98 ),
 		HAPPY_END                   ( 99 ),
+		VICTORY_RANDOM              ( 99 ),
 		HAPPY_END_REMAINS           ( 100 ),
 		RODNEY                      ( 101, BadgeType.JOURNAL ),
 		ALL_WEAPONS_IDENTIFIED      , //still exists internally for pre-2.5 saves
@@ -582,7 +583,7 @@ public class Badges {
 			}
 		}
 	}
-	
+
 	public static void validateItemLevelAquired( Item item ) {
 		
 		// This method should be called:
@@ -979,7 +980,7 @@ public class Badges {
 			displayBadge(badge);
 		}
 	}
-	
+
 	public static void validateMageUnlock(){
 		if (Statistics.upgradesUsed >= 1 && !isUnlocked(Badge.UNLOCK_MAGE)){
 			displayBadge( Badge.UNLOCK_MAGE );
@@ -1038,7 +1039,7 @@ public class Badges {
 			displayBadge( Badge.UNLOCK_ENGINEER);
 		}
 	}
-	
+
 	public static void validateMasteryCombo( int n ) {
 		if (!local.contains( Badge.MASTERY_COMBO ) && n >= 10) {
 			Badge badge = Badge.MASTERY_COMBO;
@@ -1052,6 +1053,15 @@ public class Badges {
 		Badge badge = Badge.VICTORY;
 		local.add( badge );
 		displayBadge( badge );
+
+		//technically player can also not spend talent points if they want for some reason
+		if (Statistics.qualifiedForRandomVictoryBadge
+				&& Dungeon.hero.subClass != null
+				&& Dungeon.hero.armorAbility != null){
+			badge = Badge.VICTORY_RANDOM;
+			local.add( badge );
+			displayBadge( badge );
+		}
 
 		badge = victoryClassBadges.get(Dungeon.hero.heroClass);
 		if (badge == null) return;

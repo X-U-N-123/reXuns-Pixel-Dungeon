@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,7 +216,7 @@ public class WndUpgrade extends Window {
 				bottom = fillFields(Messages.get(toUpgrade, "upgrade_stat"),
 						((Weapon) toUpgrade).upgradeStat(levelFrom),
 						((Weapon) toUpgrade).upgradeStat(levelTo),
-						bottom);
+					bottom);
 			//weight (i.e. strength requirement)
 			bottom = fillFields(Messages.get(this, "weight"),
 					Integer.toString((((Weapon) toUpgrade).STRReq(levelFrom))),
@@ -238,12 +238,24 @@ public class WndUpgrade extends Window {
 		//durability
 		if (toUpgrade instanceof MissileWeapon){
 			//missile weapons are always IDed currently, so we always use true level
-			int uses1 = (int)Math.ceil(100f/((MissileWeapon) toUpgrade).durabilityPerUse());
-			int uses2 = (int)Math.ceil(300f/((MissileWeapon) toUpgrade).durabilityPerUse());
+			int uses1, uses2;
+			if (toUpgrade.levelKnown) {
+				uses1 = (int) Math.ceil(100f / ((MissileWeapon) toUpgrade).durabilityPerUse(toUpgrade.level()));
+				uses2 = (int) Math.ceil(100f / ((MissileWeapon) toUpgrade).durabilityPerUse(toUpgrade.level()+1));
+			} else {
+				uses1 = (int) Math.ceil(100f / ((MissileWeapon) toUpgrade).durabilityPerUse(0));
+				uses2 = (int) Math.ceil(100f / ((MissileWeapon) toUpgrade).durabilityPerUse(1));
+			}
 			bottom = fillFields(Messages.get(this, "durability"),
 					uses1 >= 100 ? "+∞" : Integer.toString(uses1),
 					uses2 >= 100 ? "+∞" : Integer.toString(uses2),
 					bottom);
+
+			bottom = fillFields(Messages.get(this, "quantity"),
+					Integer.toString(toUpgrade.quantity()),
+					Integer.toString(((MissileWeapon) toUpgrade).defaultQuantity()),
+					bottom);
+
 		}
 
 		//we use a separate reference for wand properties so that mage's staff can include them
@@ -394,6 +406,10 @@ public class WndUpgrade extends Window {
 			bottom = addMessage(Messages.get(this, "powder"), CharSprite.WARNING, bottom);
 		}
 
+		if (toUpgrade instanceof MissileWeapon && ((MissileWeapon) toUpgrade).extraThrownLeft){
+			bottom = addMessage(Messages.get(this, "thrown_dust"), CharSprite.WARNING, bottom);
+		}
+
 		// *** Buttons for confirming/cancelling ***
 
 		btnUpgrade = new RedButton(Messages.get(this, "upgrade")){
@@ -469,6 +485,15 @@ public class WndUpgrade extends Window {
 		} else if (upgrader instanceof MagicalInfusion){
 			((MagicalInfusion)upgrader).reShowSelector();
 		}
+	}
+
+	public WndBag.ItemSelector getItemSelector(){
+		if (upgrader instanceof ScrollOfUpgrade) {
+			return ((ScrollOfUpgrade) upgrader).getSelector(force);
+		} else if (upgrader instanceof MagicalInfusion){
+			return ((MagicalInfusion)upgrader).getSelector();
+		}
+		return null;
 	}
 
 	private float fillFields(String title, String msg1, String msg2, float bottom){

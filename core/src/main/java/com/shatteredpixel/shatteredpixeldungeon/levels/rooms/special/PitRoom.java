@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,11 +77,12 @@ public class PitRoom extends SpecialRoom {
 					mainLoot = Generator.random(Generator.Category.ARTIFACT);
 					break;
 				case 2:
-					Generator.Category cat1 = Generator.Category.WEAPON;
-					if (Random.Float() < SolidifiedMetal.missileReplaceChance()) cat1 = Generator.Category.MISSILE;
-					Generator.Category cat2 = Generator.Category.ARMOR;
-					if (Random.Float() < MagicalGem.wandReplaceChance()) cat2 = Generator.Category.WAND;
-					mainLoot = Generator.random(Random.oneOf(cat1, cat2));
+					mainLoot = Generator.random(Random.oneOf(
+							Generator.Category.WEAPON,
+							Generator.Category.WEAPON,
+							Generator.Category.MISSILE,
+							Generator.Category.ARMOR,
+							Generator.Category.ARMOR));
 					break;
 			}
 		} while ( mainLoot == null || Challenges.isItemBlocked(mainLoot));

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
@@ -208,8 +209,9 @@ public class WelcomeScene extends PixelScene {
 				message += "\n\n" + Messages.get(this, "update_msg");
 			} else {
 				//TODO: change the messages here in accordance with the type of patch.
-				message = Messages.get(this, "patch_intro") + "\n";
-				message += "\n" + Messages.get(this, "patch_balance");
+				message = Messages.get(this, "patch_intro");
+				message += "\n";
+				//message += "\n" + Messages.get(this, "patch_balance");
 				message += "\n" + Messages.get(this, "patch_bugfixes");
                 message += "\n" + Messages.get(this, "patch_msg");
 
@@ -256,7 +258,7 @@ public class WelcomeScene extends PixelScene {
 			Badges.loadGlobal();
 			Journal.loadGlobal();
 
-			//pre-unlock Explorer and Wraith for those who already have a win
+			//pre-unlock Explorer, Wraith and Engineer for those who already have a win
 			if (Badges.isUnlocked(Badges.Badge.VICTORY)){
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER)) Badges.unlock(Badges.Badge.UNLOCK_EXPLORER);
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_WRAITH))   Badges.unlock(Badges.Badge.UNLOCK_WRAITH);

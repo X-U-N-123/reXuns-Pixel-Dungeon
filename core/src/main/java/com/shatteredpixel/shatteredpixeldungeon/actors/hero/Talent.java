@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -481,9 +481,14 @@ public enum Talent {
 	public static class AggressiveBarrierCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.35f, 0f, 0.7f); }
-		public float iconFadePercent() { return Math.max(0, visualcooldown() / 25); }
+		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
 	}
-	public static class LiquidAgilEVATracker extends FlavourBuff{}
+	public static class LiquidAgilEVATracker extends FlavourBuff{
+		{
+			//detaches after hero acts, not after mobs act
+			actPriority = HERO_PRIO+1;
+		}
+	}
 	public static class LiquidAgilACCTracker extends FlavourBuff{
 		public int uses;
 
@@ -893,16 +898,16 @@ public enum Talent {
 		}
 
 		if (talent == VETERANS_INTUITION && hero.pointsInTalent(VETERANS_INTUITION) == 2){
-			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled()) {
-				ScrollOfIdentify.IDItem(hero.belongings.armor);
+			if (hero.belongings.armor() != null && !ShardOfOblivion.passiveIDDisabled())  {
+				hero.belongings.armor.identify();
 			}
 		}
 		if (talent == THIEFS_INTUITION && hero.pointsInTalent(THIEFS_INTUITION) == 2){
-			if (hero.belongings.ring != null && !ShardOfOblivion.passiveIDDisabled()) {
-				ScrollOfIdentify.IDItem(hero.belongings.ring);
+			if (hero.belongings.ring instanceof Ring && !ShardOfOblivion.passiveIDDisabled()) {
+				hero.belongings.ring.identify();
 			}
 			if (hero.belongings.misc instanceof Ring && !ShardOfOblivion.passiveIDDisabled()) {
-				ScrollOfIdentify.IDItem(hero.belongings.misc);
+				hero.belongings.misc.identify();
 			}
 			for (Item item : Dungeon.hero.belongings){
 				if (item instanceof Ring){
@@ -916,7 +921,7 @@ public enum Talent {
 		}
 		if (talent == ADVENTURERS_INTUITION && hero.pointsInTalent(ADVENTURERS_INTUITION) == 2){
 			if (hero.belongings.weapon() != null && !ShardOfOblivion.passiveIDDisabled()){
-				ScrollOfIdentify.IDItem(hero.belongings.weapon());
+				hero.belongings.weapon().identify();
 			}
 		}
 
@@ -1207,8 +1212,7 @@ public enum Talent {
     }
 
 	public static float itemIDSpeedFactor( Hero hero, Item item ){
-		// 1.75x/2.5x speed with Huntress talent
-		float factor = 1f + 0.75f*hero.pointsInTalent(SURVIVALISTS_INTUITION);
+		float factor = 1f;
 
 		// Affected by both Warrior(1.75x/2.5x) and Duelist(2.5x/inst.) talents
 		if (item instanceof MeleeWeapon){
@@ -1223,6 +1227,10 @@ public enum Talent {
 		// 3x/instant for Mage (see Wand.wandUsed())
 		if (item instanceof Wand){
 			factor *= 1f + 2.0f*hero.pointsInTalent(SCHOLARS_INTUITION);
+		}
+		// 3x/instant speed with Huntress talent (see MissileWeapon.proc)
+		if (item instanceof MissileWeapon){
+			factor *= 1f + 2.0f*hero.pointsInTalent(SURVIVALISTS_INTUITION);
 		}
 		// 2x/instant for Rogue (see onItemEqupped), also id's type on equip/on pickup
 		if (item instanceof Ring){
@@ -1371,7 +1379,7 @@ public enum Talent {
             toHeal = Math.min(hero.HT - hero.HP, toHeal);
             hero.HP += toHeal;
             hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
-        }
+		}
 	}
 
 	public static void onRunestoneUsed( Hero hero, int pos, Class<?extends Item> cls ){
@@ -1387,7 +1395,7 @@ public enum Talent {
 				// 10/15%
 				if (Random.Int(20) < 1 + hero.pointsInTalent(RECALL_INSCRIPTION)){
 					Reflection.newInstance(cls).collect();
-					GLog.p("refunded!");
+					GLog.p(Messages.get(Talent.class, "refunded"));
 				}
 			}
 		}
@@ -1439,7 +1447,19 @@ public enum Talent {
 			identify = true;
 		}
 
-		if (identify) ScrollOfIdentify.IDItem(item);
+		if (identify) {
+			if (ShardOfOblivion.passiveIDDisabled()) {
+				if (item instanceof Weapon){
+					((Weapon) item).setIDReady();
+				} else if (item instanceof Armor){
+					((Armor) item).setIDReady();
+				} else if (item instanceof Ring){
+					((Ring) item).setIDReady();
+				}
+			} else {
+				item.identify();
+			}
+		}
 	}
 
 	public static void onItemCollected( Hero hero, Item item ){

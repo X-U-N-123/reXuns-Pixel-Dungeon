@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -694,10 +694,10 @@ public class DM300 extends Mob {
 				} else {
 					ch.damage(Random.NormalIntRange(6, 12), this);
 				}
-                if (ch == Dungeon.hero)
-                    Statistics.bossScores[2] -= 100;
+				if (ch == Dungeon.hero)
+					Statistics.bossScores[2] -= 100;
 				if (ch.isAlive()) {
-				Buff.prolong(ch, Paralysis.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 5 : 3);
+					Buff.prolong(ch, Paralysis.class, Dungeon.isChallenged(Challenges.STRONGER_BOSSES) ? 5 : 3);
 				} else if (ch == Dungeon.hero){
 					Dungeon.fail( target );
 					GLog.n( Messages.get( GnollGeomancer.class, "rockfall_kill") );

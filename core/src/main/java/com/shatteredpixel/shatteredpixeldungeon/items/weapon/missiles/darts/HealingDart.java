@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,17 @@ public class HealingDart extends TippedDart {
 		image = ItemSpriteSheet.HEALING_DART;
 		usesTargeting = false; //you never want to throw this at an enemy
 	}
-	
+
+	@Override
+	public int damageRoll(Char owner) {
+		if (owner instanceof Hero) {
+			if (((Hero) owner).attackTarget().alignment == owner.alignment){
+				return 0; //does not deal damage to allies
+			}
+		}
+		return super.damageRoll(owner);
+	}
+
 	@Override
 	public int damageRoll(Char owner) {
 		if (owner instanceof Hero) {

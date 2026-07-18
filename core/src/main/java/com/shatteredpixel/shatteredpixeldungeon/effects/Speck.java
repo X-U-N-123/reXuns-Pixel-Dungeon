@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ public class Speck extends Image {
 	public static final int COIN        = 14;
 	public static final int DOWN        = 15;
 	public static final int PAGES       = 16;
-	
+
 	public static final int DISCOVER    = 101;
 	public static final int EVOKE       = 102;
 	public static final int MASK        = 103;
@@ -221,7 +221,6 @@ public class Speck extends Image {
 			angularSpeed = 90;
 			lifespan = 1f;
 			break;
-
 		case YELLOW_LIGHT:
 			tint(0xFFDDDD00);
 			angle = Random.Float( 360 );
@@ -422,7 +421,6 @@ public class Speck extends Image {
 			lifespan = Random.Float( 0.4f, 0.6f );
 			break;
 		}
-
 		
 		left = lifespan;
 	}

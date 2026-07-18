@@ -111,8 +111,8 @@ public class AboutScene extends PixelScene {
 				"Splash Art & Design:",
 				Icons.ALEKS.get(),
 				"Aleksandar Komitov",
-				"akomitov.artstation.com",
-				"https://akomitov.artstation.com/");
+				"alekskomitov.com",
+				"https://www.alekskomitov.com/");
 		alex.setSize(colWidth/2f, 0);
 		if (landscape()){
 			alex.setPos(shpx.right(), shpx.top() + (shpx.height() - alex.height()*2)/2f);
@@ -256,9 +256,8 @@ public class AboutScene extends PixelScene {
 				"_Pack: Stabbing Stomachs & Crushing Skulls_ by _TheFilmLook_\n" +
 				"_Sheep bleating_ by _zachrau_\n" +
 				"_Lemon,Juicy,Squeeze,Fruit.wav_ by _Filipe Chagas_\n" +
-				"_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_\n" +
-                "_Hammer on Wood.wav_ by _L.i.Z.e.L.l.E-+_",
-				"www.freesound.org",
+				"_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_",
+				"freesound.org",
 				"https://www.freesound.org");
 		freesound.setRect(transifex.left()-10, transifex.bottom() + 8, colWidth+20, 0);
 		content.add(freesound);

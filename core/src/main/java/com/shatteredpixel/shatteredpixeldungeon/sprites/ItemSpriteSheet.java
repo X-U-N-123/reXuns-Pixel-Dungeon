@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,12 @@ public class ItemSpriteSheet {
 	private static final int WIDTH = 32;
 	public static final int SIZE = 16;
 
-	public static TextureFilm film = new TextureFilm( Assets.Sprites.ITEMS, SIZE, SIZE );
+	private static final int TX_WIDTH = 256;
+	private static final int TX_HEIGHT = 512;
+
+	private static final int WIDTH = TX_WIDTH / SIZE;
+
+	public static TextureFilm film = new TextureFilm( TX_WIDTH, TX_HEIGHT, SIZE, SIZE );
 
 	private static int xy(int x, int y){
 		x -= 1; y -= 1;
@@ -162,7 +167,7 @@ public class ItemSpriteSheet {
 	public static final int IRON_KEY            = MISC_CONSUMABLE +7;
 	public static final int GOLDEN_KEY          = MISC_CONSUMABLE +8;
 	public static final int CRYSTAL_KEY         = MISC_CONSUMABLE +9;
-	public static final int SKELETON_KEY        = MISC_CONSUMABLE +10;
+	public static final int SKELETON_KEY    = MISC_CONSUMABLE +10;
 	public static final int MASK                = MISC_CONSUMABLE +11;
 	public static final int CROWN               = MISC_CONSUMABLE +12;
 	public static final int AMULET              = MISC_CONSUMABLE +13;
@@ -224,7 +229,7 @@ public class ItemSpriteSheet {
 	public static final int ADRENALINE_BOMB = BOMBS+13;
 	public static final int TIMEBOMB        = BOMBS+14;
 	public static final int PHANTOM_BOMB    = BOMBS+15;
-	
+
 	static{
 		assignItemRect(BOMB,            10, 13);
 		assignItemRect(DBL_BOMB,        14, 13);
@@ -486,7 +491,7 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_STONE,  12, 10);
 		assignItemRect(CLAY,            12, 10);
         assignItemRect(BONE_FRAGMENT,   10, 10);
-		
+
 		assignItemRect(FISHING_SPEAR,   11, 11);
 		assignItemRect(SHURIKEN,        12, 12);
 		assignItemRect(THROWING_CLUB,   12, 12);
@@ -924,9 +929,9 @@ public class ItemSpriteSheet {
 	public static final int MAGICAL_TRAN    = SPELLS+16;
 	public static final int MAGIC_INFUSE    = SPELLS+17;
 	public static final int ALCHEMIZE       = SPELLS+18;
-
-	//3 unused slots
-
+	//1 unused slot
+	public static final int ESCAPE          = SPELLS+20;
+	//1 unused slot
 	//10 slots for others
 	public static final int RECLAIM_TRAP    = SPELLS+22;
     public static final int SUPPORT         = SPELLS+23;

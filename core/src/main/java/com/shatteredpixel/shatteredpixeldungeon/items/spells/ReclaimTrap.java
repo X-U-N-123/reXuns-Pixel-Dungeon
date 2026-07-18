@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
@@ -84,7 +85,6 @@ public class ReclaimTrap extends TargetedSpell {
 			}
 		}
 		if (storedTrap == null) {
-			quantity++; //storing a trap doesn't consume the spell
 			Trap t = Dungeon.level.traps.get(bolt.collisionPos);
 			if (t != null && t.active && t.visible) {
 				t.disarm(); //even disarms traps that normally wouldn't be
@@ -97,6 +97,11 @@ public class ReclaimTrap extends TargetedSpell {
 			} else {
 				GLog.w(Messages.get(this, "no_trap"));
 			}
+
+			//spell is not consumed, so doesn't count as a full use
+			Invisibility.dispel();
+			curUser.spendAndNext( timeToCast() );
+
 		} else {
 			
 			Trap t = Reflection.newInstance(storedTrap);
@@ -108,6 +113,8 @@ public class ReclaimTrap extends TargetedSpell {
 			Statistics.trapsActivated ++;
 			Badges.validateEngineerUnlock();
 			t.activate();
+
+			onSpellused();
 			
 		}
 	}

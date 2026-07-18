@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
@@ -36,6 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.watabou.noosa.Game;
+import com.watabou.utils.Random;
 
 public class WndChooseAbility extends Window {
 
@@ -52,6 +55,44 @@ public class WndChooseAbility extends Window {
 		titlebar.label( Messages.titleCase(crown == null ? armor.name() : crown.name()) );
 		titlebar.setRect( 0, 0, WIDTH, 0 );
 		add( titlebar );
+
+		IconButton random = new IconButton(Icons.SHUFFLE.get()){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				GameScene.show(new WndOptions(Icons.SHUFFLE.get(),
+						Messages.get(WndChooseAbility.class, "random_title"),
+						Messages.get(WndChooseAbility.class, "random_sure"),
+						Messages.get(WndChooseAbility.class, "yes"),
+						Messages.get(WndChooseAbility.class, "no")){
+					@Override
+					protected void onSelect(int index) {
+						super.onSelect(index);
+						if (index == 0){
+							WndChooseAbility.this.hide();
+							ArmorAbility abil = Random.oneOf(hero.heroClass.armorAbilities());
+							crown.upgradeArmor(hero, armor, abil);
+							GameScene.show(new WndInfoArmorAbility(hero.heroClass, abil));
+						}
+					}
+				});
+			}
+
+			@Override
+			public void update() {
+				if (Statistics.qualifiedForRandomVictoryBadge){
+					icon.tint(1, 1, 1, (float)Math.abs(Math.cos(1.5f*Math.PI* Game.timeTotal)/2f));
+				}
+				super.update();
+			}
+
+			@Override
+			protected String hoverText() {
+				return Messages.get(WndChooseAbility.class, "random_title");
+			}
+		};
+		random.setRect(WIDTH-16, 0, 16, 16);
+		if (crown != null) add(random);
 
 		RenderedTextBlock body = PixelScene.renderTextBlock( 6 );
 		if (crown != null) {
@@ -84,6 +125,7 @@ public class WndChooseAbility extends Window {
 								} else {
 									new KingsCrown().upgradeArmor(hero, null, ability);
 								}
+								Statistics.qualifiedForRandomVictoryBadge = false;
 							}
 						}
 					});

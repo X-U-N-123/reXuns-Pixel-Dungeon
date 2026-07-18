@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,9 +184,11 @@ public class Belongings implements Iterable<Item> {
 		bundle.put( RING, ring );
 		bundle.put( SECOND_WEP, secondWep );
 	}
+
+	public static boolean bundleRestoring = false;
 	
 	public void restoreFromBundle( Bundle bundle ) {
-		
+		bundleRestoring = true;
 		backpack.clear();
 		backpack.restoreFromBundle( bundle );
 		
@@ -207,6 +209,17 @@ public class Belongings implements Iterable<Item> {
 
 		secondWep = (KindOfWeapon) bundle.get(SECOND_WEP);
 		if (secondWep() != null)    secondWep().activate(owner);
+
+		bundleRestoring = false;
+	}
+
+	public void clear(){
+		backpack.clear();
+		weapon = secondWep = null;
+		armor = null;
+		artifact = null;
+		misc = null;
+		ring = null;
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {

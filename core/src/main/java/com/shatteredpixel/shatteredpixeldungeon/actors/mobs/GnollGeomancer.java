@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -560,14 +560,14 @@ public class GnollGeomancer extends Mob {
 					return act(true, justAlerted);
 				} else {
 					//wait if we can't
-				spend(TICK);
-				return true;
+					spend(TICK);
+					return true;
 				}
 			} else {
 				enemySeen = true;
 
-				//use abilities more frequently on the hero's initial approach or if sapper is alive
-				// but only if hero isn't stunned, to prevent stunlocking
+				//use abilities more frequently on the enemy's initial approach or if sapper is alive
+				// but only if enemy isn't stunned, to prevent stunlocking
 				if ((Dungeon.level.distance(pos, enemy.pos) > 2 || hasSapper())
 						&& buff(RockArmor.class) != null
 						&& enemy.buff(Paralysis.class) == null){

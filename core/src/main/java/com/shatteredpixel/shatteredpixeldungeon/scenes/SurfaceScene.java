@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.EarthGuardianSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WardSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.watabou.gltextures.SmartTexture;
@@ -88,13 +89,13 @@ public class SurfaceScene extends PixelScene {
 		
 		super.create();
 
-        if (SPDSettings.useOldMusic())
-            Music.INSTANCE.play(Assets.Music.SURFACE, true);
-        else
-            Music.INSTANCE.playTracks(
-            new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
-            new float[]{1, 1},
-            false);
+		if (SPDSettings.useOldMusic())
+			Music.INSTANCE.play(Assets.Music.SURFACE, true);
+		else
+			Music.INSTANCE.playTracks(
+					new String[]{Assets.Music.THEME_2, Assets.Music.THEME_1},
+					new float[]{1, 1},
+					false);
 		
 		uiCamera.visible = false;
 		

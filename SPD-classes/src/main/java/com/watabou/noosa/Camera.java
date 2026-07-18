@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ public class Camera extends Gizmo {
 
 		float deadX = 0;
 		float deadY = 0;
-		if (followTarget != null){
+		if (followTarget != null && followTarget.visible){
 			//manually assign here to avoid an allocation from sprite.center()
 			panTarget.x = followTarget.x + followTarget.width()/2;
 			panTarget.y = followTarget.y + followTarget.height()/2;

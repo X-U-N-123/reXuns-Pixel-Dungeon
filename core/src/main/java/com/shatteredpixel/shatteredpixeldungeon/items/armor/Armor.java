@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
@@ -45,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -109,7 +111,7 @@ public class Armor extends EquipableItem {
 
 	protected static final String AC_DETACH       = "DETACH";
 	protected static final String AC_SMELT        = "smelt";
-	
+
 	public enum Augment {
 		EVASION (2f , -1f),
 		DEFENSE (-2f, 1f),
@@ -131,7 +133,7 @@ public class Armor extends EquipableItem {
 			return Math.round((2 + level) * defenceFactor);
 		}
 	}
-
+	
 	public enum Modification {
 		WEAKNESS_ENHANCE,
 		EXPLOSIVE,
@@ -168,7 +170,7 @@ public class Armor extends EquipableItem {
 			return this == DEFLECTION || this == EXOSKELETON;
 		}
 	}
-	
+
 	public Augment augment = Augment.NONE;
 	
 	public Glyph glyph;
@@ -178,7 +180,7 @@ public class Armor extends EquipableItem {
 	public Modification modify = null;
 	public int modDurability = 0;
 	public ConductiveLoot loot = null;
-	
+
 	protected BrokenSeal seal;
 	
 	public int tier;
@@ -228,7 +230,7 @@ public class Armor extends EquipableItem {
 		masteryPotionBonus = bundle.getBoolean( MASTERY_POTION_BONUS );
 		seal = (BrokenSeal)bundle.get(SEAL);
 		modDurability = bundle.getInt(DURABILITY);
-		
+
 		augment = bundle.getEnum(AUGMENT, Augment.class);
 		if (bundle.contains(MODIFY)) modify = bundle.getEnum(MODIFY, Modification.class);
 	}
@@ -385,7 +387,7 @@ public class Armor extends EquipableItem {
 	@Override
 	public void activate(Char ch) {
 		if (seal != null) Buff.affect(ch, BrokenSeal.WarriorShield.class).setArmor(this);
-		
+
 		if (loot != null){
 			if (loot.target != null) loot.detach();
 			loot = null;
@@ -510,9 +512,14 @@ public class Armor extends EquipableItem {
 		}
 		return Math.min(lvl, max);
 	}
-	
+
+	//This exists so we can test what a char's base evasion would be without armor affecting it
+	//more ugly static vars yaaay~
+	public static boolean testingNoArmDefSkill = false;
+
 	public float evasionFactor( Char owner, float evasion ){
-		
+		if (testingNoArmDefSkill) return evasion;
+
 		if (hasGlyph(Stone.class, owner) && !Stone.testingEvasion()){
 			return 0;
 		}
@@ -552,7 +559,7 @@ public class Armor extends EquipableItem {
 				&& Dungeon.hero.pointsInTalent(Talent.MULTI_MODIFY) >= 2){
 			speed *= 1.25f;
 		}
-		
+
 		return speed;
 		
 	}
@@ -694,7 +701,7 @@ public class Armor extends EquipableItem {
 				|| modify == Modification.EXOSKELETON)){
 			tool.decreaseArmorModDura();
 		}
-		
+
 		return damage;
 	}
 
@@ -798,7 +805,7 @@ public class Armor extends EquipableItem {
 		if (modify != null){
 			info += "\n\n" + Messages.get(this, "has_modify", modify.title(), modDurability) + modify.desc();
 		}
-		
+
 		return info;
 	}
 

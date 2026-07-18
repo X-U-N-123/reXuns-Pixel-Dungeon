@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,7 +238,7 @@ public class Blacksmith extends NPC {
 			completed	= false;
 
 			favor       = 0;
-			pickaxe     = new Pickaxe().identify();
+			pickaxe     = new Pickaxe().identify(false);
 			freePickaxe = false;
 			reforges    = 0;
 			hardens     = 0;
@@ -417,7 +417,6 @@ public class Blacksmith extends NPC {
 			}
 
 			for (Item i : smithRewards){
-				if (i instanceof MissileWeapon) i.quantity(3);
 				i.level(rewardLevel);
 				if (i instanceof Weapon) {
 					((Weapon) i).enchant(null);

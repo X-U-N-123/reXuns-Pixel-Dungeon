@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 package com.watabou.utils;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
@@ -45,10 +46,10 @@ public abstract class PlatformSupport {
 
 	public RectF getSafeInsets( int level ){
 		return new RectF(
-		Gdx.graphics.getSafeInsetLeft(),
-		Gdx.graphics.getSafeInsetTop(),
-		Gdx.graphics.getSafeInsetRight(),
-		Gdx.graphics.getSafeInsetBottom()
+				Gdx.graphics.getSafeInsetLeft(),
+				Gdx.graphics.getSafeInsetTop(),
+				Gdx.graphics.getSafeInsetRight(),
+				Gdx.graphics.getSafeInsetBottom()
 		);
 	}
 
@@ -56,7 +57,7 @@ public abstract class PlatformSupport {
 	public RectF getDisplayCutout(){
 		return new RectF();
 	}
-
+	
 	public abstract void updateSystemUI();
 
 	public abstract boolean connectedToUnmeteredNetwork();
@@ -79,8 +80,9 @@ public abstract class PlatformSupport {
 		return Gdx.net.openURI( uri );
 	}
 
-	public void setOnscreenKeyboardVisible(boolean value){
-		Gdx.input.setOnscreenKeyboardVisible(value);
+	public void setOnscreenKeyboardVisible(boolean value, boolean multiline){
+		//by default ignore multiline
+		Gdx.input.setOnscreenKeyboardVisible(value, Input.OnscreenKeyboardType.Default);
 	}
 
 	//TODO should consider spinning this into its own class, rather than platform support getting ever bigger

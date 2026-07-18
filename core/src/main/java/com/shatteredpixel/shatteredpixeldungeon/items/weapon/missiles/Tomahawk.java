@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class Tomahawk extends MissileWeapon {
 		return  Math.round(3.75f * tier) +  //15 base, down from 20
 				(tier)*lvl;                 //scaling unchanged
 	}
-
+	
 	public float minBleed(){
 		return minBleed(buffedLvl() + RingOfSharpshooting.levelDamageBonus(Dungeon.hero));
 	}
@@ -69,7 +69,7 @@ public class Tomahawk extends MissileWeapon {
 	public float maxBleed(int lvl){
 		return 6 + lvl;
 	}
-	
+
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 		//33% damage roll as bleed, but ignores armor and str bonus

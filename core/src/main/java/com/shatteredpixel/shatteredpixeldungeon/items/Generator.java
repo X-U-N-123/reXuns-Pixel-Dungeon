@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,7 +317,7 @@ public class Generator {
 		WEP_T4	( 0, 0, MeleeWeapon.class),
 		WEP_T5	( 0, 0, MeleeWeapon.class),
 		WEP_T6  ( 0, 0, MeleeWeapon.class),
-		
+
 		ARMOR	( 2, 1, Armor.class ),
 		
 		MISSILE ( 1, 2, MissileWeapon.class ),
@@ -327,7 +327,7 @@ public class Generator {
 		MIS_T4  ( 0, 0, MissileWeapon.class ),
 		MIS_T5  ( 0, 0, MissileWeapon.class ),
 		MIS_T6  ( 0, 0, MissileWeapon.class ),
-		
+
 		WAND	( 1, 1, Wand.class ),
 		RING	( 1, 0, Ring.class ),
 		ARTIFACT( 0, 1, Artifact.class),
@@ -712,7 +712,7 @@ public class Generator {
 			};
 			MIS_T6.defaultProbs = new float[]{ 3, 3, 3, 3, 3 };
 			MIS_T6.probs = MIS_T6.defaultProbs.clone();
-			
+
 			FOOD.classes = new Class<?>[]{
 					Food.class,
 					Pasty.class,
@@ -1148,13 +1148,18 @@ public class Generator {
 					cat.dropped = bundle.getInt(cat.name().toLowerCase() + CATEGORY_DROPPED);
 				}
 
-				//pre-v3.0.0 conversion for artifacts specifically
+				//pre-v3.0.0 and pre-v3.3.0 conversion for artifacts (addition of tome and key)
 				if (cat == Category.ARTIFACT && probs.length != cat.defaultProbs.length){
 					int tomeIDX = 5;
+					int keyIDX = 9;
 					int j = 0;
 					for (int i = 0; i < probs.length; i++){
-						if (i == tomeIDX){
+						//we do a specific check here for holy tome pre-v3.0.0
+						if (j == tomeIDX && probs.length == cat.defaultProbs.length-2){
 							cat.probs[j] = 0;
+							j++;
+						} else if (j == keyIDX){
+							cat.probs[j] = 1;
 							j++;
 						}
 						cat.probs[j] = probs[i];

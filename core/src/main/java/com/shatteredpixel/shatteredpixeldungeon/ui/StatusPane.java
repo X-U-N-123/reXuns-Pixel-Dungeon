@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,10 +166,10 @@ public class StatusPane extends Component {
 		else        exp = new Image(asset, 100, 38, 17, 5);
 		add( exp );
 
-		expText = new BitmapText(PixelScene.pixelFont);
-		expText.hardlight( 0xFFFFAA );
-		expText.alpha(0.6f);
-		add(expText);
+			expText = new BitmapText(PixelScene.pixelFont);
+			expText.hardlight( 0xFFFFAA );
+			expText.alpha(0.6f);
+			add(expText);
 
 		hungerText = new BitmapText(PixelScene.pixelFont);
 		hungerText.hardlight( 0x00CC99 );

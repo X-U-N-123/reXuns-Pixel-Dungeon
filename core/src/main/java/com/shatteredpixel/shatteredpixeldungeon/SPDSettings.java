@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,9 +49,8 @@ public class SPDSettings extends GameSettings {
 	
 	//Display
 	
-	public static final String KEY_FULLSCREEN	= "fullscreen";
-	public static final String KEY_LANDSCAPE	= "landscape";
-	public static final String KEY_POWER_SAVER 	= "power_saver";
+	public static final String KEY_FULLSCREEN	= "fullscreen"; //used to hide navbars on mobile
+	public static final String KEY_LANDSCAPE	= "force_landscape";
 	public static final String KEY_ZOOM			= "zoom";
 	public static final String KEY_BRIGHTNESS	= "brightness";
 	public static final String KEY_GRID 	    = "visual_grid";
@@ -65,25 +64,16 @@ public class SPDSettings extends GameSettings {
 	}
 	
 	public static boolean fullscreen() {
-		return getBoolean( KEY_FULLSCREEN, DeviceCompat.isDesktop() );
+		return getBoolean( KEY_FULLSCREEN, true );
 	}
-	
+
 	public static void landscape( boolean value ){
 		put( KEY_LANDSCAPE, value );
 		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
 	}
-	
+
 	public static boolean landscape(){
 		return getBoolean(KEY_LANDSCAPE, false);
-	}
-	
-	public static void powerSaver( boolean value ){
-		put( KEY_POWER_SAVER, value );
-		((ShatteredPixelDungeon)ShatteredPixelDungeon.instance).updateDisplaySize();
-	}
-	
-	public static boolean powerSaver(){
-		return getBoolean( KEY_POWER_SAVER, false );
 	}
 	
 	public static void zoom( int value ) {
@@ -334,7 +324,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_SFX_VOL      = "sfx_vol";
 	public static final String KEY_MUSIC_BG     = "music_bg";
     public static final String OLD_MUSIC        = "lod_music";
-	
+
 	public static void music( boolean value ) {
 		Music.INSTANCE.enable( value );
 		put( KEY_MUSIC, value );
@@ -386,7 +376,7 @@ public class SPDSettings extends GameSettings {
     public static boolean useOldMusic(){
         return getBoolean( OLD_MUSIC, false);
     }
-	
+
 	//Languages
 	
 	public static final String KEY_LANG         = "language";

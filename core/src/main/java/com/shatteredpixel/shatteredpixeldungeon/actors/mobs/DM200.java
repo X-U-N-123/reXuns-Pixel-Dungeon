@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -170,6 +170,11 @@ public class DM200 extends Mob {
 			if (!enemyInFOV || canAttack(enemy)) {
 				return super.act(enemyInFOV, justAlerted);
 			} else {
+
+				if (handleRecentAttackers()){
+					return act( true, justAlerted );
+				}
+
 				enemySeen = true;
 				target = enemy.pos;
 
@@ -198,8 +203,8 @@ public class DM200 extends Mob {
 					}
 
 				} else {
-					spend( TICK );
-					return true;
+					//attempt to swap targets if the current one can't be reached or vented at
+					return handleUnreachableTarget(enemyInFOV, justAlerted);
 				}
 
 			}

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public class QuickSlotButton extends Button {
 		instance = new QuickSlotButton[QuickSlot.SIZE];
 
 		lastTarget = null;
+		targetingSlot = -1;
 	}
 	
 	@Override
@@ -82,7 +83,7 @@ public class QuickSlotButton extends Button {
 				if (!Dungeon.hero.isAlive() || !Dungeon.hero.ready){
 					return;
 				}
-				if (targetingSlot == slotNum) {
+				if (targetingSlot == slotNum && lastTarget != null) {
 					int cell = autoAim(lastTarget, select(slotNum));
 
 					if (cell != -1){
@@ -338,6 +339,9 @@ public class QuickSlotButton extends Button {
 
 	//FIXME: this is currently very expensive, should either optimize ballistica or this, or both
 	public static int autoAim(Char target, Item item){
+		if (Dungeon.hero == null || target == null){
+			return -1;
+		}
 
 		//first try to directly target
 		if (item.targetingPos(Dungeon.hero, target.pos) == target.pos) {

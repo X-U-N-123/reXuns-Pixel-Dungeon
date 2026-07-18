@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class GnollTrickster extends Gnoll {
 		WANDERING = new Wandering();
 		state = WANDERING;
 
-		//at half quantity, see createLoot()
+		//at quantity of 1 and no upgrades
 		loot = Generator.Category.MISSILE;
 		lootChance = 1f;
 
@@ -126,6 +126,12 @@ public class GnollTrickster extends Gnoll {
 	@Override
 	public Item createLoot() {
 		MissileWeapon drop = (MissileWeapon)super.createLoot();
+		drop.level(0);
+		if (drop.hasCurseEnchant()){
+			drop.enchant(null);
+		}
+		drop.cursed = false;
+		drop.identify(false);
 		//half quantity, rounded up
 		drop.quantity((drop.quantity()+1)/2);
 		return drop;

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
@@ -164,23 +165,37 @@ public class LiquidMetal extends Item {
 
 				//we remove a tiny amount here to account for rounding errors
 				float percentDurabilityLost = 0.999f - (m.durabilityLeft()/100f);
-				maxToUse = (int)Math.ceil(maxToUse*percentDurabilityLost);
-				float durPerUse = m.durabilityPerUse()/100f;
-				if (UpgradeToUse < quantity() && !(m instanceof Antimatter) && m.level() < 2
-				&& Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 3){
-					Catalog.countUses(LiquidMetal.class, UpgradeToUse);
-					GLog.p(Messages.get(LiquidMetal.class, "upgrade", UpgradeToUse));
-					m.upgrade();
-					quantity(quantity()-UpgradeToUse);
-				} else if (maxToUse == 0 ||
+				int toUse = (int)Math.ceil(maxToUse*percentDurabilityLost);
+				if (toUse == 0 ||
 						Math.ceil(m.durabilityLeft()/ m.durabilityPerUse()) >= Math.ceil(m.MAX_DURABILITY/ m.durabilityPerUse()) ){
-					GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
-					return;
-				} else if (maxToUse < quantity()) {
-					Catalog.countUses(LiquidMetal.class, maxToUse);
+
+					if (m.quantity() < m.defaultQuantity()){
+						if (quantity()*durabilityPerMetal >= m.durabilityPerUse()){
+							m.quantity(m.quantity()+1);
+							if (Math.ceil(maxToUse) < quantity()){
+								Catalog.countUses(LiquidMetal.class, (int)Math.ceil(maxToUse));
+								GLog.i(Messages.get(LiquidMetal.class, "apply", (int)Math.ceil(maxToUse)));
+								quantity -= (int)Math.ceil(maxToUse);
+							} else {
+								Catalog.countUses(LiquidMetal.class, quantity());
+								m.damage(100f);
+								m.repair(quantity()*durabilityPerMetal-1);
+								GLog.i(Messages.get(LiquidMetal.class, "apply", quantity()));
+								detachAll(Dungeon.hero.belongings.backpack);
+							}
+						} else {
+							GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
+							return;
+						}
+					} else {
+						GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
+						return;
+					}
+				} else if (toUse < quantity()) {
+					Catalog.countUses(LiquidMetal.class, toUse);
 					m.repair(maxToUse*durabilityPerMetal);
-					quantity(quantity()-maxToUse);
-					GLog.i(Messages.get(LiquidMetal.class, "apply", maxToUse));
+					quantity(quantity()-toUse);
+					GLog.i(Messages.get(LiquidMetal.class, "apply", toUse));
 
 				} else {
 					Catalog.countUses(LiquidMetal.class, quantity());
@@ -201,62 +216,67 @@ public class LiquidMetal extends Item {
 
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
-			for (Item i : ingredients){
-				if (!(i instanceof MissileWeapon)){
-					return false;
-				}
-				if (i instanceof Antimatter){
-					return false;
-				}
-			}
-
-			return !ingredients.isEmpty();
+			return ingredients.size() == 1
+					&& ingredients.get(0) instanceof MissileWeapon
+					&& ingredients.get(0).cursedKnown
+					&& !ingredients.get(0).cursed
+					&& !(ingredients.get(0) instanceof Antimatter);
 		}
 
 		@Override
 		public int cost(ArrayList<Item> ingredients) {
-			int cost = 1;
-			for (Item i : ingredients){
-				cost += i.quantity();
-			}
-			if(Dungeon.hero != null){
-				if (Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 2) return 0; else return cost;
-			} else return cost;
+			if (Dungeon.hero != null && Dungeon.hero.pointsInTalent(Talent.L_M_MASTER) >= 2)
+				return 0;
+			return 3;
 		}
 
 		@Override
 		public Item brew(ArrayList<Item> ingredients) {
 			Item result = sampleOutput(ingredients);
-
-			for (Item i : ingredients){
-				i.quantity(0);
+			MissileWeapon m = (MissileWeapon) ingredients.get(0);
+			if (!m.levelKnown){
+				result.quantity(metalQuantity(m));
 			}
+
+			m.quantity(0);
+			Buff.affect(Dungeon.hero, MissileWeapon.UpgradedSetTracker.class).levelThresholds.put(m.setID, Integer.MAX_VALUE);
 
 			return result;
 		}
 
 		@Override
 		public Item sampleOutput(ArrayList<Item> ingredients) {
-			int metalQuantity = 0;
+			MissileWeapon m = (MissileWeapon) ingredients.get(0);
 
-			for (Item i : ingredients){
-				MissileWeapon m = (MissileWeapon) i;
-				float quantity = m.quantity()-1;
-				quantity += 0.25f + 0.0075f*m.durabilityLeft();
-				quantity *= Math.pow(2, Math.min(3, m.level()));
-				metalQuantity += Math.round((5*(m.tier+1))*quantity);
+			if (m.levelKnown){
+				return new LiquidMetal().quantity(metalQuantity(m));
+			} else {
+				return new LiquidMetal();
 			}
+		}
+
+		private int metalQuantity(MissileWeapon m){
+			float quantityPerWeapon = 5*(m.tier+1);
+			if (m.defaultQuantity() != 3){
+				quantityPerWeapon = 3f / m.defaultQuantity();
+			}
+			quantityPerWeapon *= Math.pow(1.35f, Math.min(5, m.level()));
+
+			float quantity = m.quantity()-1;
+			quantity += 0.25f + 0.0075f*m.durabilityLeft();
+
 			if (Dungeon.hero.hasTalent(Talent.L_M_MASTER)){
-				metalQuantity += Math.round(metalQuantity * 0.2f);
+				quantity += Math.round(metalQuantity * 0.2f);
 			}
-			return new LiquidMetal().quantity(metalQuantity);
+
+			return Math.round(quantity * quantityPerWeapon);
 		}
 	}
 
 	@Override
 	public float weight(){
 		return 0.03f * quantity();
-	}
+}
 
 	public static class RemoteDestructionCD extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }

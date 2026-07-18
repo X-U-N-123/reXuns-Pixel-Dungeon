@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,27 +116,25 @@ public class PoolRoom extends SpecialRoom {
 		}
 
 		//1 floor set higher in probability, never cursed
-		if (Random.Int(2) == 0) {
-			prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
-			if (((Weapon)prize).hasCurseEnchant()){
-				((Weapon) prize).enchant(null);
-			}
-			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
-				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) prize).tier - 1]);
-				m.quantity(m.quantity() + prize.level());
-				m.enchant(((Weapon) prize).enchantment);
-				prize = m;
-			}
-		} else {
-			prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
-			if (((Armor)prize).hasCurseGlyph()){
-				((Armor) prize).inscribe(null);
-			}
-			if (Random.Float() < MagicalGem.wandReplaceChance()){
-				Wand w = (Wand)Generator.random(Generator.Category.WAND);
-				w.level(prize.level());
-				prize = w;
-			}
+		switch (Random.Int(5)){
+			case 0: case 1: default:
+				prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
+				if (((Weapon)prize).hasCurseEnchant()){
+					((Weapon) prize).enchant(null);
+				}
+				break;
+			case 2:
+				prize = Generator.randomMissile((Dungeon.depth / 5) + 1);
+				if (((Weapon)prize).hasCurseEnchant()){
+					((Weapon) prize).enchant(null);
+				}
+				break;
+			case 3: case 4:
+				prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
+				if (((Armor)prize).hasCurseGlyph()){
+					((Armor) prize).inscribe(null);
+				}
+				break;
 		}
 		prize.cursed = false;
 		prize.cursedKnown = true;

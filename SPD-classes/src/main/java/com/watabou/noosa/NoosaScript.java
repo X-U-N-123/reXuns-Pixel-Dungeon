@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,7 +172,7 @@ public class NoosaScript extends Script {
 
 				Gdx.gl20.glScissor(
 						Math.round(camera.x * xScale),
-						Math.round((Game.height - camera.screenHeight - camera.y) * yScale) + Game.bottomInset,
+						Math.round((Game.height - camera.screenHeight - camera.y) * yScale),
 						Math.round(camera.screenWidth * xScale),
 						Math.round(camera.screenHeight * yScale));
 			} else {

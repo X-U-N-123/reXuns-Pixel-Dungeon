@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,6 +142,7 @@ public abstract class Mob extends Char {
 
 	public AiState SLEEPING     = new Sleeping();
 	public AiState HUNTING		= new Hunting();
+	public AiState INVESTIGATING= new Investigating();
 	public AiState WANDERING	= new Wandering();
 	public AiState FLEEING		= new Fleeing();
 	public AiState PASSIVE		= new Passive();
@@ -184,7 +185,7 @@ public abstract class Mob extends Char {
 	private static final String ENEMY_ID	= "enemy_id";
 
 	private static final String PLUNDERED = "plunderedItems";
-	
+
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		
@@ -194,6 +195,8 @@ public abstract class Mob extends Char {
 			bundle.put( STATE, Sleeping.TAG );
 		} else if (state == WANDERING) {
 			bundle.put( STATE, Wandering.TAG );
+		} else if (state == INVESTIGATING) {
+			bundle.put( STATE, Investigating.TAG );
 		} else if (state == HUNTING) {
 			bundle.put( STATE, Hunting.TAG );
 		} else if (state == FLEEING) {
@@ -223,6 +226,8 @@ public abstract class Mob extends Char {
 			this.state = SLEEPING;
 		} else if (state.equals( Wandering.TAG )) {
 			this.state = WANDERING;
+		} else if (state.equals( Investigating.TAG )) {
+			this.state = INVESTIGATING;
 		} else if (state.equals( Hunting.TAG )) {
 			this.state = HUNTING;
 		} else if (state.equals( Fleeing.TAG )) {
@@ -260,13 +265,13 @@ public abstract class Mob extends Char {
 	
 	@Override
 	protected boolean act() {
-
+		
 		if (hero.hasTalent(Talent.RIVER_EROSION) && alignment == Char.Alignment.ENEMY
 				&& (!isFlying() || hero.pointsInTalent(Talent.UNDERCURRENT) >= 3)
 				&& Dungeon.level.water[pos]){
 			Buff.prolong(this, Chill.class, 1 + hero.pointsInTalent(Talent.RIVER_EROSION));
 		}
-		
+
 		super.act();
 		
 		boolean justAlerted = alerted;
@@ -277,6 +282,7 @@ public abstract class Mob extends Char {
 		} else {
 			sprite.hideAlert();
 			sprite.hideLost();
+			sprite.hideInvestigate();
 		}
 		
 		if (paralysed > 0) {
@@ -571,7 +577,7 @@ public abstract class Mob extends Char {
 
 	protected boolean getCloser( int target ) {
 		
-		if (rooted || target == pos) {
+		if (rooted || target == pos || !Dungeon.level.insideMap(target)) {
 			return false;
 		}
 
@@ -718,8 +724,6 @@ public abstract class Mob extends Char {
 	public float attackDelay() {
 		float delay = 1f;
 		if ( buff(Adrenaline.class) != null) delay /= 1.5f;
-		if ( hero != null && buff(Weakness.class) != null && alignment == Alignment.ENEMY )
-			delay *= 1f + hero.pointsInTalent(Talent.BLURING_BODY) * 0.1f;
 		return delay;
 	}
 	
@@ -1008,7 +1012,7 @@ public abstract class Mob extends Char {
 					Buff.affect(hero, GreaterHaste.class).set(2 + 2*hero.pointsInTalent(Talent.LETHAL_HASTE));
 				}
 			}
-			
+
 			if (hero.pointsInTalent(Talent.CORPSE_DECAY) >= 2){
 				GameScene.add( Blob.seed( pos, 8 * hero.pointsInTalent(Talent.CORPSE_DECAY), StenchGas.class ) );
 			}
@@ -1272,29 +1276,31 @@ public abstract class Mob extends Char {
 			//can be awoken by the least stealthy hostile present, not necessarily just our target
 			if (enemyInFOV || (enemy != null && enemy.invisible > 0)) {
 
-				float closestHostileDist = Float.POSITIVE_INFINITY;
+				float highestChance = Float.POSITIVE_INFINITY;
+				Char closestHostile = null;
 
 				for (Char ch : Actor.chars()){
 					if (fieldOfView[ch.pos] && ch.invisible == 0 && ch.alignment != alignment && ch.alignment != Alignment.NEUTRAL){
-						float chDist = ch.stealth() + distance(ch);
+						float bestChance = detectionChance(ch);
 						//silent steps rogue talent, which also applies to rogue's shadow clone
 						if ((ch instanceof Hero || ch instanceof ShadowClone.ShadowAlly)
-								&& hero.hasTalent(Talent.SILENT_STEPS)){
-							if (distance(ch) >= 4 - hero.pointsInTalent(Talent.SILENT_STEPS)) {
-								chDist = Float.POSITIVE_INFINITY;
+								&& Dungeon.hero.hasTalent(Talent.SILENT_STEPS)){
+							if (distance(ch) >= 4 - Dungeon.hero.pointsInTalent(Talent.SILENT_STEPS)) {
+								bestChance = Float.POSITIVE_INFINITY;
 							}
 						}
 						//flying characters are naturally stealthy
 						if (ch.isFlying() && distance(ch) >= 2){
-							chDist = Float.POSITIVE_INFINITY;
+							bestChance = Float.POSITIVE_INFINITY;
 						}
-						if (chDist < closestHostileDist){
-							closestHostileDist = chDist;
+						if (bestChance < highestChance){
+							highestChance = bestChance;
+							closestHostile = ch;
 						}
 					}
 				}
 
-				if (Random.Float( closestHostileDist ) < 1) {
+				if (closestHostile != null && Random.Float() < detectionChance(closestHostile)) {
 					awaken(enemyInFOV);
 					if (state == SLEEPING){
 						spend(TICK); //wait if we can't wake up for some reason
@@ -1308,6 +1314,11 @@ public abstract class Mob extends Char {
 			spend( TICK );
 
 			return true;
+		}
+
+		//chance is 1 in (distance + stealth)
+		protected float detectionChance( Char enemy ){
+			return 1 / (distance( enemy ) + enemy.stealth());
 		}
 
 		protected void awaken( boolean enemyInFOV ){
@@ -1343,7 +1354,7 @@ public abstract class Mob extends Char {
 
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
-			if (enemyInFOV && (justAlerted || Random.Float( distance( enemy ) / 2f + enemy.stealth() ) < 1)) {
+			if (enemyInFOV && (justAlerted || Random.Float() < detectionChance(enemy))) {
 
 				return noticeEnemy();
 
@@ -1352,6 +1363,11 @@ public abstract class Mob extends Char {
 				return continueWandering();
 
 			}
+		}
+
+		//chance is 1 in (distance/2 + stealth)
+		protected float detectionChance( Char enemy ){
+			return 1 / (distance( enemy ) / 2f + enemy.stealth());
 		}
 
 		protected boolean noticeEnemy(){
@@ -1429,9 +1445,6 @@ public abstract class Mob extends Char {
 
 		public static final String TAG	= "HUNTING";
 
-		//prevents rare infinite loop cases
-		protected boolean recursing = false;
-
 		@Override
 		public boolean act( boolean enemyInFOV, boolean justAlerted ) {
 			enemySeen = enemyInFOV;
@@ -1445,22 +1458,8 @@ public abstract class Mob extends Char {
 
 				//if we cannot attack our target, but were hit by something else that
 				// is visible and attackable or closer, swap targets
-				if (!recentlyAttackedBy.isEmpty()){
-					boolean swapped = false;
-					for (Char ch : recentlyAttackedBy){
-						if (ch != null && ch.isActive() && Actor.chars().contains(ch) && alignment != ch.alignment && fieldOfView[ch.pos] && ch.invisible == 0 && !isCharmedBy(ch)) {
-							if (canAttack(ch) || enemy == null || Dungeon.level.distance(pos, ch.pos) < Dungeon.level.distance(pos, enemy.pos)) {
-								enemy = ch;
-								target = ch.pos;
-								enemyInFOV = true;
-								swapped = true;
-							}
-						}
-					}
-					recentlyAttackedBy.clear();
-					if (swapped){
-						return act( enemyInFOV, justAlerted );
-					}
+				if (handleRecentAttackers()){
+					return act( true, justAlerted );
 				}
 
 				if (enemyInFOV) {
@@ -1481,29 +1480,53 @@ public abstract class Mob extends Char {
 
 				} else {
 
-					//if moving towards an enemy isn't possible, try to switch targets to another enemy that is closer
-					//unless we have already done that and still can't move toward them, then move on.
-					if (!recursing) {
-						Char oldEnemy = enemy;
-						enemy = null;
-						enemy = chooseEnemy();
-						if (enemy != null && enemy != oldEnemy) {
-							recursing = true;
-							boolean result = act(enemyInFOV, justAlerted);
-							recursing = false;
-							return result;
-						}
-					}
-
-					spend( TICK );
-					if (!enemyInFOV) {
-						sprite.showLost();
-						state = WANDERING;
-						target = ((Mob.Wandering)WANDERING).randomDestination();
-					}
-					return true;
+					return handleUnreachableTarget(enemyInFOV, justAlerted);
 				}
 			}
+		}
+
+		protected boolean handleRecentAttackers(){
+			boolean swapped = false;
+			if (!recentlyAttackedBy.isEmpty()){
+				for (Char ch : recentlyAttackedBy){
+					if (ch != null && ch.isActive() && Actor.chars().contains(ch) && alignment != ch.alignment && fieldOfView[ch.pos] && ch.invisible == 0 && !isCharmedBy(ch)) {
+						if (canAttack(ch) || enemy == null || Dungeon.level.distance(pos, ch.pos) < Dungeon.level.distance(pos, enemy.pos)) {
+							enemy = ch;
+							target = ch.pos;
+							swapped = true;
+						}
+					}
+				}
+				recentlyAttackedBy.clear();
+			}
+			return swapped;
+		}
+
+		//prevents rare infinite loop cases
+		protected boolean recursing = false;
+
+		//Try to switch targets to another enemy that is closer or reachable
+		//unless we have already done that and still can't move toward them, then move on.
+		protected boolean handleUnreachableTarget(boolean enemyInFOV, boolean justAlerted){
+			if (!recursing) {
+				Char oldEnemy = enemy;
+				enemy = null;
+				enemy = chooseEnemy();
+				if (enemy != null && enemy != oldEnemy) {
+					recursing = true;
+					boolean result = act(enemyInFOV, justAlerted);
+					recursing = false;
+					return result;
+				}
+			}
+
+			spend( TICK );
+			if (!enemyInFOV) {
+				sprite.showLost();
+				state = WANDERING;
+				target = ((Mob.Wandering)WANDERING).randomDestination();
+			}
+			return true;
 		}
 	}
 
@@ -1526,7 +1549,7 @@ public abstract class Mob extends Char {
 					spend( TICK );
 					return true;
 				}
-		}
+			}
 			return super.act(enemyInFOV, justAlerted);
 		}
 

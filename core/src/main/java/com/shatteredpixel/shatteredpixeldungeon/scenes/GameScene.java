@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.journal.Guidebook;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.InventoryScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DimensionalSundial;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
@@ -122,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndResurrect;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndUpgrade;
 import com.watabou.gltextures.TextureCache;
 import com.watabou.glwrap.Blending;
 import com.watabou.input.ControllerHandler;
@@ -173,7 +175,7 @@ public class GameScene extends PixelScene {
 	private BossHealthBar boss;
 
 	private GameLog log;
-	
+
 	private static CellSelector cellSelector;
 	
 	private Group terrain;
@@ -210,7 +212,7 @@ public class GameScene extends PixelScene {
 	{
 		inGameScene = true;
 	}
-	
+
 	@Override
 	public void create() {
 		
@@ -531,7 +533,7 @@ public class GameScene extends PixelScene {
 		}
 
 		layoutTags();
-		
+
 		switch (InterlevelScene.mode) {
 			case RESURRECT:
 				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
@@ -832,7 +834,7 @@ public class GameScene extends PixelScene {
 	public static boolean updateTags = false;
 
 	private static float waterOfs = 0;
-	
+
 	@Override
 	public synchronized void update() {
 		lastOffset = null;
@@ -870,7 +872,7 @@ public class GameScene extends PixelScene {
 						Actor.process();
 					}
 				};
-				
+
 				//if cpu cores are limited, game should prefer drawing the current frame
 				if (Runtime.getRuntime().availableProcessors() == 1) {
 					actorThread.setPriority(Thread.NORM_PRIORITY - 1);
@@ -1029,7 +1031,7 @@ public class GameScene extends PixelScene {
 	public void addCustomWall( CustomTilemap visual){
 		customWalls.add( visual.create() );
 	}
-	
+
 	private synchronized void addHeapSprite( Heap heap ) {
 		ItemSprite sprite = heap.sprite = (ItemSprite)heaps.recycle( ItemSprite.class );
 		sprite.revive();
@@ -1044,7 +1046,7 @@ public class GameScene extends PixelScene {
 		heaps.add( heap.sprite );
 	}
 	
-	private synchronized void addBlobSprite( final Blob gas ) {
+	private void addBlobSprite( final Blob gas ) {
 		if (gas.emitter == null) {
 			gases.add( new BlobEmitter( gas ) );
 		}
@@ -1119,7 +1121,7 @@ public class GameScene extends PixelScene {
 	}
 	
 	// -------------------------------------------------------
-	
+
 	public static void add( Blob gas ) {
 		Actor.add( gas );
 		if (scene != null) {
@@ -1341,7 +1343,7 @@ public class GameScene extends PixelScene {
 			scene.terrainFeatures.growPlant( cell );
 		}
 	}
-	
+
 	public static void discoverTile( int pos, int oldValue ) {
 		if (scene != null) {
 			scene.tiles.discover( pos, oldValue );
@@ -1362,7 +1364,7 @@ public class GameScene extends PixelScene {
 				if (lastOffset != null) {
 					offsetToInherit = lastOffset;
 				}
-				if (offsetToInherit != null) {
+				if (offsetToInherit != null && !offsetToInherit.isZero()) {
 					wnd.offset(offsetToInherit);
 					wnd.boundOffsetWithMargin(3);
 				}
@@ -1582,10 +1584,47 @@ public class GameScene extends PixelScene {
 				return wnd;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
+	//logic for preserving inventory selection windows on scene reset (e.g. via auto-rotate)
+	private static WndBag.ItemSelector savedSelector;
+
+	@Override
+	public synchronized void saveWindows() {
+		if (members == null) return;
+
+		super.saveWindows();
+		if (scene != null && scene.inventory != null && scene.inventory.getSelector() != null){
+			savedSelector = scene.inventory.getSelector();
+		} else {
+			for (Gizmo g : members.toArray(new Gizmo[0])){
+				if (g instanceof WndBag){
+					savedSelector = ((WndBag) g).getSelector();
+				//also keeps selector active over inventory scroll cancel and upgrade window
+				} else if (g instanceof InventoryScroll.WndConfirmCancel){
+					savedSelector = ((InventoryScroll.WndConfirmCancel) g).getItemSelector();
+				} else if (g instanceof WndUpgrade){
+					savedSelector = ((WndUpgrade) g).getItemSelector();
+				}
+			}
+		}
+	}
+
+	@Override
+	public synchronized void restoreWindows() {
+		super.restoreWindows();
+		if (savedSelector != null){
+			if (scene != null && scene.inventory != null){
+				scene.inventory.setSelector(savedSelector);
+			} else {
+				addToFront(new WndBag(Dungeon.hero.belongings.backpack, savedSelector));
+			}
+			savedSelector = null;
+		}
+	}
+
 	public static boolean cancel() {
 		cellSelector.resetKeyHold();
 		if (Dungeon.hero != null && (Dungeon.hero.curAction != null || Dungeon.hero.resting)) {

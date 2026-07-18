@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.windows;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
@@ -39,6 +40,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -291,13 +293,16 @@ public class WndBlacksmith extends Window {
 					if (second.isEquipped( Dungeon.hero )) {
 						((EquipableItem)second).doUnequip( Dungeon.hero, false );
 					}
-					second.detach( Dungeon.hero.belongings.backpack );
+					second.detachAll( Dungeon.hero.belongings.backpack );
 
 					if (second instanceof Armor){
 						BrokenSeal seal = ((Armor) second).checkSeal();
 						if (seal != null){
 							Dungeon.level.drop( seal, Dungeon.hero.pos );
 						}
+					} else if (second instanceof MissileWeapon){
+						Buff.affect(Dungeon.hero, MissileWeapon.UpgradedSetTracker.class)
+								.levelThresholds.put(((MissileWeapon) second).setID, Integer.MAX_VALUE);
 					}
 
 					//preserves enchant/glyphs if present
@@ -376,8 +381,8 @@ public class WndBlacksmith extends Window {
 					} else if (item1.getClass() != item2.getClass()) {
 						btnReforge.enable(false);
 
-					//and not the literal same item (unless quantity is >1)
-					} else if (item1 == item2 && item1.quantity() == 1) {
+					//and not the literal same item
+					} else if (item1 == item2) {
 						btnReforge.enable(false);
 
 					} else {
@@ -480,8 +485,8 @@ public class WndBlacksmith extends Window {
 
 	public static class WndSmith extends Window {
 
-		private static final int WIDTH      = 120;
-		private static final int BTN_SIZE	= 27;
+		private static final int WIDTH      = 128;
+		private static final int BTN_SIZE	= 28;
 		private static final int BTN_GAP	= 4;
 		private static final int GAP		= 2;
 
@@ -514,6 +519,9 @@ public class WndBlacksmith extends Window {
 					}
 				};
 				btnReward.item( i );
+				btnReward.setRect( count*(WIDTH - BTN_GAP) / Blacksmith.Quest.smithRewards.size() - BTN_SIZE,
+						message.top() + message.height() + BTN_GAP,
+						BTN_SIZE, BTN_SIZE );
 				btnReward.setRect( count*(BTN_SIZE + BTN_GAP), message.top() + message.height() + BTN_GAP, BTN_SIZE, BTN_SIZE );
 				add( btnReward );
 				count++;
@@ -538,7 +546,7 @@ public class WndBlacksmith extends Window {
 					protected void onClick() {
 						RewardWindow.this.hide();
 
-						if (item instanceof MeleeWeapon && Blacksmith.Quest.smithEnchant != null){
+						if (item instanceof Weapon && Blacksmith.Quest.smithEnchant != null){
 							((Weapon) item).enchant(Blacksmith.Quest.smithEnchant);
 						} else if (item instanceof Armor && Blacksmith.Quest.smithGlyph != null){
 							((Armor) item).inscribe(Blacksmith.Quest.smithGlyph);

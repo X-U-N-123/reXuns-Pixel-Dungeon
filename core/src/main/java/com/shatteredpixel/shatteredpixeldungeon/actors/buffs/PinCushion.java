@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,13 +44,14 @@ public class PinCushion extends Buff {
 		int spikeQuantity = 0;
 		if (projectile instanceof Scorpiospike) spikeQuantity ++;
 
-		for (Item item : items){
-			if (item instanceof Scorpiospike) spikeQuantity += item.quantity();
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i) instanceof Scorpiospike) spikeQuantity += items.get(i).quantity();
 			if (spikeQuantity >= 5 && target instanceof Scorpio) Badges.validateRefutation();
 
-			if (item.isSimilar(projectile)){
-				item.merge(projectile);
-				if (TippedDart.lostDarts > 0){
+			if (projectile.isSimilar(items.get(i))) {
+				projectile.merge(items.get(i));
+				items.set(i, projectile);
+				if (TippedDart.lostDarts > 0) {
 					Dart d = new Dart();
 					d.quantity(TippedDart.lostDarts);
 					TippedDart.lostDarts = 0;

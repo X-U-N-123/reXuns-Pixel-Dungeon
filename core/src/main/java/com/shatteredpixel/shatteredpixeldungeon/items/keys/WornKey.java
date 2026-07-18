@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,17 +23,17 @@ package com.shatteredpixel.shatteredpixeldungeon.items.keys;
 
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class SkeletonKey extends Key {
+public class WornKey extends Key {
 	
 	{
-		image = ItemSpriteSheet.SKELETON_KEY;
+		image = ItemSpriteSheet.WORN_KEY;
 	}
 	
-	public SkeletonKey() {
+	public WornKey() {
 		this( 0 );
 	}
 	
-	public SkeletonKey( int depth ) {
+	public WornKey( int depth ) {
 		super();
 		this.depth = depth;
 	}
