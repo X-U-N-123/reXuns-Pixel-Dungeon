@@ -122,7 +122,9 @@ public class WndInfoCell extends Window {
 
 		IconTitle titlebar = new IconTitle();
 		titlebar.icon(cellImage(cell));
-		titlebar.label(cellName(cell));
+		String name = cellName(cell);
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) name += " ("+cell+")";
+		titlebar.label(name);
 
 		if (customTile != null){
 			String customDesc = customTile.desc(x, y);
@@ -150,7 +152,7 @@ public class WndInfoCell extends Window {
 					}
 					desc += blob.tileDesc();
 					if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
-						desc += "\n" + Messages.get(Blob.class, "class_name", blob.getClass().getSimpleName());
+						desc += "\n"+ Messages.get(Blob.class, "class_name", blob.getClass().getSimpleName(), blob.cur[cell]);
 				}
 			}
 		}

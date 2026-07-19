@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurs
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -254,17 +255,11 @@ public class Bomb extends Item {
 				if (tool == null && curUser.belongings.weapon() instanceof MultiTool)
 					tool = (MultiTool) curUser.belongings.weapon();
 
-				if (tool != null && tool.enchantment != null && ch.alignment != Char.Alignment.ALLY){
+				if (tool != null && tool.enchantment != null && ch.alignment != Char.Alignment.ALLY)
 					if (Random.Float() < curUser.pointsInTalent(Talent.MAGICAL_EXPLOSION) * 0.3f)
 						dmg = tool.enchantment.proc(tool, curUser, ch, dmg);
 
-					if (tool.enchantment instanceof Projecting)
-						dmg += Math.round(dmg * curUser.pointsInTalent(Talent.MAGICAL_EXPLOSION) / 15f);
-				}
-
-				if (dmg > 0) {
-					ch.damage(dmg, this);
-				}
+				if (dmg > 0) ch.damage(dmg, this);
 				
 				if (ch == Dungeon.hero && !ch.isAlive()) {
 					if (this instanceof ConjuredBomb){
@@ -279,6 +274,26 @@ public class Bomb extends Item {
 				Dungeon.observe();
 			}
 			if (shockwaveProc) Buff.prolong(curUser, ShockwaveCooldown.class, 50);
+		}
+	}
+
+	@Override
+	public int throwPos(Hero user, int dst) {
+
+		int projecting = 0;
+		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+		if (tool != null && tool.hasEnchant(Projecting.class, user)){
+			projecting += 4;
+		}
+
+		if (projecting > 0
+				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst])
+				&& Dungeon.level.distance(user.pos, dst) <=
+				Math.round(projecting * Weapon.Enchantment.genericProcChanceMultiplier(user)
+						* curUser.pointsInTalent(Talent.MAGICAL_EXPLOSION) * 0.3f)){
+			return dst;
+		} else {
+			return super.throwPos(user, dst);
 		}
 	}
 	

@@ -173,11 +173,11 @@ public class Badges {
 		HIGH_SCORE_3                ( 87 ),
 
 		//platinum
+		VICTORY_RANDOM              ( 95 ),
 		MANY_BUFFS                  ( 96 ),
 		ITEM_LEVEL_5                ( 97 ),
 		LEVEL_REACHED_5             ( 98 ),
 		HAPPY_END                   ( 99 ),
-		VICTORY_RANDOM              ( 99 ),
 		HAPPY_END_REMAINS           ( 100 ),
 		RODNEY                      ( 101, BadgeType.JOURNAL ),
 		ALL_WEAPONS_IDENTIFIED      , //still exists internally for pre-2.5 saves
