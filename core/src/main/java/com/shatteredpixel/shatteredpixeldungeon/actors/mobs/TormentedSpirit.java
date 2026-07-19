@@ -69,7 +69,7 @@ public class TormentedSpirit extends Wraith {
 			((Weapon)prize).enchant();
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
 				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) prize).tier - 1]);
-				m.quantity(m.quantity() + prize.level());
+				m.level(prize.level());
 				m.enchant(((Weapon)loot).enchantment);
 				prize = m;
 			}

@@ -29,10 +29,8 @@ public class ItemSpriteSheet {
 	private static final int WIDTH = 32;
 	public static final int SIZE = 16;
 
-	private static final int TX_WIDTH = 256;
+	private static final int TX_WIDTH = 512;
 	private static final int TX_HEIGHT = 512;
-
-	private static final int WIDTH = TX_WIDTH / SIZE;
 
 	public static TextureFilm film = new TextureFilm( TX_WIDTH, TX_HEIGHT, SIZE, SIZE );
 
@@ -167,7 +165,7 @@ public class ItemSpriteSheet {
 	public static final int IRON_KEY            = MISC_CONSUMABLE +7;
 	public static final int GOLDEN_KEY          = MISC_CONSUMABLE +8;
 	public static final int CRYSTAL_KEY         = MISC_CONSUMABLE +9;
-	public static final int SKELETON_KEY    = MISC_CONSUMABLE +10;
+	public static final int SKELETON_KEY        = MISC_CONSUMABLE +10;
 	public static final int MASK                = MISC_CONSUMABLE +11;
 	public static final int CROWN               = MISC_CONSUMABLE +12;
 	public static final int AMULET              = MISC_CONSUMABLE +13;
@@ -929,9 +927,9 @@ public class ItemSpriteSheet {
 	public static final int MAGICAL_TRAN    = SPELLS+16;
 	public static final int MAGIC_INFUSE    = SPELLS+17;
 	public static final int ALCHEMIZE       = SPELLS+18;
-	//1 unused slot
-	public static final int ESCAPE          = SPELLS+20;
-	//1 unused slot
+
+	//2 unused slots
+	public static final int ESCAPE          = SPELLS+21;
 	//10 slots for others
 	public static final int RECLAIM_TRAP    = SPELLS+22;
     public static final int SUPPORT         = SPELLS+23;
@@ -950,8 +948,10 @@ public class ItemSpriteSheet {
 
 		assignItemRect(UNSTABLE_SPELL, 12, 13);
 
-		for (int i = SPELLS+11; i < SPELLS+22; i++)
+		for (int i = SPELLS+11; i < SPELLS+21; i++)
 			assignItemRect(i, 10, 15);
+
+		assignItemRect(ESCAPE, 8, 16);
 
 		for (int i = SPELLS+22; i < SPELLS+32; i++)
 			assignItemRect(i, 8, 16);
@@ -1251,7 +1251,7 @@ public class ItemSpriteSheet {
 			assignIconRect( POTION_DIVINE,      7, 7 );
 		}
 
-		                                                                                //16 free slots
+		                                                                                //lots of free slots
 
 	}
 

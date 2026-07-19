@@ -58,7 +58,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulHandle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
@@ -112,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -1175,7 +1175,7 @@ public abstract class Mob extends Char {
 		}
         if (Random.Float() < SolidifiedMetal.missileReplaceChance() && item instanceof MeleeWeapon){
             MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) item).tier - 1]);
-			m.quantity(m.quantity() + item.level());
+			m.level(item.level());
 			m.cursed = item.cursed;
 			m.enchant(((Weapon)item).enchantment);
             item = m;
@@ -1733,6 +1733,10 @@ public abstract class Mob extends Char {
 				|| toPickUp instanceof LostBackpack
 				|| (toPickUp instanceof PhantomBomb && ((PhantomBomb) toPickUp).generation > 1))
 			return false;
+
+		if (Dungeon.depth > 15 && Dungeon.depth < 20 && Dungeon.branch == 1 && Dungeon.level instanceof VaultLevel){
+			return false;
+		}
 
 		return true;
 	}

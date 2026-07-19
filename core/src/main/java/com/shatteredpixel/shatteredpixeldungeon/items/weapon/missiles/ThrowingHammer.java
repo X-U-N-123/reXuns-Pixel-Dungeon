@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class ThrowingHammer extends MissileWeapon {
@@ -46,13 +45,5 @@ public class ThrowingHammer extends MissileWeapon {
 	public int max(int lvl) {
 		return  4 * tier +                  //20 base, down from 25
 				(tier) * lvl;               //scaling unchanged
-	}
-
-	@Override
-	public boolean doPickUp(Hero hero, int pos) {
-		if (super.doPickUp(hero, pos)){
-			hero.spend(-TIME_TO_PICK_UP);
-			return true;
-		} else return false;
 	}
 }

@@ -129,6 +129,8 @@ abstract public class Weapon extends KindOfWeapon {
 	
 	public Augment augment = Augment.NONE;
 
+	public int tier;
+
 	protected int usesToID(){
 		return 20;
 	}

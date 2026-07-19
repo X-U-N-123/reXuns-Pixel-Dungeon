@@ -408,7 +408,7 @@ public class WndRanking extends WndTabbed {
 		}
 		
 		private void addItem( Item item ) {
-			ItemButton slot = new ItemButton( item );
+			ItemButton slot = new ItemButton(item);
 			slot.setRect( 0, pos, width, ItemButton.HEIGHT );
 			add( slot );
 			
@@ -458,13 +458,15 @@ public class WndRanking extends WndTabbed {
 
 				add( cb );
 
+				int finalI = i;
 				IconButton info = new IconButton(Icons.get(Icons.INFO)){
 					@Override
 					protected void onClick() {
 						super.onClick();
 						ShatteredPixelDungeon.scene().add(
-								new WndMessage("**" + Messages.titleCase(Messages.get(Challenges.class, challenge)) + "**\n\n"
-										+ Messages.get(Challenges.class, challenge+"_desc"))
+							new WndTitledMessage(Icons.getChalIcon(finalI),
+								Messages.titleCase(Messages.get(Challenges.class, challenge)),
+								Messages.get(Challenges.class, challenge+"_desc"))
 						);
 					}
 
@@ -480,7 +482,7 @@ public class WndRanking extends WndTabbed {
 
 	}
 
-	private class ItemButton extends Button {
+	private static class ItemButton extends Button {
 		
 		public static final int HEIGHT	= 23;
 		
@@ -562,7 +564,7 @@ public class WndRanking extends WndTabbed {
 		}
 	}
 
-	private class QuickSlotButton extends ItemSlot{
+	private static class QuickSlotButton extends ItemSlot{
 
 		private Item item;
 		private ColorBlock bg;

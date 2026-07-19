@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
@@ -49,7 +50,6 @@ import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 
 public class Combo extends Buff implements ActionIndicator.Action {
@@ -333,12 +333,9 @@ public class Combo extends Buff implements ActionIndicator.Action {
 		public boolean act() {
 			if (target.buff(Combo.class) != null) {
 				moveBeingUsed = ComboMove.PARRY;
-				target.sprite.attack(enemy.pos, new Callback() {
-					@Override
-					public void call() {
-						target.buff(Combo.class).doAttack(enemy);
-						next();
-					}
+				target.sprite.attack(enemy.pos, () -> {
+					target.buff(Combo.class).doAttack(enemy);
+					next();
 				});
 				detach();
 				return false;
@@ -462,12 +459,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 				if (furyHitsLeft > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
 						(wasAlly || enemy.alignment != target.alignment)){
 					((HeroSprite)target.sprite).bash(3f);
-					target.sprite.attack(enemy.pos, new Callback() {
-						@Override
-						public void call() {
-							doAttack(enemy);
-						}
-					});
+					target.sprite.attack(enemy.pos, () -> doAttack(enemy));
 				} else {
 					((HeroSprite)target.sprite).bash(1f);
 					furyHitsLeft = 0;
@@ -493,7 +485,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 	}
 
-	private CellSelector.Listener listener = new CellSelector.Listener() {
+	private final CellSelector.Listener listener = new CellSelector.Listener() {
 
 		@Override
 		public void onSelect(Integer cell) {
@@ -520,20 +512,12 @@ public class Combo extends Buff implements ActionIndicator.Action {
 							GLog.w(Messages.get(Combo.class, "bad_target"));
 						} else {
 							Dungeon.hero.busy();
-							target.sprite.jump(target.pos, leapPos, new Callback() {
-								@Override
-								public void call() {
-									target.move(leapPos);
-									Dungeon.level.occupyCell(target);
-									Dungeon.observe();
-									GameScene.updateFog();
-									target.sprite.attack(cell, new Callback() {
-										@Override
-										public void call() {
-											doAttack(enemy);
-										}
-									});
-								}
+							target.sprite.jump(target.pos, leapPos, () -> {
+								target.move(leapPos);
+								Dungeon.level.occupyCell(target);
+								Dungeon.observe();
+								GameScene.updateFog();
+								target.sprite.attack(cell, () -> doAttack(enemy));
 							});
 						}
 					} else {
@@ -543,12 +527,7 @@ public class Combo extends Buff implements ActionIndicator.Action {
 
 			} else {
 				Dungeon.hero.busy();
-				target.sprite.attack(cell, new Callback() {
-					@Override
-					public void call() {
-						doAttack(enemy);
-					}
-				});
+				target.sprite.attack(cell, () -> doAttack(enemy));
 			}
 		}
 

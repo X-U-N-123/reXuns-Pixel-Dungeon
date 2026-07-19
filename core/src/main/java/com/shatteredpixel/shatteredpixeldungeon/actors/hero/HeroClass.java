@@ -96,6 +96,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurs
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Extract;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
@@ -194,20 +196,15 @@ public enum HeroClass {
 		}
 
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
-			Goldarrow goldarrow = new Goldarrow();
-			goldarrow.collect();
-			ScrollOfDebug scrollOfDebug = new ScrollOfDebug();
-			scrollOfDebug.collect();
-			devShield devshield = new devShield();
-			devshield.collect();
-			devPickaxe pickaxe = new devPickaxe();
-			pickaxe.collect();
 
 			RingOfEnergy ring = new RingOfEnergy();
 			ring.identify();
 			ring.level(50);
 			hero.belongings.ring = ring;
 			ring.activate(hero);
+
+			new DwarvesTile().collect();
+			new Extract().quantity(10).collect();
 
 			new ScrollHolder().collect();
 			Dungeon.LimitedDrops.SCROLL_HOLDER.drop();
@@ -228,18 +225,31 @@ public enum HeroClass {
 			new LamellarArmor().upgrade(210).identify().collect();
             new BladeOfMimic().identify().collect();
 
-			for (int s = 0; s < QuickSlot.SIZE; s++) {
-				if (Dungeon.quickslot.getItem(s) == null) {
-					Dungeon.quickslot.setSlot(s, goldarrow);
-					Dungeon.quickslot.setSlot(s+1, scrollOfDebug);
-					Dungeon.quickslot.setSlot(s+2, devshield);
-					Dungeon.quickslot.setSlot(s+3, pickaxe);
-					break;
-				}
-			}
+			initDevItem();
 		}
 
         if (Dungeon.isChallenged(Challenges.NO_RETURN)) Buff.affect(hero, Collapse.class);
+	}
+
+	public static void initDevItem() {
+		Goldarrow goldarrow = new Goldarrow();
+		goldarrow.collect();
+		ScrollOfDebug scrollOfDebug = new ScrollOfDebug();
+		scrollOfDebug.collect();
+		devShield devshield = new devShield();
+		devshield.collect();
+		devPickaxe pickaxe = new devPickaxe();
+		pickaxe.collect();
+
+		for (int s = 0; s < QuickSlot.SIZE; s++) {
+			if (Dungeon.quickslot.getItem(s) == null) {
+				Dungeon.quickslot.setSlot(s, goldarrow);
+				Dungeon.quickslot.setSlot(s+1, scrollOfDebug);
+				Dungeon.quickslot.setSlot(s+2, devshield);
+				Dungeon.quickslot.setSlot(s+3, pickaxe);
+				break;
+			}
+		}
 	}
 
 	private static void initWarrior( Hero hero ) {
@@ -337,7 +347,7 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		Clay clay = new Clay();
-		clay.quantity(5).collect();
+		clay.collect();
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
 		Dungeon.quickslot.setSlot(1, clay);
@@ -352,7 +362,7 @@ public enum HeroClass {
         hero.belongings.weapon.activate(hero);
 
         BoneFragment fragment = new BoneFragment();
-        fragment.quantity(3).collect();
+        fragment.collect();
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
         Dungeon.quickslot.setSlot(1, fragment);

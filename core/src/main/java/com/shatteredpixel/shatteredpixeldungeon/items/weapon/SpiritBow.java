@@ -216,7 +216,7 @@ public class SpiritBow extends Weapon {
 				Item item = defender.buff(PinCushion.class).grabOne();
 
 				if (item.doPickUp(Dungeon.hero, defender.pos)) {
-					Dungeon.hero.spend(-Item.TIME_TO_PICK_UP); //shooting already takes time
+					Dungeon.hero.spend(-item.pickupDelay()); //shooting already takes time
 					GLog.i( Messages.capitalize(Messages.get(Dungeon.hero, "you_now_have", item.name())) );
 				} else {
 					GLog.w(Messages.get(this, "cant_grab"));

@@ -34,7 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.ShadowBox;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.SkeletonKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.GameLog;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
@@ -771,8 +770,8 @@ public class InterlevelScene extends PixelScene {
 			level.drop(new LostBackpack(), pos);
 
 			//need to reset key replacement tracking as well
-			if (Dungeon.hero.buff(SkeletonKey.KeyReplacementTracker.class) != null){
-				Dungeon.hero.buff(SkeletonKey.KeyReplacementTracker.class).clearDepth();
+			if (Dungeon.hero.buff(WornKey.KeyReplacementTracker.class) != null){
+				Dungeon.hero.buff(WornKey.KeyReplacementTracker.class).clearDepth();
 			}
 
 		} else {

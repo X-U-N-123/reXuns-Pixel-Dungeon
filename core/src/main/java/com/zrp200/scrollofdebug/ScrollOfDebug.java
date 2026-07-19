@@ -9,7 +9,6 @@ import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.saveAll;
 import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.switchLevel;
 import static java.util.Arrays.copyOfRange;
 
-import com.badlogic.gdx.utils.StringBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -70,7 +69,7 @@ import java.util.regex.Pattern;
  *
  * @author  <a href="https://github.com/zrp200/scrollofdebug">
  *              Zrp200
- * @version v2.1.0
+ * @version v2.2.0
  *
  * @apiNote Compatible with Shattered Pixel Dungeon v1.3.0+, and compatible with any LibGDX Shattered Pixel Dungeon version (post v0.8) with minimal changes.
  * **/
@@ -229,6 +228,12 @@ public class ScrollOfDebug extends Scroll {
         collect(); // you don't lose scroll of debug.
         GameScene.show(new WndTextInput("输入命令：", null, "", 100, false,
                 "执行", "取消") {
+            @Override
+            public void onSelect(boolean positive, String text) {
+                if(positive) interpretText(text);
+            }
+        });
+    }
 
             private String[] handleVariables(String[] input) {
                 storeLocation = null;
@@ -267,9 +272,8 @@ public class ScrollOfDebug extends Scroll {
                 return input;
             }
 
-            @Override public void onSelect(boolean positive, String text) {
-                if(!positive) return;
-
+    /** split text apart, handle !!, store last command **/
+    public void interpretText(String text) {
                 // !! handling
                 {
                     Matcher m = Pattern.compile("!!").matcher(text);
@@ -292,7 +296,7 @@ public class ScrollOfDebug extends Scroll {
             }
 
             // returns whether a macro exists
-            private boolean handleMacro(String[] input) {
+    public boolean handleMacro(String[] input) {
                 String macro = getMacros().get(input[0]);
                 if(macro == null) return false; // only false output of handleMacro
 
@@ -306,10 +310,10 @@ public class ScrollOfDebug extends Scroll {
                     int cur = i;
                     StringBuilder loop = new StringBuilder();
                     do {
-                        if (!loop.isEmpty()) loop.append("->");
+                        if (loop.length() > 0) loop.append("->");
                         loop.append(cur);
                         if (placeholders[cur] != -2) {
-                            GLog.n("infinite parameter loop: " + loop);
+                            GLog.n("无限参数循环： " + loop);
                             return true;
                         }
                         Matcher matcher = argPattern.matcher(input[cur]);
@@ -351,7 +355,7 @@ public class ScrollOfDebug extends Scroll {
             // command logic
             // returns true if another command is safely called after it.
             // errors generally return false to stop macro flow.
-            private boolean interpret(String... input) {
+    public boolean interpret(String... input) {
                 Command command = Command.get(input[0]);
 
                 if (command == null) {
@@ -386,7 +390,7 @@ public class ScrollOfDebug extends Scroll {
                                 }
                             } else {
                                 // use documentation. (show syntax in addition to description)
-                                builder.append('\n').appendLine(cmd.documentation());
+                        builder.append('\n').append(cmd.documentation()).append('\n');
                             }
                         }
                         output = builder.toString().trim();
@@ -414,12 +418,12 @@ public class ScrollOfDebug extends Scroll {
                             macroExists ? null : // avoid checks if it already exists
                             Command.get(macro) != null ? "已存在命令：" :
                             // should I print out the offending part???
-                            !macro.matches("[A-Za-z_][\\w$_]*") ? " 必须是合规 Java 变量名(alphanumeric, first character must be a letter or underscore)"
+                            !macro.matches("[A-Za-z_][\\w$_]*") ? " 必须是合规 Java 变量名(仅含字母或数字，第一个字符必须是字母或下划线)"
                                     : null;
                     if (failureReason != null) {
                         GLog.n("非法变量名： - " + failureReason);
                     } else GameScene.show(new WndTextInput(
-                            "Macro " + input[1], "输入宏。\n\n宏包含一系列以换行符分隔的调试卷轴命令。请避免使用在最后一行之外提示输入的命令。",
+                            "定义宏 " + input[1], "输入宏。\n\n宏包含一系列以换行符分隔的调试卷轴命令。请避免使用在最后一行之外提示输入的命令。",
                             macroExists ? macros.get(macro) : "",
                             Integer.MAX_VALUE, // ????
                             true, "确定", "取消"
@@ -556,7 +560,7 @@ public class ScrollOfDebug extends Scroll {
                             }
                             GameScene.show(new HelpWindow(
                                     "inspection of _"+input[1]+"_:"
-                                            + message));
+                                    + message ));
                             return false;
                         }
                     }
@@ -564,11 +568,15 @@ public class ScrollOfDebug extends Scroll {
                     final Class cls = _cls;
 
                     if(command == Command.USE && input.length > 2) {
+                if (cls == null) {
+                    GLog.w("未找到 \"%s\" 类", input[1]);
+                    return false;
+                }
                         Object o =
                                 storedVariable != null ? storedVariable : // use the variable if available.
                                 cls == Hero.class ? Dungeon.hero :
-                                cls != Object.class && cls != null && cls.isInstance(Dungeon.level) ? Dungeon.level :
-                                cls != null && canInstantiate(cls) ? Reflection.newInstance(cls) :
+                                        cls != Object.class && cls.isInstance(Dungeon.level) ? Dungeon.level :
+                                                canInstantiate(cls) ? Reflection.newInstance(cls) :
                                 null;
                         if(!executeMethod(o, cls, input, 2)) {
                             GLog.w(String.format("方法 %s 在'%s'中不存在", input[2], cls));
@@ -802,8 +810,6 @@ public class ScrollOfDebug extends Scroll {
                 }
                 return true;
             }
-        });
-    }
 
     /** level transition was implemented in 1.3.0 **/
     private static final boolean before1_3_0;
@@ -871,12 +877,12 @@ public class ScrollOfDebug extends Scroll {
         return "调试卷轴";
     }
     @Override public String desc() {
-        StringBuilder builder = new StringBuilder();
-        builder.appendLine("这是一张调试用卷轴，其中含有_zrp200_的部分力量，只要输入正确的咒语，就可以释放它们。")
-                .appendLine("\n支持的命令：");
-        for(Command cmd : Command.values()) builder.appendLine(
+        StringBuilder builder = new StringBuilder(
+                "这是一张调试用卷轴，其中含有_zrp200_的部分力量，只要输入正确的咒语，就可以释放它们。\n\n支持的命令："
+        );
+        for(Command cmd : Command.values()) builder.append(
                 // this should hopefully fit on one line.
-                String.format("_- %s_: %s", cmd, cmd.summary)
+                String.format("_- %s_: %s\n", cmd, cmd.summary)
         );
         return builder.append("\n注意：部分输入可能导致游戏崩溃或其他意外行为, 尤其是如果他们的目标不是特意创建或以其他方式任意使用的。")
                 .toString();
@@ -1117,8 +1123,6 @@ public class ScrollOfDebug extends Scroll {
     }
 
     // reflection logic.
-
-    public static ClassLoader loader = ScrollOfDebug.class.getClassLoader();
     public static PackageTrie trie = null; // loaded when needed.
     static {
         try {
@@ -1200,7 +1204,7 @@ public class ScrollOfDebug extends Scroll {
         PrintWriter p = new PrintWriter(s);
         if (msg != null) p.print(msg + "\n\n");
         e.printStackTrace(p);
-        GameScene.show(new HelpWindow(s.toString()));
+        GameScene.show(new HelpWindow(s.toString().replace(ROOT + ".", "")));
     }
     public static void reportException(Exception e) { reportException(null, e);}
 
@@ -1212,9 +1216,19 @@ public class ScrollOfDebug extends Scroll {
     }
 
     private static final String CHANGELOG
-        ="_2.1.0_:"
+        ="_2.2.0_:"
+            +"\n_-_ Removed LibGDX StringBuilder reliance"
+            +"\n_-_ moved GameScene logic to ScrollOfDebug to streamline adding it from subtrees"
+            +"\n_-_ Moved interpret and related methods to the top level of Scroll of Debug"
+            +"\n_-_ Fixed crash on Android builds"
+        +"_2.1.1_:"
+            +"\n_-_ Fix _use_ crashing when the class passed to it doesn't exist"
+            +"\n_-_ Displayed crash output now filters out the root package to avoid overflowing"
+            +"\n"
+        +"_2.1.0_:"
             +"\n_-_ Goto now loads intermediate depths. Load time is increased slightly, but is now seed-stable"
             +"\n_-_ Add warp command"
+            +"\n"
         +"_2.0.0_:"
             +"\n_-_ Added experimental macro support; macros are chains of commands stored together under an alias, saved between sessions"
             +"\n_-_ Implemented workaround allowing scroll of debug to work even when it can't find any classes"

@@ -45,16 +45,6 @@ public class AdrenalineDart extends TippedDart {
 	}
 
 	@Override
-	public int damageRoll(Char owner) {
-		if (owner instanceof Hero) {
-			if (((Hero) owner).attackTarget().alignment == owner.alignment){
-				return 0; //does not deal damage to allies
-			}
-		}
-		return super.damageRoll(owner);
-	}
-
-	@Override
 	public int proc(Char attacker, Char defender, int damage) {
 
 		if (processingChargedShot && defender == attacker) {

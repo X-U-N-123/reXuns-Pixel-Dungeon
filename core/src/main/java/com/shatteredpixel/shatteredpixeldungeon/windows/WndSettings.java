@@ -239,8 +239,6 @@ public class WndSettings extends WndTabbed {
 			String fullscreenText = Messages.get(this, "fullscreen");
 			if (DeviceCompat.isAndroid()){
 				fullscreenText = Messages.get(this, "hide_navigation");
-			} else if (DeviceCompat.isiOS()){
-				fullscreenText = Messages.get(this, "hide_gesture");
 			}
 			chkFullscreen = new CheckBox( fullscreenText ) {
 				@Override
@@ -827,7 +825,6 @@ public class WndSettings extends WndTabbed {
             chkWifi.checked(SPDSettings.WiFi());
             add(chkWifi);
 		}
-			}
 
 		@Override
 		protected void layout() {

@@ -53,14 +53,14 @@ public class PitRoom extends SpecialRoom {
 		Door entrance = entrance();
 		entrance.set( Door.Type.CRYSTAL );
 		
-		Point well = null;
+		Point well;
 		if (entrance.x == left) {
 			well = new Point( right-1, Random.Int( 2 ) == 0 ? top + 1 : bottom - 1 );
 		} else if (entrance.x == right) {
 			well = new Point( left+1, Random.Int( 2 ) == 0 ? top + 1 : bottom - 1 );
 		} else if (entrance.y == top) {
 			well = new Point( Random.Int( 2 ) == 0 ? left + 1 : right - 1, bottom-1 );
-		} else if (entrance.y == bottom) {
+		} else {
 			well = new Point( Random.Int( 2 ) == 0 ? left + 1 : right - 1, top+1 );
 		}
 		Painter.set( level, well, Terrain.EMPTY_WELL );
@@ -77,11 +77,17 @@ public class PitRoom extends SpecialRoom {
 					mainLoot = Generator.random(Generator.Category.ARTIFACT);
 					break;
 				case 2:
+					Generator.Category cat1 = Generator.Category.WEAPON;
+					if (Random.Float() < SolidifiedMetal.missileReplaceChance() * 2)
+						cat1 = Generator.Category.MISSILE;
+					Generator.Category cat2 = Generator.Category.ARMOR;
+					if (Random.Float() < MagicalGem.wandReplaceChance() * 2)
+						cat2 = Generator.Category.WAND;
 					mainLoot = Generator.random(Random.oneOf(
 							Generator.Category.WEAPON,
-							Generator.Category.WEAPON,
+							cat1,
 							Generator.Category.MISSILE,
-							Generator.Category.ARMOR,
+							cat2,
 							Generator.Category.ARMOR));
 					break;
 			}

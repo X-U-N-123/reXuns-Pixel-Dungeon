@@ -44,7 +44,7 @@ public class Flow extends Armor.Glyph {
 		} else {
 			if (owner.sprite != null){
 				int particles = 2 + (int) Random.Float(1+level/2f);
-				owner.sprite.emitter().start(Speck.factory(Speck.BLUE_LIGHT), 0.02f, particles);
+				owner.sprite.emitter().startDelayed(Speck.factory(Speck.BLUE_LIGHT), 0.02f, particles, 0.05f);
 			}
 			return (2f + 0.5f*level) * genericProcChanceMultiplier(owner);
 		}

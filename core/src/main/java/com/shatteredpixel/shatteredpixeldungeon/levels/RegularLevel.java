@@ -402,7 +402,7 @@ public abstract class RegularLevel extends Level {
 			//Solidified metal extra missile
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance() && toDrop instanceof MeleeWeapon){
 				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) toDrop).tier - 1]);
-				m.quantity(m.quantity() + toDrop.level());
+				m.level(toDrop.level());
 				m.cursed = toDrop.cursed;
 				m.enchant(((Weapon)toDrop).enchantment);
 				toDrop = m;

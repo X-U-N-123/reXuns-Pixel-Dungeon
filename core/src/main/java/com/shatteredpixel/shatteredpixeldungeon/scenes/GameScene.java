@@ -1032,14 +1032,14 @@ public class GameScene extends PixelScene {
 		customWalls.add( visual.create() );
 	}
 
-	private synchronized void addHeapSprite( Heap heap ) {
+	private void addHeapSprite( Heap heap ) {
 		ItemSprite sprite = heap.sprite = (ItemSprite)heaps.recycle( ItemSprite.class );
 		sprite.revive();
 		sprite.link( heap );
 		heaps.add( sprite );
 	}
 	
-	private synchronized void addDiscardedSprite( Heap heap ) {
+	private void addDiscardedSprite( Heap heap ) {
 		heap.sprite = (DiscardedItemSprite)heaps.recycle( DiscardedItemSprite.class );
 		heap.sprite.revive();
 		heap.sprite.link( heap );

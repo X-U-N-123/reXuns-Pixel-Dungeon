@@ -43,7 +43,7 @@ public class WndChallenges extends Window {
 	private static final int GAP          = 2;
 
 	private final boolean editable;
-	private final ArrayList<CheckBox> boxes;
+	private final ArrayList<CheckBox> boxes = new ArrayList<>();
 
 	public WndChallenges( int checked, boolean editable ) {
 
@@ -58,8 +58,6 @@ public class WndChallenges extends Window {
 
 		PixelScene.align(title);
 		add( title );
-
-		boxes = new ArrayList<>();
 
 		float posY = TTL_HEIGHT;
 		for (int i=0; i < Challenges.NAME_IDS.length; i++) {
@@ -84,14 +82,16 @@ public class WndChallenges extends Window {
 
 			add( cb );
 			boxes.add( cb );
-			
+
+			int finalI = i;
 			IconButton info = new IconButton(Icons.get(Icons.INFO)){
 				@Override
 				protected void onClick() {
 					super.onClick();
 					ShatteredPixelDungeon.scene().add(
-							new WndMessage("**" + Messages.titleCase(Messages.get(Challenges.class, challenge)) + "**\n\n"
-									+ Messages.get(Challenges.class, challenge+"_desc"))
+						new WndTitledMessage(Icons.getChalIcon(finalI),
+							Messages.titleCase(Messages.get(Challenges.class, challenge)),
+							Messages.get(Challenges.class, challenge+"_desc"))
 					);
 				}
 

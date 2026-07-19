@@ -372,7 +372,7 @@ public class Mimic extends Mob {
 
 					if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
 						MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) reward).tier - 1]);
-						m.quantity(m.quantity() + reward.level());
+						m.level(reward.level());
 						m.cursed = reward.cursed;
 						m.enchant(((Weapon)reward).enchantment);
 						reward = m;

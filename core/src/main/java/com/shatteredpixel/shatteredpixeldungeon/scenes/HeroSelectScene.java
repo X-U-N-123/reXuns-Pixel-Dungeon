@@ -337,6 +337,7 @@ public class HeroSelectScene extends PixelScene {
 					curX -= btnWidth*count;
 					curY -= HeroBtn.HEIGHT;
 					count = 0;
+				}
 			}
 
 			//add a darkening bar along bottom
@@ -888,7 +889,7 @@ public class HeroSelectScene extends PixelScene {
 				chkChals.setRect(0, 20, 120, 16);
 				add(chkChals);
 
-				int max = Challenges.MAX_CHALS;
+				int max = Challenges.MAX_CHALS - 1; //for dev mode
 				optChals = new OptionSlider(Messages.get(HeroSelectScene.class, "randomize_chals_title"), "0", Integer.toString(max), 0, max) {
 					@Override
 					protected void onChange() {
@@ -922,7 +923,8 @@ public class HeroSelectScene extends PixelScene {
 							int chals = optChals.getSelectedValue();
 							ArrayList<Integer> chalMasks = new ArrayList<>();
 							for (int i = 0; i < Challenges.MAX_CHALS; i++){
-								chalMasks.add((int)Math.pow(2, i));
+								if ((int)Math.pow(2, i) != Challenges.X_U_NS_POWER)
+									chalMasks.add((int)Math.pow(2, i));
 							}
 							Random.shuffle(chalMasks);
 							int mask = 0;

@@ -352,6 +352,9 @@ public abstract class Char extends Actor {
 			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
 				Buff.prolong(c, Talent.MarchForwardTracker.class, 5f).step++;
 			}
+			DwarvesTile.TileRockTracker rock = hero.buff(DwarvesTile.TileRockTracker.class);
+			if (rock != null) rock.fx(true);
+
 			hero.justMoved = true;
 
 			hero.busy();
@@ -692,11 +695,7 @@ public abstract class Char extends Actor {
 				if (hitMissIcon != -1){
 					//dooking is a playful sound Ferrets can make, like low pitched chirping
 					// I doubt this will translate, so it's only in English
-					if (hitMissIcon == FloatingText.MISS_TUFT && Messages.lang() == Languages.ENGLISH && Random.Int(10) == 0) {
-						enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, "dooked", hitMissIcon);
-					} else {
-						enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, enemy.defenseVerb(), hitMissIcon);
-					}
+					enemy.sprite.showStatusWithIcon(CharSprite.NEUTRAL, enemy.defenseVerb(), hitMissIcon);
 					hitMissIcon = -1;
 				} else {
 			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );

@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -160,7 +159,7 @@ public class LiquidMetal extends Item {
 
 				int maxToUse = 5*(m.tier+1);
 				maxToUse *= Math.pow(2, m.level());
-				int UpgradeToUse =Math.round(2.5f * maxToUse);
+				int upgradeToUse =Math.round(2f * maxToUse);
 				float durabilityPerMetal = 100 / (float)maxToUse;
 
 				//we remove a tiny amount here to account for rounding errors
@@ -187,6 +186,15 @@ public class LiquidMetal extends Item {
 							GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
 							return;
 						}
+					} else if (m.isUpgradable() && quantity() >= upgradeToUse && m.level() < 2
+							&& Dungeon.hero.hasTalent(Talent.L_M_MASTER)){
+						m.upgrade();
+						Catalog.countUses(LiquidMetal.class, upgradeToUse);
+						GLog.p(Messages.get(LiquidMetal.class, "upgrade", upgradeToUse));
+						quantity(quantity() - upgradeToUse);
+
+						if (quantity() <= 0) detachAll(Dungeon.hero.belongings.backpack);
+						else Item.updateQuickslot();
 					} else {
 						GLog.w(Messages.get(LiquidMetal.class, "already_fixed"));
 						return;
@@ -265,9 +273,8 @@ public class LiquidMetal extends Item {
 			float quantity = m.quantity()-1;
 			quantity += 0.25f + 0.0075f*m.durabilityLeft();
 
-			if (Dungeon.hero.hasTalent(Talent.L_M_MASTER)){
-				quantity += Math.round(metalQuantity * 0.2f);
-			}
+			if (Dungeon.hero.hasTalent(Talent.L_M_MASTER))
+				quantity += Math.round(quantity * 0.2f);
 
 			return Math.round(quantity * quantityPerWeapon);
 		}

@@ -45,7 +45,7 @@ public class Bulk extends Armor.Glyph {
 			return 1;
 		} else {
 			if (owner.sprite != null){
-				owner.sprite.emitter().start(ShadowParticle.UP, 0.02f, 5);
+				owner.sprite.emitter().startDelayed(ShadowParticle.UP, 0.02f, 5, 0.05f);
 			}
 			return 1/3f * genericProcChanceMultiplier(owner);
 		}

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.PathFinder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ForceCobble extends MissileWeapon {
 
@@ -55,13 +56,26 @@ public class ForceCobble extends MissileWeapon {
 	}
 
 	@Override
+	public float castDelay(Char user, int cell) {
+		//special rules as throwing this onto empty space or yourself does trigger it
+		if (!Dungeon.level.pit[cell] && Actor.findChar(cell) == null){
+			return delayFactor( user );
+		} else {
+			return super.castDelay(user, cell);
+		}
+	}
+
+	@Override
 	protected void onThrow(int cell) {
-		if (Dungeon.level.pit[cell]){
+		if ((Dungeon.level.pit[cell] && Actor.findChar(cell) == null)){
 			super.onThrow(cell);
 			return;
 		}
 
+		//keep the parent reference for things like IDing
+		MissileWeapon parentTemp = parent;
 		rangedHit( null, cell );
+		parent = parentTemp;
 		Dungeon.level.pressCell(cell);
 
 		ArrayList<Char> targets = new ArrayList<>();
@@ -78,6 +92,9 @@ public class ForceCobble extends MissileWeapon {
 			if (Actor.findChar(cell + i) != null) targets.add(Actor.findChar(cell + i));
 		}
 
+		//furthest to closest, mainly for elastic
+		Collections.sort(targets, (a, b) -> Float.compare(Dungeon.level.trueDistance(b.pos, curUser.pos), Dungeon.level.trueDistance(a.pos, curUser.pos)));
+
 		for (Char target : targets){
 			curUser.shoot(target, this);
 			if (target == Dungeon.hero && !target.isAlive()){
@@ -91,9 +108,11 @@ public class ForceCobble extends MissileWeapon {
 		//if we're applying sniper's mark, prioritize giving it to the primary target of the attack
 		if (curUser.subClass == HeroSubClass.SNIPER && primaryTarget != null && primaryTarget.isActive()){
 			Actor.add(new Actor() {
+
 				{
 					actPriority = VFX_PRIO-1;
 				}
+
 				@Override
 				protected boolean act() {
 					SnipersMark mark = Dungeon.hero.buff(SnipersMark.class);
@@ -105,6 +124,7 @@ public class ForceCobble extends MissileWeapon {
 				}
 			});
 		}
+
 		WandOfBlastWave.BlastWave.blast(cell);
 		Sample.INSTANCE.play( Assets.Sounds.BLAST );
 	}

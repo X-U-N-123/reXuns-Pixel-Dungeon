@@ -36,7 +36,11 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHaste;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.MagicalGem;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SolidifiedMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -189,6 +193,12 @@ public class SentryRoom extends SpecialRoom {
 				if (((Weapon)prize).hasCurseEnchant()){
 					((Weapon) prize).enchant(null);
 				}
+				if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
+					MissileWeapon m = (MissileWeapon)Generator.random(Generator.misTiers[((Weapon) prize).tier - 1]);
+					m.level(prize.level());
+					m.enchant(((Weapon) prize).enchantment);
+					prize = m;
+				}
 				break;
 			case 2:
 				prize = Generator.randomMissile((Dungeon.depth / 5) + 1);
@@ -200,6 +210,11 @@ public class SentryRoom extends SpecialRoom {
 				prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
 				if (((Armor)prize).hasCurseGlyph()){
 					((Armor) prize).inscribe(null);
+				}
+				if (Random.Float() < MagicalGem.wandReplaceChance()){
+					Wand w = (Wand)Generator.random(Generator.Category.WAND);
+					w.level(prize.level());
+					prize = w;
 				}
 				break;
 		}

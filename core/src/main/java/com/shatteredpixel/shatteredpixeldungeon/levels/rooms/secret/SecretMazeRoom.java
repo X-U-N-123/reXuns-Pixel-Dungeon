@@ -110,7 +110,7 @@ public class SecretMazeRoom extends SecretRoom {
 			}
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
 				MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[((MeleeWeapon) prize).tier - 1]);
-				m.quantity(m.quantity() + prize.level());
+				m.level(prize.level());
 				m.enchant(((Weapon)prize).enchantment);
 				prize = m;
 			}

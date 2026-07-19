@@ -143,6 +143,7 @@ public class NecromancerSprite extends MobSprite {
 					charge();
 				} else {
 					((Necromancer)ch).onZapComplete();
+					Sample.INSTANCE.play(Assets.Sounds.RAY);
 					idle();
 				}
 			} else {

@@ -3,7 +3,7 @@
  * Copyright (C) 2012-2015 Oleg Dolya
  *
  * Shattered Pixel Dungeon
- * Copyright (C) 2014-2025 Evan Debenham
+ * Copyright (C) 2014-2026 Evan Debenham
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class Ironball extends MissileWeapon {
@@ -38,17 +37,13 @@ public class Ironball extends MissileWeapon {
     }
 
     @Override
+    public float pickupDelay() {
+        return 0; //picked up instantly
+    }
+
+    @Override
     public int max(int lvl) {
         return  4 * tier +                  //24 base, down from 30
                 (tier) * lvl;               //scaling unchanged
     }
-
-    @Override
-    public boolean doPickUp(Hero hero, int pos) {
-        if (super.doPickUp(hero, pos)){
-            hero.spend(-TIME_TO_PICK_UP);
-            return true;
-        } else return false;
-    }
-
 }

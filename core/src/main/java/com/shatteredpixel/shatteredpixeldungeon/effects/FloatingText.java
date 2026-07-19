@@ -360,8 +360,8 @@ public class FloatingText extends RenderedTextBlock {
 		}
 		float blessBoost = 1; //a few different sources contribute to this icon
 		if (attacker.buff(ChampionEnemy.class) != null
-			&& attacker.buff(ChampionEnemy.class).evasionAndAccuracyFactor() > 1){
-			blessBoost *= attacker.buff(ChampionEnemy.class).evasionAndAccuracyFactor();
+			&& attacker.buff(ChampionEnemy.class).AccuracyFactor() > 1){
+			blessBoost *= attacker.buff(ChampionEnemy.class).AccuracyFactor();
 		}
 		if (attacker.buff(Bless.class) != null) blessBoost *= 1.25f;
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
@@ -454,8 +454,8 @@ public class FloatingText extends RenderedTextBlock {
 		//evasion boosts (always > 1)
 		float blessBoost = 1; //a few different sources contribute to this icon
 		if (defender.buff(ChampionEnemy.class) != null
-				&& defender.buff(ChampionEnemy.class).evasionAndAccuracyFactor() > 1){
-			blessBoost *= defender.buff(ChampionEnemy.class).evasionAndAccuracyFactor();
+				&& defender.buff(ChampionEnemy.class).EvasionFactor() > 1){
+			blessBoost *= defender.buff(ChampionEnemy.class).EvasionFactor();
 		}
 		if (defender.buff(Bless.class) != null) blessBoost *= 1.25f;
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC

@@ -23,17 +23,17 @@ package com.shatteredpixel.shatteredpixeldungeon.items.keys;
 
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class WornKey extends Key {
+public class SkeletonKey extends Key {
 	
 	{
-		image = ItemSpriteSheet.WORN_KEY;
+		image = ItemSpriteSheet.SKELETON_KEY;
 	}
 	
-	public WornKey() {
+	public SkeletonKey() {
 		this( 0 );
 	}
 	
-	public WornKey( int depth ) {
+	public SkeletonKey(int depth ) {
 		super();
 		this.depth = depth;
 	}

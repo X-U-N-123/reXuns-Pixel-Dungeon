@@ -41,13 +41,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfSharpshooting;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -204,6 +205,7 @@ abstract public class MissileWeapon extends Weapon {
 			SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
 			if (bow != null && bow.hasEnchant(Projecting.class, user)) {
 				projecting += 4;
+			}
 		}
 
 		if (projecting > 0
@@ -317,23 +319,24 @@ abstract public class MissileWeapon extends Weapon {
 			if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
 				damage = bow.enchantment.proc(this, attacker, defender, damage);
 			}
-
-			if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
-					|| Dungeon.level.map[defender.pos] == Terrain.GRASS
-					|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
-					&& ((Hero) attacker).heroClass != HeroClass.HUNTRESS
-					&& attacker.buff(SpiritBow.IvybindCooldown.class) == null
-					&& ((Hero) attacker).hasTalent(Talent.IVY_BIND)
-					&& !defender.isFlying()
-					&& !defender.properties().contains(Char.Property.IMMOVABLE)
-					&& !defender.properties().contains(Char.Property.STATIC)) {
-				Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
-				Sample.INSTANCE.play(Assets.Sounds.PLANT);
-				Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
 		}
-			int points = ((Hero) attacker).pointsInTalent(Talent.BALLISTICA_CALC) - 1;
-			if (points > 0 && attacker.buff(Bomb.BallisticaCalcTracker.class) != null)
-				damage = Math.round(damage * (1 + 0.15f * points));
+
+		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
+				|| Dungeon.level.map[defender.pos] == Terrain.GRASS
+				|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
+				&& ((Hero) attacker).heroClass != HeroClass.HUNTRESS
+				&& attacker.buff(SpiritBow.IvybindCooldown.class) == null
+				&& ((Hero) attacker).hasTalent(Talent.IVY_BIND)
+				&& !defender.isFlying()
+				&& !defender.properties().contains(Char.Property.IMMOVABLE)
+				&& !defender.properties().contains(Char.Property.STATIC)) {
+			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
+			Sample.INSTANCE.play(Assets.Sounds.PLANT);
+			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
+		}
+		int points = ((Hero) attacker).pointsInTalent(Talent.BALLISTICA_CALC) - 1;
+		if (points > 0 && attacker.buff(Bomb.BallisticaCalcTracker.class) != null)
+			damage = Math.round(damage * (1 + 0.15f * points));
 
 		if ((cursed || hasCurseEnchant()) && !cursedKnown){
 			GLog.n(Messages.get(this, "curse_discover"));
@@ -370,7 +373,6 @@ abstract public class MissileWeapon extends Weapon {
 		}
 
 		return result;
-	}
 	}
 
 	@Override
@@ -492,7 +494,7 @@ abstract public class MissileWeapon extends Weapon {
 	protected boolean useRoundingInDurabilityCalc = true;
 
 	public float durabilityPerUse( int level ){
-		float usages = baseUses * (float)(Math.pow(1.5f, level));
+		float usages = baseUses * (float)(Math.pow(2.5f, level));
 
 		//+50%/75% durability
 		if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.DURABLE_PROJECTILES)){

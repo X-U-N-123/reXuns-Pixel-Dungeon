@@ -96,7 +96,7 @@ public class ArmoryRoom extends SpecialRoom {
 				MeleeWeapon wep = Generator.randomWeapon();
 				if (Random.Float() < SolidifiedMetal.missileReplaceChance()){
 					MissileWeapon m = (MissileWeapon) Generator.random(Generator.misTiers[wep.tier - 1]);
-					m.quantity(m.quantity() + wep.level());
+					m.level(wep.level());
 					m.cursed = wep.cursed;
 					m.enchant(wep.enchantment);
 					return m;
