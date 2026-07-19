@@ -890,7 +890,7 @@ public class HeroSelectScene extends PixelScene {
 				add(chkChals);
 
 				int max = Challenges.MAX_CHALS - 1; //for dev mode
-				optChals = new OptionSlider(Messages.get(HeroSelectScene.class, "randomize_chals_title"), "0", Integer.toString(max), 0, max) {
+				optChals = new OptionSlider(Messages.get(HeroSelectScene.class, "randomize_chals_title"), "1", Integer.toString(max), 1, max) {
 					@Override
 					protected void onChange() {
 						//do nothing immediately

@@ -265,7 +265,9 @@ public class PowerOfMany extends ArmorAbility {
 
 		public LightAlly(){
 			super();
-			cls = HeroClass.values()[Random.Int(5)];
+			do {
+				cls = HeroClass.values()[Random.Int(9)];
+			} while (cls == HeroClass.CLERIC);
 		}
 
 		public LightAlly(int heroLevel ){
