@@ -116,6 +116,8 @@ public enum Icons {
 	ALERT,
 	LOST,
 	INVESTIGATE,
+	PASSIVE,
+	FLEE,
 	DEPTH,      //depth icons have three variants, for regular, seeded, daily, and daily replay runs
 	DEPTH_CHASM,
 	DEPTH_WATER,
@@ -442,6 +444,12 @@ public enum Icons {
 				break;
 			case FOOD_POCKET:
 				icon.frame( icon.texture.uvRectBySize( 226, 80, 10, 10 ) );
+				break;
+			case PASSIVE:
+				icon.frame( icon.texture.uvRectBySize( 236, 80, 8, 8 ) );
+				break;
+			case FLEE:
+				icon.frame( icon.texture.uvRectBySize( 236, 88, 8, 8 ) );
 				break;
 		
 			case LIBGDX:

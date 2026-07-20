@@ -314,41 +314,43 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		if (attacker == Dungeon.hero && Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.SHARED_ENCHANTMENT)){
-			SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
-			if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
-				damage = bow.enchantment.proc(this, attacker, defender, damage);
+		if (attacker instanceof Hero){
+			if (Random.Int(3) < ((Hero) attacker).pointsInTalent(Talent.SHARED_ENCHANTMENT)){
+				SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+				if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
+					damage = bow.enchantment.proc(this, attacker, defender, damage);
+				}
+			}
+
+			if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
+					|| Dungeon.level.map[defender.pos] == Terrain.GRASS
+					|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
+					&& ((Hero) attacker).heroClass != HeroClass.HUNTRESS
+					&& attacker.buff(SpiritBow.IvybindCooldown.class) == null
+					&& ((Hero) attacker).hasTalent(Talent.IVY_BIND)
+					&& !defender.isFlying()
+					&& !defender.properties().contains(Char.Property.IMMOVABLE)
+					&& !defender.properties().contains(Char.Property.STATIC)) {
+				Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
+				Sample.INSTANCE.play(Assets.Sounds.PLANT);
+				Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
+			}
+			int points = ((Hero) attacker).pointsInTalent(Talent.BALLISTICA_CALC) - 1;
+			if (points > 0 && attacker.buff(Bomb.BallisticaCalcTracker.class) != null)
+				damage = Math.round(damage * (1 + 0.15f * points));
+
+			//instant ID with the right talent
+			if (Dungeon.hero.pointsInTalent(Talent.SURVIVALISTS_INTUITION) >= 2){
+				usesLeftToID = Math.min(usesLeftToID, 0);
+				availableUsesToID =  Math.max(usesLeftToID, 0);
 			}
 		}
-
-		if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
-				|| Dungeon.level.map[defender.pos] == Terrain.GRASS
-				|| Dungeon.level.map[defender.pos] ==Terrain.HIGH_GRASS)
-				&& ((Hero) attacker).heroClass != HeroClass.HUNTRESS
-				&& attacker.buff(SpiritBow.IvybindCooldown.class) == null
-				&& ((Hero) attacker).hasTalent(Talent.IVY_BIND)
-				&& !defender.isFlying()
-				&& !defender.properties().contains(Char.Property.IMMOVABLE)
-				&& !defender.properties().contains(Char.Property.STATIC)) {
-			Buff.affect(defender, Roots.class, 1 + 2*Dungeon.hero.pointsInTalent(Talent.IVY_BIND));
-			Sample.INSTANCE.play(Assets.Sounds.PLANT);
-			Buff.affect(attacker, SpiritBow.IvybindCooldown.class, 40);
-		}
-		int points = ((Hero) attacker).pointsInTalent(Talent.BALLISTICA_CALC) - 1;
-		if (points > 0 && attacker.buff(Bomb.BallisticaCalcTracker.class) != null)
-			damage = Math.round(damage * (1 + 0.15f * points));
 
 		if ((cursed || hasCurseEnchant()) && !cursedKnown){
 			GLog.n(Messages.get(this, "curse_discover"));
 		}
 		cursedKnown = true;
 		if (parent != null) parent.cursedKnown = true;
-
-		//instant ID with the right talent
-		if (attacker == Dungeon.hero && Dungeon.hero.pointsInTalent(Talent.SURVIVALISTS_INTUITION) == 2){
-			usesLeftToID = Math.min(usesLeftToID, 0);
-			availableUsesToID =  Math.max(usesLeftToID, 0);
-		}
 
 		int result = super.proc(attacker, defender, damage);
 

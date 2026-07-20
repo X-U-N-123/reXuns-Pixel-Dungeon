@@ -80,6 +80,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.devSpyglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
@@ -647,6 +648,8 @@ public abstract class Level implements Bundlable {
 			Dungeon.hero.buff(Stasis.StasisBuff.class).act();
 			GLog.w(Messages.get(Stasis.StasisBuff.class, "left_behind"));
 		}
+		devSpyglass glass = Dungeon.hero.belongings.getItem(devSpyglass.class);
+		if (glass != null) glass.clearMob();
 
 		//spend the hero's partial turns,  so the hero cannot take partial turns between floors
 		Dungeon.hero.spendToWhole();

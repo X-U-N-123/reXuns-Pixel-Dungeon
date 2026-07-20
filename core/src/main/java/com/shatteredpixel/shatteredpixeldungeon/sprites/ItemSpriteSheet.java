@@ -179,6 +179,7 @@ public class ItemSpriteSheet {
 	public static final int DOOR_PLANK          = MISC_CONSUMABLE +21;
 	public static final int DEV_PICKAXE         = MISC_CONSUMABLE +22;
 	public static final int PART                = MISC_CONSUMABLE +23;
+	public static final int DEV_SPYGLASS        = MISC_CONSUMABLE +24;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -208,6 +209,7 @@ public class ItemSpriteSheet {
 		assignItemRect(GOLDARROW,       16, 16);
 		assignItemRect(SHIELD,          15, 16);
 		assignItemRect(DEV_PICKAXE,     14, 14);
+		assignItemRect(DEV_SPYGLASS,    15, 15);
 	}
 	
 	private static final int BOMBS          = xy(1, 4);   //16 slots

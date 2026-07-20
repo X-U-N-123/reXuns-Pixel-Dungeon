@@ -1742,6 +1742,9 @@ public abstract class Mob extends Char {
 	}
 
 	public Char enemy(){return enemy;}
+	public int target(){return target;}
+	public void enemySeen(boolean enemySeen){this.enemySeen = enemySeen;}
+	public boolean enemySeen(){return enemySeen;}
 
 	public static class PulseEnergyCD extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }

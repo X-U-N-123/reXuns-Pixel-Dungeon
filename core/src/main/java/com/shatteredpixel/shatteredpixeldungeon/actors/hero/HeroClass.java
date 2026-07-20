@@ -74,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bags.ScrollHolder;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.devSpyglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
@@ -203,7 +204,7 @@ public enum HeroClass {
 			hero.belongings.ring = ring;
 			ring.activate(hero);
 
-			new DwarvesTile().collect();
+			new DwarvesTile().identify(false).collect();
 			new Extract().quantity(10).collect();
 
 			new ScrollHolder().collect();
@@ -240,13 +241,13 @@ public enum HeroClass {
 		devshield.collect();
 		devPickaxe pickaxe = new devPickaxe();
 		pickaxe.collect();
+		devSpyglass spyglass = new devSpyglass();
+		spyglass.collect();
 
 		for (int s = 0; s < QuickSlot.SIZE; s++) {
 			if (Dungeon.quickslot.getItem(s) == null) {
 				Dungeon.quickslot.setSlot(s, goldarrow);
 				Dungeon.quickslot.setSlot(s+1, scrollOfDebug);
-				Dungeon.quickslot.setSlot(s+2, devshield);
-				Dungeon.quickslot.setSlot(s+3, pickaxe);
 				break;
 			}
 		}
