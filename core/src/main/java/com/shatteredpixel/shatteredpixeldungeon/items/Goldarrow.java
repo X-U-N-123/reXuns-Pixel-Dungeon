@@ -293,10 +293,11 @@ public class Goldarrow extends Item {
 						@Override public void onSelect(Integer cell) {
 							if (cell == null) return;
 							Ballistica trajectory = new Ballistica(curUser.pos, cell, projectileProp);
+							curUser.sprite.attack(cell);
 							for (int i : trajectory.path){
 								if (i == trajectory.collisionPos)
 									 curUser.sprite.parent.addToFront(new TargetedCell(i, Window.XUN_COLOR));
-								else curUser.sprite.parent.addToFront(new TargetedCell(i, Window.TITLE_COLOR));
+								else curUser.sprite.parent.addToFront(new TargetedCell(i, Window.WHITE));
 							}
 						}
 					});
