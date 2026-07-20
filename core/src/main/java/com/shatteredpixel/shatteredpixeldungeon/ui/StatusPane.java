@@ -106,7 +106,7 @@ public class StatusPane extends Component {
 		heroPaneCutout.visible = false;
 		add(heroPaneCutout);
 
-		hpCutout = new Image(asset, 90, 0, 12, 9);
+		hpCutout = new Image(asset, 90, 0, 12, 16);
 		hpCutout.visible = false;
 		add(hpCutout);
 
@@ -146,7 +146,7 @@ public class StatusPane extends Component {
 		add( hp );
 
 		if (large)  hunger = new Image(asset, 0, 94, 128, 9);
-		else        hunger = new Image(asset, 0, 43, 43, 5);
+		else        hunger = new Image(asset, 0, 43, 47, 5);
 		add( hunger );
 
 		hpText = new BitmapText(PixelScene.pixelFont);
@@ -166,10 +166,10 @@ public class StatusPane extends Component {
 		else        exp = new Image(asset, 100, 38, 17, 5);
 		add( exp );
 
-			expText = new BitmapText(PixelScene.pixelFont);
-			expText.hardlight( 0xFFFFAA );
-			expText.alpha(0.6f);
-			add(expText);
+		expText = new BitmapText(PixelScene.pixelFont);
+		expText.hardlight( 0xFFFFAA );
+		expText.alpha(0.6f);
+		add(expText);
 
 		hungerText = new BitmapText(PixelScene.pixelFont);
 		hungerText.hardlight( 0x00CC99 );
@@ -257,17 +257,19 @@ public class StatusPane extends Component {
 			float hpleft = x + heroPaneWidth;
 			if (hpBarMaxWidth < 82){
 				//the class variable assumes the left of the bar can't move, but we can inset it 9px
-				int hpWidth = (int)hpBarMaxWidth;
+				int hpWidth = hpBarMaxWidth;
 				if (hpWidth <= 41){
 					hpleft -= 9;
 					hpWidth += 9;
 					hpCutout.visible = true;
 					hpCutout.x = hpleft - 2;
 					hpCutout.y = y;
+					avatar.x -= 2;
+					compass.x -= 2;
 				}
-				hp.frame(50-hpWidth, 38, 50, 5);
-				shieldHP.frame(100-hpWidth, 38, 50, 5);
-				hunger.frame(50-hpWidth, 43, 50, 5);
+				hp.frame(50-hpWidth, 38, hpWidth, 5);
+				shieldHP.frame(100-hpWidth, 38, hpWidth, 5);
+				hunger.frame(47-hpWidth, 43, hpWidth, 5);
 			}
 
 			hp.x = shieldHP.x = hpleft;

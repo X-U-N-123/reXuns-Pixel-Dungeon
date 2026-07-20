@@ -34,7 +34,7 @@ public class VaultRat extends VaultMob {
 		HP = HT = 8;
 		defenseSkill = 2;
 
-		maxLvl = -2;
+		maxLvl = -6;
 	}
 
 	@Override

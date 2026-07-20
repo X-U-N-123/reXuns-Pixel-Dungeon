@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -44,9 +45,11 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.input.GameAction;
+import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
+import com.zrp200.scrollofdebug.Variable;
 
 import java.util.ArrayList;
 
@@ -120,28 +123,37 @@ public class devSpyglass extends Item {
 								if (mob.enemy() != null)
 									mob.sprite.parent.addToFront(new TargetedCell(mob.enemy().pos, 0xFF0000));
 
+								Sample.INSTANCE.play(Assets.Sounds.BEACON);
+
 							} else GLog.w(Messages.get(this, "self_target"));
 						} else GLog.w(Messages.get(this, "no_target"));
 
 					} else switch (action) {
 						case AC_AGGRO:
 							if (Actor.findChar(cell) != null) mob.aggro(Actor.findChar(cell));
-							else mob.beckon(cell);
+							mob.beckon(cell);
+							Sample.INSTANCE.play(Assets.Sounds.BEACON);
 							break;
 						case AC_MOVE:
 							ScrollOfTeleportation.appear(mob, cell);
 							break;
 					}
+					curUser.sprite.operate(cell);
 				}
 
 				@Override
 				public String prompt() {
-					if (mob != null) mob.sprite.parent.addToFront(new TargetedCell(mob.pos, Window.WHITE));
+					if (mob != null && mob.isAlive()) {
+						mob.sprite.parent.addToFront(new TargetedCell(mob.pos, Window.WHITE));
+						Camera.main.panTo( mob.sprite.center(), 3 );
+						curUser.sprite.turnTo(curUser.pos, mob.pos);
+					} else mob = null;
 					return Messages.get(this, "pos");
 				}
 			});
 		}
 		if (action.equals(AC_YELL)){
+			Camera.main.panTo( mob.sprite.center(), 3 );
 			GameScene.show(new WndTextInput(
 					Messages.get(this, "yell_title"), Messages.get(this, "yell_desc"),
 					"",
@@ -149,14 +161,23 @@ public class devSpyglass extends Item {
 					Messages.get(StatusWindow.class, "cancel")) {
 				@Override
 				public void onSelect(boolean check, String text) {
-					if (check && !text.isEmpty()) mob.yell(text);
+					if (check && !text.isEmpty()) {
+						if (text.startsWith(Variable.MARKER)){
+							String message = Messages.get(mob, text.substring(1));
+							if (!Messages.NO_TEXT_FOUND.equals(message)) text = message;
+						}
+						mob.yell(text);
+						curUser.sprite.operate(mob.pos);
+					}
 					defaultAction = AC_YELL;
 				}
 			});
 		}
 		if (action.equals(AC_KILL)){
-			Sample.INSTANCE.play(Assets.Sounds.BLAST);
+			Sample.INSTANCE.play(Assets.Sounds.BURNING);
+			mob.sprite.emitter().burst( ShadowParticle.UP, 5 );
 			mob.die(devSpyglass.class);
+			curUser.sprite.operate(mob.pos);
 			if (!mob.isAlive()) {
 				mob = null;
 				defaultAction = AC_CHOOSE;
@@ -164,6 +185,8 @@ public class devSpyglass extends Item {
 		}
 		if (action.equals(AC_STATUS)) {
 			defaultAction = AC_STATUS;
+			Camera.main.panTo( mob.sprite.center(), 3 );
+			curUser.sprite.operate(mob.pos);
 			GameScene.show(new StatusWindow(mob));
 		}
 	}
@@ -207,7 +230,7 @@ public class devSpyglass extends Item {
 				@Override
 				protected void onClick() {
 					Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
-							Messages.get(StatusWindow.class, "lvl_title"), Messages.get(devSpyglass.class, "lvl_desc"),
+							Messages.get(StatusWindow.class, "lvl_title"), Messages.get(StatusWindow.class, "lvl_desc"),
 							Integer.toString(mob.maxLvl),
 							Short.MAX_VALUE, false, Messages.get(StatusWindow.class, "confirm"),
 							Messages.get(StatusWindow.class, "cancel")) {
@@ -272,7 +295,7 @@ public class devSpyglass extends Item {
 				@Override
 				protected void onClick() {
 					Game.runOnRenderThread(() ->GameScene.show(new WndTextInput(
-							Messages.get(StatusWindow.class, "ht_title"), Messages.get(devSpyglass.class, "ht_desc"),
+							Messages.get(StatusWindow.class, "ht_title"), Messages.get(StatusWindow.class, "ht_desc"),
 							Integer.toString(mob.HT),
 							Short.MAX_VALUE, false, Messages.get(StatusWindow.class, "confirm"),
 							Messages.get(StatusWindow.class, "cancel")) {
@@ -282,7 +305,7 @@ public class devSpyglass extends Item {
 								mob.HT = Math.min(Integer.parseInt(text), Short.MAX_VALUE);
 								HTBtn.text(Messages.get(StatusWindow.class, "ht_button", mob.HT));
 								mob.HP = Math.min(mob.HP, mob.HT);
-								HTBtn.text(Messages.get(StatusWindow.class, "hp_button", mob.HP));
+								HPBtn.text(Messages.get(StatusWindow.class, "hp_button", mob.HP));
 							}
 						}
 					}));
@@ -298,8 +321,8 @@ public class devSpyglass extends Item {
 			add(HTBtn);
 			
 			RenderedTextBlock state =
-				PixelScene.renderTextBlock("_"+Messages.titleCase(Messages.get(this, "state"))+"_", 9 );
-			state.setPos((width() - state.width()) / 2, HPBtn.bottom() + GAP);
+				PixelScene.renderTextBlock("_"+Messages.titleCase(Messages.get(this, "state"))+"_", 10 );
+			state.setPos((width() - state.width()) / 2, HPBtn.bottom() + 3);
 			add( state );
 
 			Image sleep = Icons.SLEEP.get();
@@ -323,7 +346,7 @@ public class devSpyglass extends Item {
 				}
 			};
 			add(sleepBtn);
-			sleepBtn.setRect((width() / 6f - 16) / 2f, state.bottom() + GAP, 16, 16);
+			sleepBtn.setRect((width() / 6f - 16) / 2f, state.bottom() + 2 * GAP, 16, 16);
 
 			Image hunt = Icons.ALERT.get();
 			hunt.scale.set(PixelScene.align(1.99f));
@@ -346,7 +369,7 @@ public class devSpyglass extends Item {
 				}
 			};
 			add(huntBtn);
-			huntBtn.setRect(sleepBtn.left() + width() / 6f, state.bottom() + GAP, 16, 16);
+			huntBtn.setRect(sleepBtn.left() + width() / 6f, sleepBtn.top(), 16, 16);
 
 			Image investigate = Icons.INVESTIGATE.get();
 			investigate.scale.set(PixelScene.align(1.99f));
@@ -369,7 +392,7 @@ public class devSpyglass extends Item {
 				}
 			};
 			add(investigateBtn);
-			investigateBtn.setRect(huntBtn.left() + width() / 6f, state.bottom() + GAP, 16, 16);
+			investigateBtn.setRect(huntBtn.left() + width() / 6f, huntBtn.top(), 16, 16);
 
 			Image wander = Icons.LOST.get();
 			wander.scale.set(PixelScene.align(1.99f));
@@ -392,7 +415,7 @@ public class devSpyglass extends Item {
 				}
 			};
 			add(wanderBtn);
-			wanderBtn.setRect(investigateBtn.left() + width() / 6f, state.bottom() + GAP, 16, 16);
+			wanderBtn.setRect(investigateBtn.left() + width() / 6f, investigateBtn.top(), 16, 16);
 
 			Image passive = Icons.PASSIVE.get();
 			passive.scale.set(PixelScene.align(1.99f));
@@ -415,7 +438,7 @@ public class devSpyglass extends Item {
 				}
 			};
 			add(passiveBtn);
-			passiveBtn.setRect(wanderBtn.left() + width() / 6f, state.bottom() + GAP, 16, 16);
+			passiveBtn.setRect(wanderBtn.left() + width() / 6f, wanderBtn.top(), 16, 16);
 
 			Image flee = Icons.FLEE.get();
 			flee.scale.set(PixelScene.align(1.99f));
@@ -438,9 +461,9 @@ public class devSpyglass extends Item {
 				}
 			};
 			add(fleeBtn);
-			fleeBtn.setRect(passiveBtn.left() + width() / 6f, state.bottom() + GAP, 16, 16);
+			fleeBtn.setRect(passiveBtn.left() + width() / 6f, passiveBtn.top(), 16, 16);
 
-			resize(width(), (int) sleepBtn.bottom());
+			resize(width(), (int) sleepBtn.bottom() + GAP);
 		}
 	}
 }
