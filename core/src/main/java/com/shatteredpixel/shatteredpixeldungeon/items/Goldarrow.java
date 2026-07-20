@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Game;
 
@@ -88,69 +89,70 @@ public class Goldarrow extends Item {
     public void execute(Hero hero, String action) {
 
         super.execute(hero, action);
-        if (action.equals(AC_TELEPORT)) {
-            Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 10f);
-            Chasm.heroFall(hero.pos);
-            defaultAction = AC_TELEPORT;
-        }
-        if (action.equals(AC_RETURN)) {
-            InterlevelScene.mode = InterlevelScene.Mode.RETURN;
-            InterlevelScene.returnDepth = Math.max(1, (Dungeon.depth - 1));
-            InterlevelScene.returnBranch = 0;
-            InterlevelScene.returnPos = -2;
-            Game.switchScene( InterlevelScene.class );
-            defaultAction = AC_RETURN;
-        }
-        if (action.equals(AC_AWARE)) {
-            int length = Dungeon.level.length();
-            int[] map = Dungeon.level.map;
-            boolean[] mapped = Dungeon.level.mapped;
-            boolean[] discoverable = Dungeon.level.discoverable;
-            for (int i=0; i < length; i++) {
+		switch (action){
+			case AC_TELEPORT:
+				if (Dungeon.branch == 0){
+					Buff.affect(hero, ElixirOfFeatherFall.FeatherBuff.class, 10f);
+					Chasm.heroFall(hero.pos);
+					defaultAction = AC_TELEPORT;
+				} else GLog.w(Messages.get(this, "subfloor"));
+				break;
+			case AC_RETURN:
+				InterlevelScene.mode = InterlevelScene.Mode.RETURN;
+				InterlevelScene.returnDepth = Dungeon.branch == 0 ? Dungeon.depth - 1 : Dungeon.depth;
+				InterlevelScene.returnBranch = 0;
+				InterlevelScene.returnPos = -2;
+				Game.switchScene( InterlevelScene.class );
+				defaultAction = AC_RETURN;
+				break;
+			case AC_AWARE:
+				int length = Dungeon.level.length();
+				int[] map = Dungeon.level.map;
+				boolean[] mapped = Dungeon.level.mapped;
+				boolean[] discoverable = Dungeon.level.discoverable;
+				for (int i=0; i < length; i++) {
 
-                int terr = map[i];
+					int terr = map[i];
+					if (discoverable[i]) {
 
-                if (discoverable[i]) {
+						mapped[i] = true;
+						if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
+							Dungeon.level.discover( i );
+						}
+					}
+				}
+				Class<? extends FlavourBuff>[] buffs = new Class[]{Awareness.class, MindVision.class, MagicalSight.class, Foresight.class};
+				for (Class<? extends FlavourBuff> buffCls : buffs){
+					if (curUser.buff(buffCls) != null) curUser.buff(buffCls).detach();
+					else                               Buff.prolong(curUser, buffCls, Short.MAX_VALUE);
+				}
+				Dungeon.observe();
+				Dungeon.hero.checkVisibleMobs();
+				BuffIndicator.refreshHero();
+				AttackIndicator.updateState();
+				defaultAction = AC_AWARE;
+				break;
+			case AC_GOTO:
+				GameScene.selectCell(new CellSelector.Listener() {
+					@Override public String prompt() {
+						return Messages.get(Goldarrow.class, "where");
+					}
+					@Override public void onSelect(Integer cell) {
+						if (cell == null) return;
+						ScrollOfTeleportation.appear(curUser, cell);
+						Dungeon.observe();
+						AttackIndicator.updateState();
 
-                    mapped[i] = true;
-                    if ((Terrain.flags[terr] & Terrain.SECRET) != 0) {
-
-                        Dungeon.level.discover( i );
-                    }
-                }
-            }
-
-            Class<? extends FlavourBuff>[] buffs = new Class[]{Awareness.class, MindVision.class, MagicalSight.class, Foresight.class};
-            for (Class<? extends FlavourBuff> buffCls : buffs){
-                if (curUser.buff(buffCls) != null) curUser.buff(buffCls).detach();
-                else                               Buff.prolong(curUser, buffCls, Short.MAX_VALUE);
-            }
-            Dungeon.observe();
-            Dungeon.hero.checkVisibleMobs();
-            BuffIndicator.refreshHero();
-			AttackIndicator.updateState();
-            defaultAction = AC_AWARE;
-        }
-        if (action.equals(AC_GOTO)){
-            GameScene.selectCell(new CellSelector.Listener() {
-                @Override public String prompt() {
-                    return Messages.get(Goldarrow.class, "where");
-                }
-                @Override public void onSelect(Integer cell) {
-                    if (cell == null) return;
-                    ScrollOfTeleportation.appear(curUser, cell);
-					Dungeon.observe();
-					AttackIndicator.updateState();
-
-                    hero.next();
-                }
-            });
-            defaultAction = AC_GOTO;
-        }
-        if (action.equals(AC_TARGET)){
-			GameScene.show(new TargetWindow());
-            defaultAction = AC_TARGET;
-        }
+						hero.next();
+					}
+				});
+				defaultAction = AC_GOTO;
+				break;
+			case AC_TARGET:
+				GameScene.show(new TargetWindow());
+				defaultAction = AC_TARGET;
+			default: break;
+		}
         GameScene.updateFog();
     }
 

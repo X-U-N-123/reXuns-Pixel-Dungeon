@@ -151,8 +151,11 @@ public class WndInfoCell extends Window {
 						desc += "\n\n";
 					}
 					desc += blob.tileDesc();
-					if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
-						desc += "\n"+ Messages.get(Blob.class, "class_name", blob.getClass().getSimpleName(), blob.cur[cell]);
+					if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
+						desc += "\n" + Messages.get(Blob.class, "dev_desc",
+							blob.getClass().getSimpleName(), Messages.decimalFormat("#.##", blob.cooldown()), blob.id());
+						desc += "\n" + Messages.get(Blob.class, "remain", blob.cur[cell]);
+					}
 				}
 			}
 		}

@@ -1223,7 +1223,8 @@ public abstract class Mob extends Char {
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
 			if (buff(BrokenArmor.class) != null) armor = 0;
 			dev_desc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
-				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), getClass().getSimpleName());
+				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), getClass().getSimpleName(),
+				Messages.decimalFormat("#.##", cooldown()), id());
 
 			dev_desc += "\n" + Messages.get(this, "property");
 			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
