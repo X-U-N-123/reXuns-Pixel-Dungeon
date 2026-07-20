@@ -348,7 +348,7 @@ public enum HeroClass {
 		hero.belongings.weapon.activate(hero);
 
 		Clay clay = new Clay();
-		clay.collect();
+		clay.identify().collect();
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
 		Dungeon.quickslot.setSlot(1, clay);
@@ -363,7 +363,7 @@ public enum HeroClass {
         hero.belongings.weapon.activate(hero);
 
         BoneFragment fragment = new BoneFragment();
-        fragment.collect();
+        fragment.identify().collect();
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
         Dungeon.quickslot.setSlot(1, fragment);
