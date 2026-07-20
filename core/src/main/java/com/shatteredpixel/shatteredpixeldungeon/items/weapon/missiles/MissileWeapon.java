@@ -447,15 +447,17 @@ abstract public class MissileWeapon extends Weapon {
 	}
 
 	protected void rangedHit( Char enemy, int cell ){
-		decrementDurability();
 		if (modify == Modification.SMOG_ATTACH){
-			Char ch = Actor.findChar(cell);
-			if (ch != null && ch.alignment != Char.Alignment.ALLY && !ch.isImmune(Blindness.class)){
-				Buff.affect(ch, Blindness.class, 5f);
-				decreaseModDurability();
+			if (enemy != null && enemy.alignment != Char.Alignment.ALLY && !enemy.isImmune(Blindness.class)){
+				Buff.affect(enemy, Blindness.class, 5f);
+				if (parent != null) {
+					parent.decreaseModDurability();
+					if (parent.modify == null) modify = null;
+				} else decreaseModDurability();
 			}
 			Sample.INSTANCE.play(Assets.Sounds.BLAST);
 		}
+		decrementDurability();
 		if (durability > 0 && !spawnedForEffect){
 			//attempt to stick the missile weapon to the enemy, just drop it if we can't.
 			if (sticky && enemy != null && enemy.isActive() && enemy.alignment != Char.Alignment.ALLY){

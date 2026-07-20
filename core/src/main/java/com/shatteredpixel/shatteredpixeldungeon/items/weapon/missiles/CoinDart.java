@@ -42,10 +42,9 @@ public class CoinDart extends MissileWeapon {
 		return  4 * tier +                      //12 base, down from 15
 				tier * lvl;                    //scaling unchanged
 	}
-	
+
 	@Override
-	public float delayFactor(Char owner) {
-		if (owner instanceof Hero && ((Hero) owner).justMoved)  return 0;
-		else                                                    return super.delayFactor(owner);
+	public float castDelay(Char user, int cell) {
+		return (user instanceof Hero && ((Hero) user).justMoved) ? 0 : super.castDelay(user, cell);
 	}
 }

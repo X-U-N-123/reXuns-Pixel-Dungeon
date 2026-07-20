@@ -66,9 +66,9 @@ public class ThrowingStone extends MissileWeapon {
 	}
 
 	@Override
-	public float delayFactor(Char owner) {
-		if (owner instanceof Hero && ((Hero) owner).justMoved && ((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 2) return 0;
-		else                                                    return super.delayFactor(owner);
+	public float castDelay(Char user, int cell) {
+		return user instanceof Hero && ((Hero) user).justMoved
+				&& ((Hero) user).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 2 ? 0 : super.castDelay(user, cell);
 	}
 	@Override
 	public int value() {

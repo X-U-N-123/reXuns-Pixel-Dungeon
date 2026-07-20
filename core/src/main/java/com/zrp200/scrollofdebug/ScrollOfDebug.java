@@ -129,7 +129,7 @@ public class ScrollOfDebug extends Scroll {
         ),
         VARIABLES(null,
                 "_@_<variable> [ [COMMAND ...] | i[nv] | c[ell] ]",
-                "store game objects for later use as method targets or parameters",
+                "存储游戏中的事物以便稍后用作方法目标或参数。",
                 "The variables can be referenced later with their names for the purposes of methods from commands, as well as the _use_ and _inspect_ commands.",
                 "You can see all active variable names by typing _@_.",
                 "Specifying \"inv\" (or \"i\") will have the game prompt you to select an item from your inventory.",
@@ -878,7 +878,7 @@ public class ScrollOfDebug extends Scroll {
     }
     @Override public String desc() {
         StringBuilder builder = new StringBuilder(
-                "这是一张调试用卷轴，其中含有_zrp200_的部分力量，只要输入正确的咒语，就可以释放它们。\n\n支持的命令："
+                "这是一张调试用卷轴，其中含有_zrp200_的部分力量，只要输入正确的咒语，就可以释放它们。\n\n支持的命令：\n"
         );
         for(Command cmd : Command.values()) builder.append(
                 // this should hopefully fit on one line.

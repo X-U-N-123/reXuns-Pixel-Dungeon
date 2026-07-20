@@ -25,9 +25,11 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MissileSprite;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 
@@ -62,6 +64,18 @@ public abstract class KindOfBoomerang extends MissileWeapon {
 
 	@Override
 	protected void rangedHit(Char enemy, int cell) {
+		if (modify == Modification.SMOG_ATTACH){
+			Char ch = Actor.findChar(cell);
+			if (ch != null && ch.alignment != Char.Alignment.ALLY && !ch.isImmune(Blindness.class)){
+				Buff.affect(ch, Blindness.class, 5f);
+				if (parent != null) {
+					parent.decreaseModDurability();
+					if (parent.modify == null) modify = null;
+				}
+				else decreaseModDurability();
+			}
+			Sample.INSTANCE.play(Assets.Sounds.BLAST);
+		}
 		decrementDurability();
 		if (durability > 0){
 			Buff.append(Dungeon.hero, CircleBack.class).setup(this, cell, Dungeon.hero.pos, Dungeon.depth, Dungeon.branch);
