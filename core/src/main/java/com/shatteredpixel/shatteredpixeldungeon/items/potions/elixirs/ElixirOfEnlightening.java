@@ -71,7 +71,7 @@ public class ElixirOfEnlightening extends Elixir {
             }
             if (unspentTalents){
                 StatusPane.talentBlink = 10f;
-                WndHero.lastIdx = 1;
+                WndHero.lastIdx = 2;
             }
 
             GameScene.showlevelUpStars();

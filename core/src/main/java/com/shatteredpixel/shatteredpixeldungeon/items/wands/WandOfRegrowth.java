@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.wands;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -163,14 +164,20 @@ public class WandOfRegrowth extends Wand {
 
 		if (!cells.isEmpty() && Random.Float() > furrowedChance &&
 				(Random.Int(6) < chrgUsed)){ // 16%/33%/50% chance to spawn a seed pod or dewcatcher
-			int cell = cells.remove(0);
-			Dungeon.level.plant( Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell);
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) grassToPlace ++;
+			else {
+				int cell = cells.remove(0);
+				Dungeon.level.plant( Random.Int(2) == 0 ? new Seedpod.Seed() : new Dewcatcher.Seed(), cell);
+			}
 		}
 
 		if (!cells.isEmpty() && Random.Float() > furrowedChance &&
 				(Random.Int(3) < chrgUsed)){ // 33%/66%/100% chance to spawn a plant
-			int cell = cells.remove(0);
-			Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell);
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) grassToPlace ++;
+			else {
+				int cell = cells.remove(0);
+				Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), cell);
+			}
 		}
 
 		for (int cell : cells){

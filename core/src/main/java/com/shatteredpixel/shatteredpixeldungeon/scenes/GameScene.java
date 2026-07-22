@@ -658,7 +658,7 @@ public class GameScene extends PixelScene {
 				GLog.newLine();
 				GLog.w( Messages.get(Dungeon.hero, "unspent") );
 				StatusPane.talentBlink = 10f;
-				WndHero.lastIdx = 1;
+				WndHero.lastIdx = 2;
 			}
 
 			switch (Dungeon.level.feeling) {

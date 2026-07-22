@@ -112,8 +112,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WraithArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.AlchemistsToolkit;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CapeOfThorns;
@@ -1917,14 +1917,8 @@ public class Hero extends Char {
 			GLog.w( Messages.get(this, "pain_resist") );
 		}
 
-        if (hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1 && !(src instanceof Buff) && !(src instanceof Chasm)){
-            int shield = (int)(Math.log(dmg)/Math.log(Math.pow(6 - pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
-            Buff.affect(this, Barrier.class).incShield(shield);
-            sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
-        }
-
 		if (!(src instanceof Hunger) && !(src instanceof Viscosity.DeferedDamage))
-			dmg = Math.max(dmg - StarPoxCover.dmgDecrement(), 0);
+			dmg = Math.max(dmg - Random.NormalIntRange(0, StarPoxCover.dmgDecrement()), 0);
 
 		//temporarily assign to a float to avoid rounding a bunch
 		float damage = dmg;
@@ -1975,6 +1969,12 @@ public class Hero extends Char {
 		if (buff(Talent.WarriorFoodImmunity.class) != null){
 			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       damage /= 4f;
 			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  damage = 0;
+		}
+
+		if (hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1 && !(src instanceof Buff) && !(src instanceof Chasm)){
+			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(6 - pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
+			Buff.affect(this, Barrier.class).incShield(shield);
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
 		}
 
 		dmg = Math.round(damage);
@@ -2434,7 +2434,7 @@ public class Hero extends Char {
 				if (lvl < Talent.tierLevelThresholds[Talent.MAX_TALENT_TIERS+1]){
 					sprite.showStatusWithIcon(CharSprite.NEUTRAL, "1", FloatingText.TALENT);
 					StatusPane.talentBlink = 10f;
-					WndHero.lastIdx = 1;
+					WndHero.lastIdx = 2;
 				}
 			}
 

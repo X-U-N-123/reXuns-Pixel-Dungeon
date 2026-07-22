@@ -61,7 +61,7 @@ public class ElixirOfAmnesia extends Elixir {
 
         if (reseted){
             StatusPane.talentBlink = 10f;
-            WndHero.lastIdx = 1;
+            WndHero.lastIdx = 2;
         }
         GameScene.showlevelUpStars();
         Sample.INSTANCE.play(Assets.Sounds.BURNING);

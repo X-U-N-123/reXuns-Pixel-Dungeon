@@ -282,7 +282,7 @@ public class TalentButton extends Button {
 
 					if (Dungeon.hero.talentPointsAvailable(2) > 0){
 						StatusPane.talentBlink = 10f;
-						WndHero.lastIdx = 1;
+						WndHero.lastIdx = 2;
 					}
 					GameScene.showlevelUpStars();
 					new Flare( 6, 32 ).color(0xFFFF00, true).show( Dungeon.hero.sprite, 2f );
