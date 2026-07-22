@@ -5,9 +5,6 @@
  * Shattered Pixel Dungeon
  * Copyright (C) 2014-2026 Evan Debenham
  *
- * Xun's Pixel Dungeon
- * Copyright (C) 2025-2025 Jiarun Chen
- *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -48,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BinaryIconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
@@ -65,6 +63,7 @@ public class Goldarrow extends Item {
 	private static final String AC_AWARE    = "aware";
 	private static final String AC_GOTO     = "goto";
 	private static final String AC_TARGET   = "target";
+	private static final String AC_DIST     = "dist";
 
     {
         defaultAction = AC_GOTO;
@@ -82,6 +81,7 @@ public class Goldarrow extends Item {
         actions.add(AC_AWARE);
         actions.add(AC_GOTO);
         actions.add(AC_TARGET);
+		actions.add(AC_DIST);
         return actions;
     }
 
@@ -149,8 +149,14 @@ public class Goldarrow extends Item {
 				defaultAction = AC_GOTO;
 				break;
 			case AC_TARGET:
-				GameScene.show(new TargetWindow());
+				if (TargetWindow.remember) GameScene.selectCell(targetor);
+				else GameScene.show(new TargetWindow());
 				defaultAction = AC_TARGET;
+				break;
+			case AC_DIST:
+				if (DistWindow.remember) GameScene.selectCell(distance);
+				else GameScene.show(new DistWindow());
+				defaultAction = AC_DIST;
 			default: break;
 		}
         GameScene.updateFog();
@@ -171,9 +177,11 @@ public class Goldarrow extends Item {
         return 0;
     }
 
+	private static final int GAP = 2;
+
+	private static int projectileProp = 0;
 	public static class TargetWindow extends Window {
-		private static final int GAP = 2;
-		private static int projectileProp = 0;
+		private static boolean remember = false;
 		private static final boolean[] propList = new boolean[]{false, false, false, false};
 
 		public TargetWindow(){
@@ -280,35 +288,152 @@ public class Goldarrow extends Item {
 			softSolidBtn.setRect(solidBtn.left() + btnSpace, targetBtn.top(), 16, 16);
 			add(softSolidBtn);
 
-			RedButton targetButton = new RedButton(Messages.get(Goldarrow.class, "ac_target")) {
+			CheckBox rememberBox = new CheckBox(Messages.get(Goldarrow.class, "remember")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					remember = checked();
+				}
+			};
+			rememberBox.setRect(0, targetBtn.bottom() + GAP, WIDTH, 16);
+			add(rememberBox);
+
+			RedButton sureBtn = new RedButton(Messages.get(Goldarrow.class, "ac_target")) {
 				@Override
 				protected void onClick() {
 					hide();
 					projectileProp = 0;
 					for (int i = 0; i < propList.length; i++){
-						if (propList[i]) projectileProp = projectileProp | (int)Math.pow(2, i);
+						if (propList[i]) projectileProp |= (int)Math.pow(2, i);
 					}
-					GameScene.selectCell(new CellSelector.Listener() {
-						@Override public String prompt() {
-							return Messages.get(TargetWindow.class, "target");
-						}
-						@Override public void onSelect(Integer cell) {
-							if (cell == null) return;
-							Ballistica trajectory = new Ballistica(curUser.pos, cell, projectileProp);
-							curUser.sprite.attack(cell);
-							for (int i : trajectory.path){
-								if (i == trajectory.collisionPos)
-									 curUser.sprite.parent.addToFront(new TargetedCell(i, Window.XUN_COLOR));
-								else curUser.sprite.parent.addToFront(new TargetedCell(i, Window.WHITE));
-							}
-						}
-					});
+					GameScene.selectCell(targetor);
 				}
 			};
-			targetButton.setRect(0, targetBtn.bottom() + GAP, WIDTH, 16);
-			add(targetButton);
+			sureBtn.setRect(0, rememberBox.bottom() + GAP, WIDTH, 16);
+			add(sureBtn);
 
-			resize(WIDTH, (int)targetButton.bottom() + 1);
+			resize(WIDTH, (int)sureBtn.bottom() + 1);
 		}
 	}
+
+	private static Mode mode;
+	private enum Mode {MANHATTAN, PYTHAGOREAN, WALK}
+	public static class DistWindow extends Window {
+		private static boolean remember = false;
+
+		private final CheckBox manhattanBox;
+		private final CheckBox pythagoreanBox;
+		private final CheckBox walkBox;
+		public DistWindow(){
+			int WIDTH = 120;
+
+			//曼哈顿距离、行走距离、勾股距离
+			RenderedTextBlock title = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(Goldarrow.class, "ac_dist")), 9);
+			title.hardlight(TITLE_COLOR);
+			title.setPos((WIDTH-title.width())/2, GAP);
+			title.maxWidth(WIDTH - GAP * 2);
+			add(title);
+
+			RenderedTextBlock desc = PixelScene.renderTextBlock(Messages.titleCase(Messages.get(this, "desc")), 6);
+			desc.maxWidth(WIDTH);
+			desc.setPos(0, title.bottom() + 3);
+			add(desc);
+			
+			manhattanBox = new CheckBox(Messages.get(this, "manhattan")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					mode = Mode.MANHATTAN;
+					pythagoreanBox.checked(false);
+					walkBox.checked(false);
+				}
+			};
+			manhattanBox.setRect(0, desc.bottom() + GAP, WIDTH, 16);
+			add(manhattanBox);
+
+			pythagoreanBox = new CheckBox(Messages.get(this, "pythagorean")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					mode = Mode.PYTHAGOREAN;
+					manhattanBox.checked(false);
+					walkBox.checked(false);
+				}
+			};
+			pythagoreanBox.setRect(0, manhattanBox.bottom() + GAP, WIDTH, 16);
+			add(pythagoreanBox);
+
+			walkBox = new CheckBox(Messages.get(this, "walk")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					mode = Mode.WALK;
+					manhattanBox.checked(false);
+					pythagoreanBox.checked(false);
+				}
+			};
+			walkBox.setRect(0, pythagoreanBox.bottom() + GAP, WIDTH, 16);
+			add(walkBox);
+
+			CheckBox rememberBox = new CheckBox(Messages.get(Goldarrow.class, "remember")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					remember = checked();
+				}
+			};
+			rememberBox.setRect(0, walkBox.bottom() + GAP, WIDTH / 2 - 1, 16);
+			add(rememberBox);
+
+			RedButton sureBtn = new RedButton(Messages.get(Goldarrow.class, "ac_dist")) {
+				@Override
+				protected void onClick() {
+					super.onClick();
+					hide();
+					GameScene.selectCell(distance);
+				}
+			};
+			sureBtn.setRect(rememberBox.right() + GAP, walkBox.bottom() + GAP, WIDTH / 2 - 1, 16);
+			add(sureBtn);
+
+			resize(WIDTH, (int)sureBtn.bottom() + 1);
+		}
+	}
+
+	private static final CellSelector.Listener targetor = new CellSelector.Listener() {
+		@Override public String prompt() {
+			return Messages.get(TargetWindow.class, "target");
+		}
+		@Override public void onSelect(Integer cell) {
+			if (cell == null) return;
+			if (cell == Dungeon.hero.pos) TargetWindow.remember = false;
+			Ballistica trajectory = new Ballistica(curUser.pos, cell, projectileProp);
+			curUser.sprite.attack(cell);
+			for (int i : trajectory.path){
+				if (i == trajectory.collisionPos)
+					curUser.sprite.parent.addToFront(new TargetedCell(i, Window.XUN_COLOR));
+				else curUser.sprite.parent.addToFront(new TargetedCell(i, Window.WHITE));
+			}
+		}
+	};
+
+	private static final CellSelector.Listener distance = new CellSelector.Listener() {
+		@Override public String prompt() {
+			return Messages.get(TargetWindow.class, "target");
+		}
+		@Override public void onSelect(Integer cell) {
+			if (cell == null || !Dungeon.level.insideMap(cell)) return;
+			if (cell == Dungeon.hero.pos) DistWindow.remember = false;
+			float dist;
+			switch (mode){
+				case PYTHAGOREAN: dist = Dungeon.level.trueDistance(Dungeon.hero.pos, cell); break;
+				case WALK:        dist = Dungeon.level.distance(Dungeon.hero.pos, cell); break;
+				case MANHATTAN: default:
+					dist = Math.abs( Dungeon.hero.pos / Dungeon.level.width() - cell / Dungeon.level.width() )
+							+ Math.abs( Dungeon.hero.pos % Dungeon.level.width() - cell % Dungeon.level.width() );
+					break;
+			}
+			GLog.h(Messages.get(Goldarrow.class, "dist", dist));
+		}
+	};
 }

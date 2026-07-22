@@ -73,6 +73,7 @@ public class Engineer extends Mob {//专门恶心叠甲流 :)
 		if (prickCD <= 0){
 			Buff.affect(enemy, BrokenArmor.class, 5f);
 			damage = Math.round(damage * 1.5f);
+			spend(0.5f);
 			prickCD = Random.NormalFloat(7, 10);
 			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 		}

@@ -63,6 +63,7 @@ public class devSpyglass extends Item {
 	private static final String AC_KILL   = "kill";
 
 	private Mob mob = null;
+	private static String lastUttered = "";
 
 	{
 		defaultAction = AC_CHOOSE;
@@ -70,6 +71,7 @@ public class devSpyglass extends Item {
 		cursedKnown = levelKnown = true;
 		unique = true;
 		bones = false;
+		usesTargeting = true;
 	}
 
 	@Override
@@ -144,7 +146,6 @@ public class devSpyglass extends Item {
 				@Override
 				public String prompt() {
 					if (mob != null && mob.isAlive()) {
-						mob.sprite.parent.addToFront(new TargetedCell(mob.pos, Window.WHITE));
 						Camera.main.panTo( mob.sprite.center(), 3 );
 						curUser.sprite.turnTo(curUser.pos, mob.pos);
 					} else mob = null;
@@ -163,9 +164,13 @@ public class devSpyglass extends Item {
 				public void onSelect(boolean check, String text) {
 					if (check && !text.isEmpty()) {
 						if (text.startsWith(Variable.MARKER)){
+
 							String message = Messages.get(mob, text.substring(1));
 							if (!Messages.NO_TEXT_FOUND.equals(message)) text = message;
+
+							if ("@@".equals(text)) text = lastUttered;
 						}
+						lastUttered = text;
 						mob.yell(text);
 						curUser.sprite.operate(mob.pos);
 					}
@@ -325,6 +330,9 @@ public class devSpyglass extends Item {
 			state.setPos((width() - state.width()) / 2, HPBtn.bottom() + 3);
 			add( state );
 
+			Image indicator = Icons.TARGET.get();
+			indicator.alpha(0.5f);
+
 			Image sleep = Icons.SLEEP.get();
 			sleep.scale.set(PixelScene.align(1.99f));
 			IconButton sleepBtn = new IconButton(sleep){
@@ -333,6 +341,8 @@ public class devSpyglass extends Item {
 					super.onClick();
 					mob.state = mob.SLEEPING;
 					mob.sprite.showSleep();
+					indicator.x = left();
+					indicator.y = top();
 				}
 
 				@Override
@@ -356,6 +366,8 @@ public class devSpyglass extends Item {
 					super.onClick();
 					mob.state = mob.HUNTING;
 					mob.sprite.showAlert();
+					indicator.x = left();
+					indicator.y = top();
 				}
 
 				@Override
@@ -379,6 +391,8 @@ public class devSpyglass extends Item {
 					super.onClick();
 					mob.state = mob.INVESTIGATING;
 					mob.sprite.showInvestigate();
+					indicator.x = left();
+					indicator.y = top();
 				}
 
 				@Override
@@ -402,6 +416,8 @@ public class devSpyglass extends Item {
 					super.onClick();
 					mob.state = mob.WANDERING;
 					mob.sprite.showLost();
+					indicator.x = left();
+					indicator.y = top();
 				}
 
 				@Override
@@ -425,6 +441,8 @@ public class devSpyglass extends Item {
 					super.onClick();
 					mob.state = mob.PASSIVE;
 					mob.sprite.hideEmo();
+					indicator.x = left();
+					indicator.y = top();
 				}
 
 				@Override
@@ -448,6 +466,8 @@ public class devSpyglass extends Item {
 					super.onClick();
 					mob.state = mob.FLEEING;
 					mob.sprite.hideEmo();
+					indicator.x = left();
+					indicator.y = top();
 				}
 
 				@Override
@@ -462,6 +482,27 @@ public class devSpyglass extends Item {
 			};
 			add(fleeBtn);
 			fleeBtn.setRect(passiveBtn.left() + width() / 6f, passiveBtn.top(), 16, 16);
+
+			if (mob.state == mob.SLEEPING) {
+				indicator.x = sleepBtn.left();
+				indicator.y = sleepBtn.top();
+			} else if (mob.state == mob.HUNTING) {
+				indicator.x = huntBtn.left();
+				indicator.y = huntBtn.top();
+			} else if (mob.state == mob.INVESTIGATING) {
+				indicator.x = investigateBtn.left();
+				indicator.y = investigateBtn.top();
+			} else if (mob.state == mob.WANDERING) {
+				indicator.x = wanderBtn.left();
+				indicator.y = wanderBtn.top();
+			} else if (mob.state == mob.PASSIVE) {
+				indicator.x = passiveBtn.left();
+				indicator.y = passiveBtn.top();
+			} else {
+				indicator.x = fleeBtn.left();
+				indicator.y = fleeBtn.top();
+			}
+			add(indicator);
 
 			resize(width(), (int) sleepBtn.bottom() + GAP);
 		}

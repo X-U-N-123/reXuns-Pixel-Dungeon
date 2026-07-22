@@ -237,12 +237,10 @@ public enum HeroClass {
 		goldarrow.collect();
 		ScrollOfDebug scrollOfDebug = new ScrollOfDebug();
 		scrollOfDebug.collect();
-		devShield devshield = new devShield();
-		devshield.collect();
-		devPickaxe pickaxe = new devPickaxe();
-		pickaxe.collect();
-		devSpyglass spyglass = new devSpyglass();
-		spyglass.collect();
+
+		new devShield().collect();
+		new devPickaxe().collect();
+		new devSpyglass().collect();
 
 		for (int s = 0; s < QuickSlot.SIZE; s++) {
 			if (Dungeon.quickslot.getItem(s) == null) {

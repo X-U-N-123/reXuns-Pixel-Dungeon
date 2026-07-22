@@ -87,6 +87,11 @@ public class ChaoticCenser extends Trinket {
 		}
 	}
 
+	@Override
+	public void onDetach() {
+		Buff.detach(curUser, GasSpewer.class);
+	}
+
 	public static class CenserGasTracker extends Buff {
 
 		private int left = Integer.MAX_VALUE;

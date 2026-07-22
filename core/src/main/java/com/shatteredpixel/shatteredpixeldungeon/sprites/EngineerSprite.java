@@ -26,7 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class EngineerSprite extends MobSprite {
 
@@ -40,16 +39,16 @@ public class EngineerSprite extends MobSprite {
 		idle = new Animation( 2, true );
 		idle.frames( frames, 0, 0, 0, 1, 0, 0, 1, 1 );
 		
-		run = new Animation( 15, true );
-		run.frames( frames, 0, 2, 3, 4 );
+		run = new Animation( 12, true );
+		run.frames( frames, 2, 3, 4, 5, 6, 7 );
 		
 		attack = new Animation( 12, false );
-		attack.frames( frames, 0, 5, 6 );
+		attack.frames( frames, 0, 8, 9 );
 		
 		zap = attack.clone();
 		
 		die = new Animation( 15, false );
-		die.frames( frames, 0, 7, 8, 8, 9, 10 );
+		die.frames( frames, 0, 10, 12, 11, 13 );
 		
 		play( idle );
 	}
@@ -62,12 +61,7 @@ public class EngineerSprite extends MobSprite {
 				MagicMissile.SHADOW,
 				this,
 				cell,
-				new Callback() {
-					@Override
-					public void call() {
-						((Warlock)ch).onZapComplete();
-					}
-				} );
+				() -> ((Warlock)ch).onZapComplete());
 		Sample.INSTANCE.play( Assets.Sounds.ZAP );
 	}
 	
