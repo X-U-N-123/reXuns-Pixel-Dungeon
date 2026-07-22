@@ -52,7 +52,8 @@ public class WndInfoBuff extends Window {
 		String desc = buff.desc();
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
 			desc += "\n\n" + Messages.get(Buff.class, "dev_desc",
-				buff.getClass().getSimpleName(), Messages.decimalFormat("#.##", buff.cooldown()), buff.id());
+				buff.getClass().getSimpleName(), Messages.decimalFormat("#.##", buff.cooldown()),
+					buff.id(), buff.actPriority());
 
 		RenderedTextBlock txtInfo = PixelScene.renderTextBlock(desc, 6);
 		txtInfo.maxWidth(WIDTH);

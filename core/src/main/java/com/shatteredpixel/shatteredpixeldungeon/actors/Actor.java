@@ -393,4 +393,8 @@ public abstract class Actor implements Bundlable {
 	}
 
 	public static synchronized HashSet<Char> chars() { return new HashSet<>(chars); }
+
+	public int actPriority() {
+		return actPriority;
+	}
 }

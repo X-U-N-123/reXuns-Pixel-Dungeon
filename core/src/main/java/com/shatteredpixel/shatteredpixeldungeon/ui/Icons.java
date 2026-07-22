@@ -46,6 +46,8 @@ public enum Icons {
 	JOURNAL,
 	QQ,
     X_U_N,
+	GITHUB,
+	ITCH,
 
 	//grey icons, mainly used for buttons, spacing for 16x16
 	EXIT,
@@ -198,6 +200,12 @@ public enum Icons {
             case X_U_N:
                 icon.frame( icon.texture.uvRectBySize( 167, 0, 12, 16 ) );
                 break;
+			case GITHUB:
+				icon.frame( icon.texture.uvRectBySize( 179, 0, 16, 16 ) );
+				break;
+			case ITCH:
+				icon.frame( icon.texture.uvRectBySize( 195, 0, 16, 14 ) );
+				break;
 
 			case EXIT:
 				icon.frame( icon.texture.uvRectBySize( 0, 16, 15, 11 ) );

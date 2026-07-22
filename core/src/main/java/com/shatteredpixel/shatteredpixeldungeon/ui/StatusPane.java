@@ -48,9 +48,9 @@ import com.watabou.utils.GameMath;
 
 public class StatusPane extends Component {
 
-	private NinePatch bg;
-	private Image avatar;
-	private Button heroInfo;
+	private final NinePatch bg;
+	private final Image avatar;
+	private final Button heroInfo;
 	public static float talentBlink;
 	private float warning;
 
@@ -58,35 +58,35 @@ public class StatusPane extends Component {
 
 	private int lastTier = 0;
 
-	private Image shieldHP;
-	private Image hp;
-	private BitmapText hpText;
-	private Button heroInfoOnBar;
+	private final Image shieldHP;
+	private final Image hp;
+	private final BitmapText hpText;
+	private final Button heroInfoOnBar;
 
-	private Image exp;
-	private BitmapText expText;
+	private final Image exp;
+	private final BitmapText expText;
 
-	private Image hunger;
-	private BitmapText hungerText;
+	private final Image hunger;
+	private final BitmapText hungerText;
 
 	private int lastLvl = -1;
 
-	private BitmapText level;
+	private final BitmapText level;
 
-	private BuffIndicator buffs;
-	private Compass compass;
+	private final BuffIndicator buffs;
+	private final Compass compass;
 
-	private BusyIndicator busy;
-	private CircleArc counter;
+	private final BusyIndicator busy;
+	private final CircleArc counter;
 
-	private boolean large;
+	private final boolean large;
 
 	//potentially extends the hero portrait space to avoid some cutouts
 	public static float heroPaneExtraWidth = 0;
-	private NinePatch heroPaneCutout;
+	private final NinePatch heroPaneCutout;
 	//potentially shrinks and/or repositions the hp bar to avoid some cutouts
 	public static int hpBarMaxWidth = 50;
-	private Image hpCutout;
+	private final Image hpCutout;
 	//potentially adjusts the row(s) of the the buff indicator to avoid some cutouts
 	public static float[] buffBarRowMaxWidths;
 	public static float[] buffBarRowAdjusts;
@@ -99,7 +99,7 @@ public class StatusPane extends Component {
 		this.large = large;
 
 		if (large)  bg = new NinePatch( asset, 0, 55, 41, 39, 33, 0, 4, 0 );
-		else        bg = new NinePatch( asset, 0,  0, 82, 38, 32, 0, 5, 0 );
+		else        bg = new NinePatch( asset, 0,  0, 82, 38, 32, 0, 8, 0 );
 		add( bg );
 
 		heroPaneCutout = new NinePatch(asset, 0, 0, 5, 36, 4, 0, 0, 0);
@@ -269,7 +269,7 @@ public class StatusPane extends Component {
 				}
 				hp.frame(50-hpWidth, 38, hpWidth, 5);
 				shieldHP.frame(100-hpWidth, 38, hpWidth, 5);
-				hunger.frame(47-hpWidth, 43, hpWidth, 5);
+				hunger.frame(50-hpWidth, 43, hpWidth - 3, 5);
 			}
 
 			hp.x = shieldHP.x = hpleft;

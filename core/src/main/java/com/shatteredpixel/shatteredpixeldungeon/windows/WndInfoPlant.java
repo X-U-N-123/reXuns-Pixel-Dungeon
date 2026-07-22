@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
@@ -31,7 +32,8 @@ public class WndInfoPlant extends WndTitledMessage {
 	public WndInfoPlant( Plant plant ) {
 		
 		super(TerrainFeaturesTilemap.tile( plant.pos, Dungeon.level.map[plant.pos]),
-				Messages.titleCase(plant.name()), plant.desc());
+				Messages.titleCase(plant.name() + (Dungeon.isChallenged(Challenges.X_U_NS_POWER) ? " (" + plant.pos + ")" : "")),
+				plant.desc());
 
 	}
 }

@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.Trap;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -31,7 +32,7 @@ public class WndInfoTrap extends WndTitledMessage {
 	public WndInfoTrap(Trap trap) {
 
 		super(TerrainFeaturesTilemap.tile( trap.pos, Dungeon.level.map[trap.pos]),
-				Messages.titleCase(trap.name()),
+				Messages.titleCase(trap.name() + (Dungeon.isChallenged(Challenges.X_U_NS_POWER) ? " (" + trap.pos + ")" : "")),
 				(!trap.active ? Messages.get(WndInfoTrap.class, "inactive") + "\n\n" : "") + trap.desc());
 
 	}

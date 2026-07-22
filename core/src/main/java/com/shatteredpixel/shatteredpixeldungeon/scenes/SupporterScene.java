@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
-import com.shatteredpixel.shatteredpixeldungeon.messages.Languages;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -41,7 +40,7 @@ import com.watabou.utils.RectF;
 public class SupporterScene extends PixelScene {
 
 	private static final int BTN_HEIGHT = 20;
-	private static final int GAP = 1;
+	private static final int GAP = 2;
 
 	@Override
 	public void create() {
@@ -78,29 +77,58 @@ public class SupporterScene extends PixelScene {
 		msg.setSize(elementWidth, 0);
 		add(msg);
 
-		StyledButton link = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "supporter_link")){
+		StyledButton qqLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "QQ"){
 			@Override
 			protected void onClick() {
 				super.onClick();
 				ShatteredPixelDungeon.platform.openURI("https://qm.qq.com/q/6F4JNkWx1u");
 			}
 		};
-		link.icon(Icons.get(Icons.QQ));
-		link.textColor(Window.TITLE_COLOR);
-		link.setSize(elementWidth, BTN_HEIGHT);
-		add(link);
+		qqLink.icon(Icons.get(Icons.QQ));
+		qqLink.textColor(Window.TITLE_COLOR);
+		qqLink.setSize(elementWidth, BTN_HEIGHT);
+		add(qqLink);
 
 		float elementHeight = msg.height() + BTN_HEIGHT + GAP;
 
 		float top = insets.top + 16 + (h - 16 - elementHeight)/2f;
 		float left = insets.left + (w-elementWidth)/2f;
 
-		msg.setPos(left, top);
+		msg.setPos(left, top - 15);
 		align(msg);
 
-		link.setPos(left, msg.bottom()+GAP);
-		align(link);
+		qqLink.setPos(left, msg.bottom()+GAP);
+		align(qqLink);
 
+		StyledButton githubLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Github"){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.platform.openURI("https://github.com/X-U-N-123/reXuns-Pixel-Dungeon/tree/xun");
+			}
+		};
+		githubLink.icon(Icons.get(Icons.GITHUB));
+		githubLink.textColor(Window.TITLE_COLOR);
+		githubLink.setSize(elementWidth / 2 - 1, BTN_HEIGHT);
+		add(githubLink);
+
+		githubLink.setPos(left, qqLink.bottom()+GAP);
+		align(githubLink);
+
+		StyledButton itchLink = new StyledButton(Chrome.Type.GREY_BUTTON_TR, "Itch"){
+			@Override
+			protected void onClick() {
+				super.onClick();
+				ShatteredPixelDungeon.platform.openURI("https://x-u-n.itch.io/xuns-pixel-dungeon");
+			}
+		};
+		itchLink.icon(Icons.get(Icons.ITCH));
+		itchLink.textColor(Window.TITLE_COLOR);
+		itchLink.setSize(elementWidth / 2 - 1, BTN_HEIGHT);
+		add(itchLink);
+
+		itchLink.setPos(githubLink.right() + GAP, githubLink.top());
+		align(itchLink);
 	}
 
 	@Override
@@ -121,9 +149,6 @@ public class SupporterScene extends PixelScene {
 
 			String message = Messages.get(SupporterScene.class, "intro");
 			message += "\n\n" + Messages.get(SupporterScene.class, "patreon_msg");
-			if (Messages.lang() != Languages.CHI_SMPL) {
-				message += "\n" + Messages.get(SupporterScene.class, "patreon_english");
-			}
 			message += "\n\n-**迅**";
 
 			text = PixelScene.renderTextBlock(message, 6);
@@ -131,7 +156,6 @@ public class SupporterScene extends PixelScene {
 
 			icon = Icons.get(Icons.X_U_N);
 			add(icon);
-
 		}
 
 		@Override

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -791,13 +792,17 @@ public enum Talent {
 	}
 
 	public String desc(boolean metamorphed){
+		String desc = Messages.get(this, name() + ".desc");
 		if (metamorphed){
 			String metaDesc = Messages.get(this, name() + ".meta_desc");
 			if (!metaDesc.equals(Messages.NO_TEXT_FOUND)){
-				return Messages.get(this, name() + ".desc") + "\n\n" + metaDesc;
+				desc += "\n\n" + metaDesc;
 			}
 		}
-		return Messages.get(this, name() + ".desc");
+		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
+			desc += "\n\n" + Messages.get(Talent.class, "enum_name", toString());
+		}
+		return desc;
 	}
 
 	public static void onItemIdentified( Hero hero, Item item ){
