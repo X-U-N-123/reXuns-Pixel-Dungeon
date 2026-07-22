@@ -50,8 +50,8 @@ Some new Badges.
 
 Xun's Pixel Dungeon currently compiles for Android and Desktop platforms. You can find official releases of the game on:
 
-[![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://shattered-pixel.itch.io/shattered-pixel-dungeon)
-[![Github Releases](https://shatteredpixel.com/assets/images/badges/github.png)](https://github.com/X-U-N-123/Xuns-Pixel-Dungeon/releases)
+[![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://x-u-n.itch.io/xuns-pixel-dungeon)
+[![Github Releases](https://shatteredpixel.com/assets/images/badges/github.png)](https://github.com/X-U-N-123/reXuns-Pixel-Dungeon/releases)
 
 Note that **this repository does not accept pull requests!** The code here is provided in hopes that others may find it useful for their own projects, not to allow community contribution. Issue reports of all kinds (bug reports, feature requests, etc.) are welcome.
 

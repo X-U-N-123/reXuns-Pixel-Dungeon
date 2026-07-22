@@ -50,8 +50,8 @@
 
 目前，迅的像素地牢为安卓与桌面平台编译。你可以在这些地方找到游戏的官方发行版：
 
-[![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://shattered-pixel.itch.io/shattered-pixel-dungeon)
-[![Github 发行版](https://shatteredpixel.com/assets/images/badges/github.png)](https://github.com/X-U-N-123/Xuns-Pixel-Dungeon/releases)
+[![Itch.io](https://shatteredpixel.com/assets/images/badges/itch.png)](https://x-u-n.itch.io/xuns-pixel-dungeon)
+[![Github 发行版](https://shatteredpixel.com/assets/images/badges/github.png)](https://github.com/X-U-N-123/reXuns-Pixel-Dungeon/releases)
 
 注意**这个仓库不接受 Pull 请求！** 将代码提供在此是希望其他人发现它对于他们自己的项目有用，而非允许社区贡献。任何种类的 Issue 报告（Bug 报告、功能请求之类）都还是很欢迎的。
 
