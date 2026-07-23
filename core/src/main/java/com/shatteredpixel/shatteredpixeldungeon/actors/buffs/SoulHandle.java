@@ -33,8 +33,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RipperDemon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogDzewa;
-import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -225,10 +223,8 @@ public class SoulHandle extends Buff implements ActionIndicator.Action {
 				Char c = Actor.findChar(cell);
 				if (c instanceof Hero){ //heal the soulhandler
 					int toHeal = (int)Math.min(c.HT - c.HP,
-							(0.5f + 0.1f * ((Hero) c).pointsInTalent(Talent.DEVOUR_SURGING)) * ((Hero) c).lvl);
-					c.HP += toHeal;
-					c.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
-					c.sprite.emitter().start( Speck.factory( Speck.HEALING ), 0.33f, 4 );
+							(0.4f + 0.1f * ((Hero) c).pointsInTalent(Talent.DEVOUR_SURGING)) * ((Hero) c).lvl);
+					Buff.affect(c, Healing.class).setHeal(toHeal, 0, 1);
 					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 					c.sprite.operate(cell);
 				} else if (c != null) { //doom the enemy

@@ -1374,7 +1374,7 @@ public abstract class Char extends Actor {
 			GameScene.updateMap(pos);
 		}
 
-		if (Random.Float() <= hero.pointsInTalent(Talent.DEW_COLLECTING)/8f && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
+		if (Random.Int(10) < hero.pointsInTalent(Talent.DEW_COLLECTING) && Dungeon.level.heroFOV[pos] && alignment != Alignment.ALLY &&
 		(Dungeon.level.map[hero.pos] == Terrain.HIGH_GRASS || Dungeon.level.map[hero.pos] == Terrain.FURROWED_GRASS)){
 
 			Waterskin flask = (hero.belongings.getItem( Waterskin.class ));

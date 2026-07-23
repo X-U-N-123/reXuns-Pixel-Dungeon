@@ -82,7 +82,7 @@ public class RockFallBuff extends Buff implements ActionIndicator.Action {
 
     @Override
     public String desc() {
-        String desc = Messages.get(this, "desc", Dungeon.hero.lvl/3, Dungeon.hero.lvl);
+        String desc = Messages.get(this, "desc", 1, Dungeon.hero.lvl/3);
         if (CD > 0){
             desc += "\n\n" + Messages.get(this, "desc_cd", CD);
         }
@@ -194,11 +194,11 @@ public class RockFallBuff extends Buff implements ActionIndicator.Action {
                         if (PathFinder.distance[i] <= 2){
                             Char ch = Actor.findChar(i);
                             if (ch != null && ch.alignment == Char.Alignment.ENEMY){
-                                ch.damage(Random.NormalIntRange(Dungeon.hero.lvl/3, Dungeon.hero.lvl),
+                                ch.damage(Random.NormalIntRange(1, Dungeon.hero.lvl/2),
                                     target.buff(RockFallBuff.class));
-                                Buff.affect(ch, Paralysis.class, 6f);
+                                Buff.affect(ch, Paralysis.class, 5f);
                             }
-                            if (ch == null && Random.Float() <= 0.15f + Dungeon.hero.pointsInTalent(Talent.METEOR_CRATER) * 0.2f / 3f
+                            if (ch == null && Random.Float() <= 0.1f + Dungeon.hero.pointsInTalent(Talent.METEOR_CRATER) * 0.05f
                             && (Sandstorm.canDrift(Dungeon.level.map[i]) || Dungeon.level.map[i] == Terrain.HIGH_GRASS)){
                                 Level.set(i, Terrain.MINE_BOULDER);
                                 GameScene.updateMap(i);

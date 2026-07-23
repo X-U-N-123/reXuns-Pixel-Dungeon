@@ -814,7 +814,7 @@ public abstract class Mob extends Char {
 
         if (state == SLEEPING && hero.subClass == HeroSubClass.INCUBUS){
             //proc effect for char src here(if src isn't char, we will proc it in damage)
-            damage = Math.round(damage * (1.3f + 0.15f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
+            damage = Math.round(damage * (1.24f + 0.12f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
             switch (hero.pointsInTalent(Talent.WRONG_SIDE_OF_THE_BED)) {
                 case 3:
                     Buff.affect(this, PhysicalEmpower.class).set(damage, 1);
@@ -902,7 +902,7 @@ public abstract class Mob extends Char {
 			if (state == SLEEPING && buff(Peaceful.PeacefulTracker.class) == null) {
                 if (!(src instanceof Char)) { //proc effect for non-char src here(if src is char, we already proc it in defenseProc)
                     if (hero.subClass == HeroSubClass.INCUBUS)
-                        dmg = Math.round(dmg * (1.4f + 0.2f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
+                        dmg = Math.round(dmg * (1.24f + 0.12f * hero.pointsInTalent(Talent.NIGHTMARE_HAUNTING)));
                     switch (hero.pointsInTalent(Talent.WRONG_SIDE_OF_THE_BED)) {
                         case 3:
                             Buff.affect(this, PhysicalEmpower.class).set(dmg, 1);
@@ -1077,14 +1077,20 @@ public abstract class Mob extends Char {
 	
 	public void rollToDropLoot(){
 
+		if (hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
+
 		//liquid collecting logic
 		if (hero.hasTalent(Talent.LIQUID_COLLECTING) && Regeneration.regenOn() && buff(Trap.HazardAssistTracker.class) != null
-		&& (hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
-			Dungeon.level.drop(new LiquidMetal().quantity(hero.pointsInTalent(Talent.LIQUID_COLLECTING)), pos).sprite.drop();
+				&& (hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
+			float point = hero.pointsInTalent(Talent.LIQUID_COLLECTING) * 2 / 3f;
+			int quantity = 0;
+			while (Random.Float() < point){
+				quantity ++;
+				point --;
+			}
+			Dungeon.level.drop(new LiquidMetal().quantity(quantity), pos).sprite.drop();
 			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 3);
 		}
-
-		if (hero.lvl > maxLvl + 2 + StoneofIntelligence.LootandExpinc()) return;
 
 		MasterThievesArmband.StolenTracker stolen = buff(MasterThievesArmband.StolenTracker.class);
 		if (stolen == null || !stolen.itemWasStolen()) {

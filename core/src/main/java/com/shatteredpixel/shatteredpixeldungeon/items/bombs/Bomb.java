@@ -65,7 +65,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
@@ -87,6 +86,7 @@ public class Bomb extends Item {
 		usesTargeting = true;
 
 		stackable = true;
+		levelKnown = true;
 	}
 
 	public Fuse fuse;
@@ -96,7 +96,6 @@ public class Bomb extends Item {
 	private boolean grenadierThrown = false;
 
 	private static final String AC_LIGHTTHROW = "LIGHTTHROW";
-	private static final String AC_CRAFT 	= "CRAFT";
 
 	@Override
 	public boolean isSimilar(Item item) {
@@ -115,7 +114,6 @@ public class Bomb extends Item {
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add ( AC_LIGHTTHROW );
-		if (hero.subClass == HeroSubClass.GRENADIER && getClass() == Bomb.class) actions.add(AC_CRAFT);
 		return actions;
 	}
 
@@ -138,10 +136,6 @@ public class Bomb extends Item {
 			lightingFuse = false;
 
 		super.execute(hero, action);
-
-		if (action.equals(AC_CRAFT)){
-			GameScene.selectItem(crafter);
-		}
 	}
 
 	protected Fuse createFuse(){
@@ -242,14 +236,15 @@ public class Bomb extends Item {
 					shockwaveProc = true;
 				}
 
-				int dmg = Random.NormalIntRange(min(Dungeon.scalingDepth()), max(Dungeon.scalingDepth()));
+				int dmg = Random.NormalIntRange(min(Dungeon.scalingDepth()) * quantity(),
+												max(Dungeon.scalingDepth()) * quantity());
 				if (curUser.subClass != HeroSubClass.GRENADIER || ch.alignment == Char.Alignment.ALLY
 						|| !grenadierThrown)
 					dmg -= ch.drRoll();
 
 				if (curUser.hasTalent(Talent.EXPLOSION_PROOF) && grenadierThrown
 						&& ch.alignment == Char.Alignment.ALLY)
-					dmg /= 3;
+					dmg /= 2;
 
 				MultiTool tool = curUser.belongings.getItem(MultiTool.class);
 				if (tool == null && curUser.belongings.weapon() instanceof MultiTool)
@@ -519,6 +514,7 @@ public class Bomb extends Item {
 				if (validIngredients.containsKey(i.getClass())){
 					result = Reflection.newInstance(validIngredients.get(i.getClass()));
 				}
+				if (i instanceof Bomb && i.level() > 0) result.level(i.level());
 			}
 
 			if (result instanceof ArcaneBomb){
@@ -545,48 +541,12 @@ public class Bomb extends Item {
 		return grenadierThrown;
 	}
 
-	private final WndBag.ItemSelector crafter = new WndBag.ItemSelector(){
-
-		@Override
-		public String textPrompt() {
-			return Messages.get(this, "ingredient");
-		}
-
-		@Override
-		public boolean itemSelectable(Item item) {
-			return EnhanceBomb.validIngredients.containsKey(item.getClass())
-					&& item.isIdentified();
-		}
-
-		@Override
-		public void onSelect(Item item) {
-			if (item == null) return;
-
-			Class<? extends Bomb> bombCls = EnhanceBomb.validIngredients.get(item.getClass());
-
-			int cost = EnhanceBomb.bombCosts.get(bombCls);
-			if (cost <= Dungeon.energy){
-				detach(curUser.belongings.backpack);
-				item.detach(curUser.belongings.backpack);
-				Dungeon.energy -= cost;
-
-				curUser.sprite.operate(curUser.pos);
-				curUser.spendAndNext(1);
-
-				Bomb b = Reflection.newInstance(bombCls);
-				if (!b.collect()) Dungeon.level.drop(b, curUser.pos).sprite.drop();
-
-			} else GLog.w(Messages.get(this, "no_enough_energy"));
-		}
-	};
-
 	public static class ShockwaveCooldown extends FlavourBuff{
 		public int icon() { return BuffIndicator.TIME; }
 		public void tintIcon(Image icon) { icon.hardlight(0.6f, 0f, 0f); }
 		public float iconFadePercent() { return Math.max(0, visualcooldown() / 50); }
 	}
 	public static class BallisticaCalcTracker extends FlavourBuff{
-		public int icon() { return BuffIndicator.TIME; }
 		public void extend(){spend(TIME_TO_THROW);}
 	}
 }

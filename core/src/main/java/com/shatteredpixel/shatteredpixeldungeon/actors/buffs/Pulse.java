@@ -213,7 +213,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
 					ch.sprite.flash();
 
                     float random = Random.Float();
-                    if (((Hero)target).hasTalent(Talent.CHARISMA)) random /= 1.75f;
+                    if (((Hero)target).hasTalent(Talent.CHARISMA)) random /= 1.6f;
 
                     if (random < 0.15f && ((Hero)target).subClass == HeroSubClass.HACKER
                             && Char.hasProp(ch, Char.Property.INORGANIC)){
