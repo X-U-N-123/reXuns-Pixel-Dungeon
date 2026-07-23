@@ -84,11 +84,21 @@ public class AboutScene extends PixelScene {
         null);
         odg.setSize(colWidth/2f, 0);
         if (landscape()){
-            odg.setPos(xun.right() + colWidth/4f, xun.top() + (xun.height() - odg.height())/2f);
+            odg.setPos(xun.right(), xun.top() + (xun.height() - odg.height())/2f);
         } else {
-            odg.setPos(xun.left() + colWidth/4f, xun.bottom()+5);
+            odg.setPos(w/2f - colWidth/2f, xun.bottom()+5);
         }
         content.add(odg);
+
+		CreditsBlock oxynoe = new CreditsBlock(false, Window.XUN_COLOR,
+				"Explorer Splash Art:",
+				Icons.OXYNOE.get(),
+				"江豚",
+				null,
+				null);
+		oxynoe.setSize(colWidth/2f, 0);
+		oxynoe.setRect(odg.right(), odg.top(), colWidth/2f, 0);
+		content.add(oxynoe);
 
 		//*** Shattered Pixel Dungeon Credits ***
 
@@ -148,11 +158,7 @@ public class AboutScene extends PixelScene {
 				"Developed by: _Watabou_\nInspired by Brian Walker's Brogue",
 				"watabou.itch.io",
 				"https://watabou.itch.io/");
-		if (landscape()){
-			wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
-		} else {
-			wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
-		}
+		wata.setRect(shpx.left(), kristjan.bottom() + 8, colWidth, 0);
 		content.add(wata);
 
 		addLine(wata.top() - 4, content);
@@ -256,8 +262,9 @@ public class AboutScene extends PixelScene {
 				"_Pack: Stabbing Stomachs & Crushing Skulls_ by _TheFilmLook_\n" +
 				"_Sheep bleating_ by _zachrau_\n" +
 				"_Lemon,Juicy,Squeeze,Fruit.wav_ by _Filipe Chagas_\n" +
-				"_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_",
-				"freesound.org",
+				"_Lemon,Squeeze,Squishy,Fruit.wav_ by _Filipe Chagas_\n" +
+                "_Hammer on Wood.wav_ by _L.i.Z.e.L.l.E-+_",
+				"www.freesound.org",
 				"https://www.freesound.org");
 		freesound.setRect(transifex.left()-10, transifex.bottom() + 8, colWidth+20, 0);
 		content.add(freesound);

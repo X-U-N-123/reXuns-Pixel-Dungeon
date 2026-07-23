@@ -54,6 +54,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfVision;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
@@ -903,9 +904,11 @@ public class Dungeon {
 		int dist = Math.max(Dungeon.hero.viewDistance, 8);
 		if (Dungeon.hero.hasTalent(Talent.FARSIGHT)) dist += 1 + Dungeon.hero.pointsInTalent(Talent.FARSIGHT);
 
-		dist += Talent.MonkViewBoost();
+		dist += Talent.monkViewBoost();
 
 		if (Dungeon.hero.heroClass == HeroClass.EXPLORER) dist ++;
+
+		dist += RingOfVision.visionBonus();
 
 		if (Dungeon.hero.buff(MagicalSight.class) != null){
 			dist = Math.max( dist, MagicalSight.DISTANCE );

@@ -63,7 +63,6 @@ public class TitleScene extends PixelScene {
 	private Image title;
 	private Fireball leftFB;
 	private Fireball rightFB;
-	private Image signs;
 
 	private StyledButton btnPlay;
 	private StyledButton btnSupport;
@@ -121,15 +120,17 @@ public class TitleScene extends PixelScene {
 			rightFB = placeTorch(title.x + title.width - 16, title.y + 70);
 		}
 
-		signs = new Image(BannerSprites.get( landscape() ? BannerSprites.Type.TITLE_GLOW_LAND : BannerSprites.Type.TITLE_GLOW_PORT)){
+		Image signs = new Image(BannerSprites.get(landscape() ? BannerSprites.Type.TITLE_GLOW_LAND : BannerSprites.Type.TITLE_GLOW_PORT)) {
 			private float time = 0;
+
 			@Override
 			public void update() {
 				super.update();
-				am = Math.max(0f, (float)Math.sin( time += Game.elapsed ));
+				am = Math.max(0f, (float) Math.sin(time += Game.elapsed));
 				am = Math.min(am, title.am);
-				if (time >= 1.5f*Math.PI) time = 0;
+				if (time >= 1.5f * Math.PI) time = 0;
 			}
+
 			@Override
 			public void draw() {
 				Blending.setLightMode();
@@ -139,7 +140,7 @@ public class TitleScene extends PixelScene {
 		};
 		signs.x = title.x + (title.width() - signs.width())/2f;
 		signs.y = title.y;
-		add( signs );
+		add(signs);
 
 		final Chrome.Type GREY_TR = Chrome.Type.GREY_BUTTON_TR;
 		
@@ -260,7 +261,7 @@ public class TitleScene extends PixelScene {
 		};
 		btnFade.icon().originToCenter();
 		btnFade.icon().angle = 180f;
-		btnFade.setRect(btnAreaLeft + (buttonAreaWidth-16)/2, camera.main.height - 16 - insets.bottom, 16, 16);
+		btnFade.setRect(btnAreaLeft + (buttonAreaWidth-16)/2, Camera.main.height - 16 - insets.bottom, 16, 16);
 		add(btnFade);
 
 		PointerArea fadeResetter = new PointerArea(0, 0, Camera.main.width, Camera.main.height){

@@ -726,7 +726,7 @@ public enum Talent {
 		}
 	}
 
-	public static int MonkViewBoost(){
+	public static int monkViewBoost(){
 		MonkEnergy Energy = Dungeon.hero.buff(MonkEnergy.class);
 		if (Energy != null && Dungeon.hero.hasTalent(YANG_SEEING)) {
 			return Math.min((Energy.Getenergy() / (5 - Dungeon.hero.pointsInTalent(YANG_SEEING))),

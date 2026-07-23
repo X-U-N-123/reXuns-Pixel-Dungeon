@@ -148,6 +148,7 @@ public enum Icons {
 	PURIGRO,
 	ARCNOR,
     ODG,
+	OXYNOE,
 
 	//icons that used in gold arrow ballistica
 	STOP_TARGET,
@@ -495,6 +496,10 @@ public enum Icons {
                 icon.frame( icon.texture.uvRectBySize( 187, 96, 32, 32 ) );
                 icon.scale.set(PixelScene.align(0.49f));
                 break;
+			case OXYNOE:
+				icon.frame( icon.texture.uvRectBySize( 219, 96, 29, 27 ) );
+				icon.scale.set(PixelScene.align(0.49f));
+				break;
 
 			case STOP_TARGET:
 				icon.frame( icon.texture.uvRectBySize( 0, 128, 16, 16 ) );

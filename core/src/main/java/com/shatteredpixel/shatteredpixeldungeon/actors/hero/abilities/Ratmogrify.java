@@ -59,7 +59,7 @@ import java.util.HashSet;
 public class Ratmogrify extends ArmorAbility {
 
 	{
-		baseChargeUse = 50f;
+		baseChargeUse = 40;
 	}
 
 	//this is sort of hacky, but we need it to know when to use alternate name/icon for heroic energy
