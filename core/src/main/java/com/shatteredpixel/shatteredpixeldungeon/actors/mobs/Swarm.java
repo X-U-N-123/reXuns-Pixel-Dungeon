@@ -153,4 +153,9 @@ public class Swarm extends Mob {
 		Dungeon.LimitedDrops.SWARM_HP.count++;
 		return super.createLoot();
 	}
+
+	@Override
+	public float spawningWeight() {
+		return 1f / (generation+1);
+	}
 }

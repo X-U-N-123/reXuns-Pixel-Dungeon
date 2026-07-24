@@ -946,8 +946,13 @@ public class CursedWand {
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
 
 			for (Char ch : Actor.chars()){
-				Buff.affect(ch, Invulnerability.class, 10f);
-				Buff.affect(ch, Bless.class, Bless.DURATION);
+				if (ch.alignment != Char.Alignment.ALLY && positiveOnly){
+					Buff.affect(ch, Invulnerability.class, 2);
+					Buff.affect(ch, Bless.class, Bless.DURATION / 5);
+				} else {
+					Buff.affect(ch, Invulnerability.class, 10f);
+					Buff.affect(ch, Bless.class, Bless.DURATION);
+				}
 			}
 
 			new Flare(5, 48).color(0xFFFF00, true).show(user.sprite, 3f);
@@ -975,11 +980,16 @@ public class CursedWand {
 		@Override
 		public boolean effect(Item origin, Char user, Ballistica bolt, boolean positiveOnly) {
 
-			Buff.affect(user, TimeStasis.class, 100f);
+			if (positiveOnly){
+				user.spendConstant(-10);
+				GLog.w(Messages.get(CursedWand.class, "stasis"));
+			} else {
+				Buff.affect(user, TimeStasis.class, 100f);
+				GLog.w(Messages.get(CursedWand.class, "petrify"));
+			}
 			Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 
 			user.sprite.emitter().burst(Speck.factory(Speck.STEAM), 10);
-			GLog.w(Messages.get(CursedWand.class, "petrify"));
 
 			return true;
 		}

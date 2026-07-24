@@ -123,7 +123,7 @@ public class PitfallTrap extends Trap {
 					}
 
 					Heap heap = Dungeon.level.heaps.get(cell);
-					if (heap != null && !ignoreAllies
+					if (heap != null && !ignoreAllies && !Dungeon.bossLevel()
 							&& heap.type != Heap.Type.FOR_SALE
 							&& heap.type != Heap.Type.LOCKED_CHEST
 							&& heap.type != Heap.Type.CRYSTAL_CHEST) {

@@ -1229,14 +1229,14 @@ public abstract class Mob extends Char {
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
 			if (buff(BrokenArmor.class) != null) armor = 0;
 			dev_desc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
-				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, speed(), getClass().getSimpleName(),
-				Messages.decimalFormat("#.##", cooldown()), id(), actPriority);
+				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, 1/speed(), getClass().getSimpleName(),
+				Messages.decimalFormat("#.##", cooldown()), id(), actPriority, spawningWeight());
 
 			dev_desc += "\n" + Messages.get(this, "property");
 			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
 
 			dev_desc += "\n" + Messages.get(this, "state") + Messages.get(this, state.getClass().getSimpleName())
-					  + "\n" + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
+					  + "  " + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
 		}
 		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) plunder += "\n\n" + Messages.get(this, "plunder");
 

@@ -264,8 +264,8 @@ public class StatusPane extends Component {
 					hpCutout.visible = true;
 					hpCutout.x = hpleft - 2;
 					hpCutout.y = y;
-					avatar.x -= 2;
-					compass.x -= 2;
+					avatar.x -= 3;
+					compass.x -= 3;
 				}
 				hp.frame(50-hpWidth, 38, hpWidth, 5);
 				shieldHP.frame(100-hpWidth, 38, hpWidth, 5);
