@@ -355,7 +355,7 @@ public abstract class Wand extends Item {
 		EvilUnfold.Evil evil = Dungeon.hero.buff(EvilUnfold.Evil.class);
 		if (evil != null) dmg = evil.proc(target, dmg);
 
-		if (target instanceof Resentment) Buff.affect(target, Daze.class, 4f);
+		if (target instanceof Resentment) Buff.affect(target, Daze.class, 5f);
 		//a way to fight against it
 		if (w != null && w.modify == Modification.PRISM) dmg += Math.round(dmg * 0.25f);
 		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);

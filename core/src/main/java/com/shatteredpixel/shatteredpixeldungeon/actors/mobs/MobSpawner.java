@@ -40,7 +40,7 @@ public class MobSpawner extends Actor {
 
 		if (Dungeon.level.mobCount() < Dungeon.level.mobLimit()) {
 
-			if (Dungeon.level.spawnMob(12)){
+			if (Dungeon.level.spawnMob(12) != null){
 				spend(Dungeon.level.respawnCooldown());
 			} else {
 				//try again in 1 turn
@@ -193,7 +193,7 @@ public class MobSpawner extends Actor {
 				return new ArrayList<>(Arrays.asList(
 						Succubus.class,
 						Eye.class,
-						Resentment.class, Resentment.class));
+						Resentment.class));
 			case 22:
 				//1x succubus, 1x evil eye, 1x resentment, 1x sentry
 				return new ArrayList<>(Arrays.asList(

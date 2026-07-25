@@ -58,6 +58,7 @@ public class DemonSentry extends Mob {
 
 		properties.add(Property.DEMONIC);
 		properties.add(Property.IMMOVABLE);
+		properties.add(Property.INORGANIC);
 
 		WANDERING = new Wandering();
 		state = WANDERING;

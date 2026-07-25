@@ -786,7 +786,7 @@ public abstract class Level implements Bundlable {
 		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
 	}
 
-	public boolean spawnMob(int disLimit){
+	public Mob spawnMob(int disLimit){
 		PathFinder.buildDistanceMap(Dungeon.hero.pos, BArray.or(passable, avoid, null));
 
 		Mob mob = createMob();
@@ -805,9 +805,9 @@ public abstract class Level implements Bundlable {
 			if (!mob.buffs(ChampionEnemy.class).isEmpty()){
 				GLog.w(Messages.get(ChampionEnemy.class, "warn"));
 			}
-			return true;
+			return mob;
 		} else {
-			return false;
+			return null;
 		}
 	}
 	

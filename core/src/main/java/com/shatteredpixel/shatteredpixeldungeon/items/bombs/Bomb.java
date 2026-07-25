@@ -238,8 +238,8 @@ public class Bomb extends Item {
 
 				int dmg = Random.NormalIntRange(min(Dungeon.scalingDepth()) * quantity(),
 												max(Dungeon.scalingDepth()) * quantity());
-				if (curUser.subClass != HeroSubClass.GRENADIER || ch.alignment == Char.Alignment.ALLY
-						|| !grenadierThrown)
+
+				if (ch.alignment == Char.Alignment.ALLY || !grenadierThrown)
 					dmg -= ch.drRoll();
 
 				if (curUser.hasTalent(Talent.EXPLOSION_PROOF) && grenadierThrown

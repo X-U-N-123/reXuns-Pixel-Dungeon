@@ -23,8 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ResentmentSprite;
 import com.watabou.utils.Random;
 
@@ -33,8 +36,8 @@ public class Resentment extends Mob {
 	{
 		spriteClass = ResentmentSprite.class;
 
-		HP = HT = 75;
-		defenseSkill = 50;
+		HP = HT = 55;
+		defenseSkill = 45;
 		viewDistance = Light.DISTANCE;
 
 		EXP = 13;
@@ -42,15 +45,16 @@ public class Resentment extends Mob {
 
 		flying = true;
 
-		loot = Gold.class;
-		lootChance = 0.5f;
+		loot = new Gold().random();
+		((Item)loot).quantity(((Item)loot).quantity() / 3);
+		lootChance = 0.4f;
 
 		properties.add(Property.DEMONIC);
 	}
 
 	@Override
 	public float spawningWeight() {
-		return -1;
+		return -0.5f;
 	}
 
 	@Override
@@ -60,13 +64,14 @@ public class Resentment extends Mob {
 
 	@Override
 	public int attackSkill( Char target ) {
-		return 75;
+		return 70;
 	}//high evasion and accuracy! But players still have a way to fight ahainst it, see wandProc()
 
 	@Override
 	public void die( Object cause ){
 		flying = false;
 		super.die(cause);
-		Dungeon.level.spawnMob(12);
+		Mob m = Dungeon.level.spawnMob(20);
+		if (m != null && alignment != Alignment.ENEMY) Buff.affect(m, Corruption.class);
 	}
 }
