@@ -186,16 +186,12 @@ public class ScrollOfTransmutation extends InventoryScroll {
 				//if no artifacts are left, generate a random ring with shared ID/curse state
 				//artifact and ring levels are not exactly equivalent, give the ring up to +2
 				Item result = Generator.randomUsingDefaults(Generator.Category.RING);
+
 				result.levelKnown = item.levelKnown;
 				result.cursed = item.cursed;
 				result.cursedKnown = item.cursedKnown;
-				if (item.visiblyUpgraded() == 10){
-					result.level(2);
-				} else if (item.visiblyUpgraded() >= 5){
-					result.level(1);
-				} else {
-					result.level(0);
-				}
+				result.level(item.visiblyUpgraded() / 5);
+
 				return result;
 			} else {
 				return a;
@@ -323,10 +319,8 @@ public class ScrollOfTransmutation extends InventoryScroll {
 			n.cursed = a.cursed;
 			n.levelKnown = a.levelKnown;
 			n.transferUpgrade(a.visiblyUpgraded());
-			return n;
 		}
-
-		return null;
+		return n;
 	}
 
 	public static Trinket changeTrinket( Trinket t ){

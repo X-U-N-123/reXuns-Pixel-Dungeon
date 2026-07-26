@@ -21,13 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.Pickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -52,6 +57,8 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -73,8 +80,12 @@ public class MagicalTran extends InventorySpell{
                     && !(item instanceof BladeOfMimic) && !(item instanceof MultiTool);
 
             //all missile weapons except darts
-        } else if (item instanceof MissileWeapon){
+        } else if (item instanceof MissileWeapon) {
             return !(item instanceof Dart);
+
+            //all non-unique artifacts (no holy tome or cloak of shadows, basically)
+        } else if (item instanceof Artifact) {
+            return !item.unique;
 
             //all rings, wands, trinkets
         } else {
@@ -164,6 +175,19 @@ public class MagicalTran extends InventorySpell{
                 curUser.sprite.emitter().start(Speck.factory(Speck.CHANGE), 0.2f, 10);
                 GLog.p( Messages.get(ScrollOfTransmutation.class, "morph"), fItem.name());
                 updateQuickslot();
+
+                curUser.spend(1f);
+                curUser.busy();
+                (curUser.sprite).operate(curUser.pos);
+
+                Sample.INSTANCE.play(Assets.Sounds.READ);
+                Invisibility.dispel();
+
+                detach(curUser.belongings.backpack);
+                Catalog.countUse(curItem.getClass());
+                if (Random.Float() < ((Spell) curItem).talentChance) {
+                    Talent.onScrollUsed(curUser, curUser.pos, ((Spell) curItem).talentFactor, MagicalTran.this.getClass());
+                }
             }
 
             @Override
@@ -184,9 +208,23 @@ public class MagicalTran extends InventorySpell{
             return ScrollOfTransmutation.changeWand( (Wand)item );
         } else if (item instanceof Trinket) {
             return ScrollOfTransmutation.changeTrinket( (Trinket)item );
-        } else {
-            return null;
-        }
+        } else if (item instanceof Artifact){
+            Artifact a = ScrollOfTransmutation.changeArtifact( (Artifact) item );
+            if (a == null){
+                //if no artifacts are left, generate a random ring with shared ID/curse state
+                //artifact and ring levels are not exactly equivalent, give the ring up to +2
+                Item result = Generator.randomUsingDefaults(Generator.Category.RING);
+
+                result.levelKnown = item.levelKnown;
+                result.cursed = item.cursed;
+                result.cursedKnown = item.cursedKnown;
+                result.level(item.visiblyUpgraded() / 5);
+
+                return result;
+            } else {
+                return a;
+            }
+        } else return null;
     }
 
     @Override
