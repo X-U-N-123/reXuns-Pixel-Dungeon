@@ -101,7 +101,7 @@ public class GemPowder extends Item {
 
 		@Override
 		public boolean itemSelectable(Item item) {
-			return item instanceof Ring && item.isIdentified();
+			return item instanceof Ring && item.isIdentified() && item.unique;
 		}
 
 		@Override
@@ -149,7 +149,8 @@ public class GemPowder extends Item {
 			return ingredients.size() == 1
 					&& ingredients.get(0) instanceof Ring
 					&& ingredients.get(0).isIdentified()
-					&& !ingredients.get(0).cursed;
+					&& !ingredients.get(0).cursed
+					&& !ingredients.get(0).unique;
 		}
 
 		@Override

@@ -146,11 +146,11 @@ public class BuffIndicator extends Component {
 	public static final int LIFELOAN    = 93;
 	public static final int EVILUNFOLD  = 94;
 	public static final int EXHAUSTION_START = 95;
-	public static final int THROWN_WEP  = 85;
 	/*
 		three extra icons for exhaustion
 	*/
 	public static final int PARASITE    = 99;
+	public static final int THROWN_WEP  = 100;
 
 	public static final int SIZE_SMALL  = 7;
 	public static final int SIZE_LARGE  = 16;

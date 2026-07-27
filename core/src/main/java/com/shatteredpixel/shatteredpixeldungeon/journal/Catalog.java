@@ -184,7 +184,8 @@ public enum Catalog {
 	TIPPED_DARTS,
 	BREWS_ELIXIRS,
 	SPELLS,
-	MISC_CONSUMABLES;
+	MISC_CONSUMABLES,
+	REMAINS;
 
 	//tracks whether an item has been collected while identified
 	private final LinkedHashMap<Class<?>, Boolean> seen = new LinkedHashMap<>();
@@ -300,9 +301,10 @@ public enum Catalog {
 				TrinketCatalyst.class, Stylus.class, Torch.class, Honeypot.class, EmptyPot.class, Ankh.class, DoorPlank.class, MetalPart.class,
 				CorpseDust.class, Embers.class, CeremonialCandle.class, DarkGold.class, DwarfToken.class,
 				GooBlob.class, TengusMask.class, MetalShard.class, KingsCrown.class,
-				LiquidMetal.class, ArcaneResin.class, GemPowder.class,
-				SealShard.class, BrokenStaff.class, CloakScrap.class, BowFragment.class,
-                BrokenHilt.class, TornPage.class, ShovelScrap.class, ResidualRemain.class, RemainTool.class);
+				LiquidMetal.class, ArcaneResin.class, GemPowder.class);
+
+		REMAINS.addItems( SealShard.class, BrokenStaff.class, CloakScrap.class, BowFragment.class,
+				BrokenHilt.class, TornPage.class, ShovelScrap.class, ResidualRemain.class, RemainTool.class);
 	}
 
 	//old badges for pre-2.5
@@ -344,6 +346,7 @@ public enum Catalog {
 		consumableCatalogs.add(TIPPED_DARTS);
 		consumableCatalogs.add(BREWS_ELIXIRS);
 		consumableCatalogs.add(SPELLS);
+		consumableCatalogs.add(REMAINS);
 		consumableCatalogs.add(MISC_CONSUMABLES);
 	}
 	

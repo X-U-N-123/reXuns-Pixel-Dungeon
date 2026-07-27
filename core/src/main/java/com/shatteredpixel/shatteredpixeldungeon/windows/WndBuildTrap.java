@@ -55,7 +55,6 @@ public class WndBuildTrap extends Window {
         super();
 
         int width1 = 118;
-        int height = (int)(PixelScene.uiCamera.height * 0.9);
 
         float posY = MARGIN;
         float posX = 0;
@@ -95,7 +94,7 @@ public class WndBuildTrap extends Window {
             posX += trapBtn.width() + MARGIN;
         }
 
-        resize(width1, (int)Math.min(height, posY + 24));
+        resize(width1, (int)posY + 24);
     }
 
     public static class WndTrapConfirm extends WndTitledMessage {
