@@ -180,6 +180,7 @@ public class ItemSpriteSheet {
 	public static final int DEV_PICKAXE         = MISC_CONSUMABLE +22;
 	public static final int PART                = MISC_CONSUMABLE +23;
 	public static final int DEV_SPYGLASS        = MISC_CONSUMABLE +24;
+	public static final int SATCHEL             = MISC_CONSUMABLE +26;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);
@@ -188,6 +189,7 @@ public class ItemSpriteSheet {
         assignItemRect(INTACT_SEAL,     9,  15);
 		assignItemRect(TORCH,           12, 15);
 		assignItemRect(BEACON,          16, 15);
+		assignItemRect(SATCHEL,         16, 13);
 		
 		assignItemRect(HONEYPOT,        14, 12);
 		assignItemRect(SHATTPOT,        14, 12);
