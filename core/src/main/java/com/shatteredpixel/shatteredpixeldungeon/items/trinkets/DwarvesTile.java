@@ -130,7 +130,7 @@ public class DwarvesTile extends Trinket {
 
 		@Override
 		public void affectChar(Char ch) {
-			ch.damage(Random.NormalIntRange(min(Dungeon.scalingDepth()), max(Dungeon.scalingDepth())), DwarvesTile.class);
+			ch.damage(Random.NormalIntRange(min(Dungeon.scalingDepth()), max(Dungeon.scalingDepth())), new DwarvesTile());
 			if (ch.isAlive()) {
 				Buff.prolong(ch, Paralysis.class, 3);
 			} else if (ch == Dungeon.hero){
