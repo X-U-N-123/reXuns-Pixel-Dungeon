@@ -123,6 +123,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.remains.ResidualRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.ShovelScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.TornPage;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Alchemize;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
@@ -252,6 +253,7 @@ public enum Catalog {
 		WANDS.addItems(Generator.Category.WAND.classes);
 
 		RINGS.addItems(Generator.Category.RING.classes);
+		RINGS.addItems(RingOfMimic.class);
 
 		ARTIFACTS.addItems(Generator.Category.ARTIFACT.classes);
 

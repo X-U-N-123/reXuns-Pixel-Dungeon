@@ -459,7 +459,7 @@ public class ItemSpriteSheet {
 	public static final int THROWING_STONE  = MISSILE_WEP+3;
 	public static final int CLAY            = MISSILE_WEP+4;
     public static final int BONE_FRAGMENT   = MISSILE_WEP+5;
-	
+	public static final int DINNERKNIFE     = MISSILE_WEP+6;
 	public static final int FISHING_SPEAR   = MISSILE_WEP+7;
 	public static final int SHURIKEN        = MISSILE_WEP+8;
 	public static final int THROWING_CLUB   = MISSILE_WEP+9;
@@ -493,6 +493,7 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_STONE,  12, 10);
 		assignItemRect(CLAY,            12, 10);
         assignItemRect(BONE_FRAGMENT,   10, 10);
+		assignItemRect(DINNERKNIFE,     12, 12);
 
 		assignItemRect(FISHING_SPEAR,   11, 11);
 		assignItemRect(SHURIKEN,        12, 12);
@@ -628,6 +629,7 @@ public class ItemSpriteSheet {
 	public static final int RING_QUARTZ     = RINGS+9;
 	public static final int RING_AGATE      = RINGS+10;
 	public static final int RING_DIAMOND    = RINGS+11;
+	public static final int RING_MIMIC      = RINGS+12;
 	public static final int GEM_POWDER      = RINGS+15;
 	static {
 		for (int i = RINGS; i < RINGS+15; i++)

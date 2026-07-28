@@ -148,6 +148,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfFuror;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfHaste;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMight;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfTenacity;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -2407,6 +2408,10 @@ public class Hero extends Char {
 
 				if (buff(WellWater.DigTheWellCooldown.class) != null){
 					buff(WellWater.DigTheWellCooldown.class).decreaseCD();
+				}
+
+				if (buff(RingOfMimic.Mimic.class) != null){
+					buff(RingOfMimic.Mimic.class).onLevelUp();
 				}
 
 				updateHT( true );

@@ -121,8 +121,9 @@ public class Ring extends KindofMisc {
 			image = handler.image(this);
 			gem = handler.label(this);
 		} else {
-			image = ItemSpriteSheet.RING_GARNET;
-			gem = "garnet";
+			image = ItemSpriteSheet.RING_MIMIC;
+			gem = "mimic";
+			//for ring of mimic
 		}
 	}
 	

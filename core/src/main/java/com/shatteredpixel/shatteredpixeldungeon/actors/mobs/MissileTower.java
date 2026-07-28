@@ -76,6 +76,7 @@ public class MissileTower extends Mob {
 		}
 		mis.identify(false);
 		mis.enchant( Enchantment.random() );
+		mis.cursed = false;
 		mis.inTower = true;
 	}
 	
