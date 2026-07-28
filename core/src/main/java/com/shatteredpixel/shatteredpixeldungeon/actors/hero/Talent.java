@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AcidRain;
@@ -69,20 +70,30 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlameParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.ArcaneResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.GemPowder;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfDivination;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.Runestone;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfIntuition;
@@ -107,7 +118,9 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.IconTitle;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -295,6 +308,9 @@ public enum Talent {
 	POWERED_DEVICE(417, 4), SKYNET(418, 4), VIOLENT_LEAP(419, 4), ASSAULT(420, 4),
 	//Detonator T4
 	STACKED_CHARGE(421, 4), ALCHEMY_CRAFT(422, 4), DECOY(423, 4), PORTABLE_DETONATOR(424, 4),
+
+	//Pillager T1
+	GRAND_BANQUET(432), FORESIGHT_INTUITION(433), TESTED_COPY(434), ITEM_LEVERAGE(435), MISSED_SAFETY(436),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -894,6 +910,35 @@ public enum Talent {
 				}
 			}
 		}
+		if (Random.Int(3) < hero.pointsInTalent(TESTED_COPY)){
+			if (item instanceof Potion){
+				if (item instanceof ExoticPotion){
+					item = Reflection.newInstance(ExoticPotion.exoToReg.get(item.getClass()));
+				}
+				if (item instanceof PotionOfStrength || item instanceof PotionOfMastery) {
+					item = null;
+				} else {
+					item = Reflection.newInstance(Potion.potionToSeed.get(item.getClass()));
+				}
+			} else if (item instanceof Scroll) {
+				if (item instanceof ExoticScroll){
+					item = Reflection.newInstance(ExoticScroll.exoToReg.get(item.getClass()));
+				}
+				item = Reflection.newInstance(Scroll.ScrollToStone.stones.get(item.getClass()));
+			} else if (item instanceof Ring) {
+				item = new GemPowder();
+			} else if (item instanceof Wand) {
+				item = new ArcaneResin().quantity(2);
+			} else if (item instanceof Armor) {
+				item = new Stylus();
+			} else if (item instanceof Weapon) {
+				item = new LiquidMetal().quantity((((Weapon) item).tier + 1) * 2);
+			}
+			if (item != null){
+				GLog.p(Messages.get(Talent.class, TESTED_COPY.name() + ".get", item.name()));
+				item.collect();
+			}
+		}
 	}
 
 	public static void onTalentUpgraded( Hero hero, Talent talent ){
@@ -1023,6 +1068,54 @@ public enum Talent {
 					buff.spendToWhole();
 				}
 			}
+		}
+
+		if (talent == FORESIGHT_INTUITION && 1 + 2 * hero.pointsInTalent(talent) > Statistics.intuitionIdentify){
+			HashSet<Class<? extends Potion>> potions = Potion.getUnknown();
+			HashSet<Class<? extends Scroll>> scrolls = Scroll.getUnknown();
+
+			int total = potions.size() + scrolls.size();
+
+			ArrayList<Item> IDed = new ArrayList<>();
+			int left = 1 + 2 * hero.pointsInTalent(talent) - Statistics.intuitionIdentify;
+
+			float[] baseProbs = new float[]{1, 1};
+			float[] probs = baseProbs.clone();
+
+			while (left > 0 && total > 0) {
+				switch (Random.chances(probs)) {
+					default:
+						probs = baseProbs.clone();
+						continue;
+					case 0:
+						if (potions.isEmpty()) {
+							probs[0] = 0;
+							continue;
+						}
+						probs[0]--;
+						Potion p = Reflection.newInstance(Random.element(potions));
+						p.identify();
+						IDed.add(p);
+						potions.remove(p.getClass());
+						break;
+					case 1:
+						if (scrolls.isEmpty()) {
+							probs[1] = 0;
+							continue;
+						}
+						probs[1]--;
+						Scroll s = Reflection.newInstance(Random.element(scrolls));
+						s.identify();
+						IDed.add(s);
+						scrolls.remove(s.getClass());
+						break;
+				}
+				left --;
+				total --;
+				Statistics.intuitionIdentify ++;
+			}
+			GameScene.show(new ScrollOfDivination.WndDivination(IDed, new IconTitle(new TalentIcon(talent),
+					Messages.get(Talent.class, talent.name() + ".title"))));
 		}
 	}
 
@@ -1671,6 +1764,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, EAT_LITTLE_AND_OFTEN, FINE_INTUITION, TESTED_MAINTENANCE, GENERAL_DISARM, PULSE_ENERGY);
 				break;
 			case PILLAGER:
+				Collections.addAll(tierTalents, GRAND_BANQUET, FORESIGHT_INTUITION, TESTED_COPY, ITEM_LEVERAGE, MISSED_SAFETY);
 				break;
 		}
 		for (Talent talent : tierTalents){

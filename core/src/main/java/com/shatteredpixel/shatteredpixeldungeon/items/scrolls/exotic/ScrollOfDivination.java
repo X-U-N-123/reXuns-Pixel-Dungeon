@@ -118,20 +118,19 @@ public class ScrollOfDivination extends ExoticScroll {
 		if (left == 4){
 			GLog.n( Messages.get(this, "nothing_left") );
 		} else {
-			GameScene.show(new WndDivination(IDed));
+			GameScene.show(new WndDivination(IDed, new IconTitle(new ItemSprite(this),
+					Messages.titleCase(Messages.get(ScrollOfDivination.class, "name")))));
 		}
 
 		readAnimation();
 		identify();
 	}
 	
-	private class WndDivination extends Window {
+	public static class WndDivination extends Window {
 		
 		private static final int WIDTH = 120;
 		
-		WndDivination(ArrayList<Item> IDed ){
-			IconTitle cur = new IconTitle(new ItemSprite(ScrollOfDivination.this),
-					Messages.titleCase(Messages.get(ScrollOfDivination.class, "name")));
+		public WndDivination(ArrayList<Item> IDed, IconTitle cur){
 			cur.setRect(0, 0, WIDTH, 0);
 			add(cur);
 			

@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
@@ -128,6 +129,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -728,6 +730,13 @@ public abstract class Char extends Actor {
                 if (hero.hasTalent(Talent.AGILE_COUNTATK)){
                     Buff.affect(hero, Talent.AgileCountATKTracker.class, 0f);
                 }
+
+				if (hero.hasTalent(Talent.MISSED_SAFETY)){
+					int shieldToGive = Math.min(1 + hero.pointsInTalent(Talent.MISSED_SAFETY),
+							1 + 2 * hero.pointsInTalent(Talent.MISSED_SAFETY) - hero.shielding());
+					if (hero.shielding() <= 1 + 2 * hero.pointsInTalent(Talent.MISSED_SAFETY))
+						Buff.affect(hero, Barrier.class).incShield(shieldToGive);
+				}
             }
 
 			return false;
@@ -1274,6 +1283,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(KindOfWeapon.BattleModule.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(SummoningBeacon.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DwarvesTile.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(Item.Leverage.class);
 	}
 	
 	public void destroy() {

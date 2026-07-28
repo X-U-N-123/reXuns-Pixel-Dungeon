@@ -63,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.bombs.StenchBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.TimeBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WarpBomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.WoollyBomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Banquet;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Berry;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
@@ -274,7 +275,7 @@ public enum Catalog {
 
 		FOOD.addItems( Food.class, Pasty.class,
 				MysteryMeat.class, ChargrilledMeat.class, StewedMeat.class, FrozenCarpaccio.class,
-				SmallRation.class, Berry.class, SupplyRation.class, Tribute.class,
+				SmallRation.class, Berry.class, SupplyRation.class, Tribute.class, Banquet.class,
 				Blandfruit.class, PhantomMeat.class, MeatPie.class );
 
 		EXOTIC_POTIONS.addItems(ExoticPotion.exoToReg.keySet().toArray(new Class[0]));

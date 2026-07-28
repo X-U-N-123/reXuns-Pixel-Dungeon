@@ -58,7 +58,7 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
+import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -709,44 +709,45 @@ public class Item implements Bundlable {
 		final float delay = castDelay(user, cell);
 
 		if (enemy != null) {
-			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
-					reset(user.sprite,
-							enemy.sprite,
-							this,
-							new Callback() {
-						@Override
-						public void call() {
-							curUser = user;
-							Item i = Item.this.detach(user.belongings.backpack);
-							if (i != null) i.onThrow(cell);
-							if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
-									&& !(Item.this instanceof MissileWeapon)
-									&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null
-									&& !enemy.isImmune(Blindness.class)
-									&& enemy.alignment != curUser.alignment){
-								Sample.INSTANCE.play(Assets.Sounds.HIT);
-								Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
-								Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 40f);
-							}
+			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class))
+				.reset(user.sprite, enemy.sprite, this,
+					() -> {
+					curUser = user;
+					Item i = Item.this.detach(user.belongings.backpack);
+					if (i != null) i.onThrow(cell);
 
-							if (user.buff(Talent.LethalMomentumTracker.class) != null){
-								user.buff(Talent.LethalMomentumTracker.class).detach();
-								user.next();
-							} else {
-								float multi = 1f;
-								if (user.subClass == HeroSubClass.SCOUT && i instanceof SpiritBow.SpiritArrow) {
-									multi = Dungeon.level.distance(enemy.pos, user.pos)
-									/(Dungeon.level.distance(enemy.pos, user.pos) + 0.5f + user.pointsInTalent(Talent.PIONEERING_SPIRIT)/3f );
-								}
-
-								user.spendAndNext(delay * multi);
-								if (curUser.hasTalent(Talent.BALLISTICA_CALC)
-										&& Item.this instanceof Bomb && ((Bomb) Item.this).grenadierThrown()) {
-									Buff.prolong(curUser, Bomb.BallisticaCalcTracker.class, curUser.cooldown());
-								}
-							}
+					if (!(Item.this instanceof MissileWeapon)
+							&& enemy.alignment != curUser.alignment){
+						if (curUser.hasTalent(Talent.IMPROVISED_PROJECTILES)
+								&& curUser.buff(Talent.ImprovisedProjectileCooldown.class) == null
+								&& !enemy.isImmune(Blindness.class)){
+							Sample.INSTANCE.play(Assets.Sounds.HIT);
+							Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
+							Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 40f);
 						}
-					});
+						if (curUser.hasTalent(Talent.ITEM_LEVERAGE)){
+							Sample.INSTANCE.play(Assets.Sounds.HIT);
+							enemy.damage(Random.NormalIntRange(1, curUser.pointsInTalent(Talent.ITEM_LEVERAGE)), new Leverage());
+						}
+					}
+
+					if (user.buff(Talent.LethalMomentumTracker.class) != null){
+						user.buff(Talent.LethalMomentumTracker.class).detach();
+						user.next();
+					} else {
+						float multi = 1f;
+						if (user.subClass == HeroSubClass.SCOUT && i instanceof SpiritBow.SpiritArrow) {
+							multi = Dungeon.level.distance(enemy.pos, user.pos)
+									/(Dungeon.level.distance(enemy.pos, user.pos) + 0.5f + user.pointsInTalent(Talent.PIONEERING_SPIRIT)/3f );
+						}
+
+						user.spendAndNext(delay * multi);
+						if (curUser.hasTalent(Talent.BALLISTICA_CALC)
+								&& Item.this instanceof Bomb && ((Bomb) Item.this).grenadierThrown()) {
+							Buff.prolong(curUser, Bomb.BallisticaCalcTracker.class, curUser.cooldown());
+						}
+					}
+				});
 		} else {
 			((MissileSprite) user.sprite.parent.recycle(MissileSprite.class)).
 					reset(user.sprite,
@@ -806,4 +807,6 @@ public class Item implements Bundlable {
 	public float unidWeight(){
 		return weight();
 	}
+
+	public static class Leverage{}
 }

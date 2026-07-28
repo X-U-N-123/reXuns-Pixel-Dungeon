@@ -151,7 +151,8 @@ public class Dungeon {
 		LORE_CITY,
 		LORE_HALLS,
 
-		ANCESTRAL;
+		ANCESTRAL,
+		BANQUET;
 
 		public int count = 0;
 

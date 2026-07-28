@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Banquet;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
@@ -102,6 +103,12 @@ public class Heap implements Bundlable {
 			}
 			CellEmitter.center( pos ).start(Speck.factory(Speck.RATTLE), 0.1f, 3);
 			break;
+		case CHEST: case LOCKED_CHEST:
+			if (Dungeon.LimitedDrops.BANQUET.count < 1 + Dungeon.hero.pointsInTalent(Talent.GRAND_BANQUET)
+					&& Dungeon.hero.hasTalent(Talent.GRAND_BANQUET)){
+				items.add(new Banquet());
+				Dungeon.LimitedDrops.BANQUET.count ++;
+			}
 		default:
 		}
 		

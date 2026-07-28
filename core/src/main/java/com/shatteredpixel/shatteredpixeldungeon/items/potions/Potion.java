@@ -490,6 +490,22 @@ public class Potion extends Item {
 			return "";
 		}
 	}
+
+	public static HashMap<Class<? extends Potion>, Class<?extends Plant.Seed>> potionToSeed = new HashMap<>();
+	static {
+		potionToSeed.put(PotionOfInvisibility.class,Blindweed.Seed.class);
+		potionToSeed.put(PotionOfPurity.class,		Mageroyal.Seed.class);
+		potionToSeed.put(PotionOfParalyticGas.class,Earthroot.Seed.class);
+		potionToSeed.put(PotionOfMindVision.class,	Fadeleaf.Seed.class);
+		potionToSeed.put(PotionOfLiquidFlame.class,	Firebloom.Seed.class);
+		potionToSeed.put(PotionOfFrost.class,		Icecap.Seed.class);
+		potionToSeed.put(PotionOfStrength.class,	Rotberry.Seed.class);
+		potionToSeed.put(PotionOfToxicGas.class,	Sorrowmoss.Seed.class);
+		potionToSeed.put(PotionOfExperience.class,	Starflower.Seed.class);
+		potionToSeed.put(PotionOfLevitation.class,	Stormvine.Seed.class);
+		potionToSeed.put(PotionOfHealing.class,		Sungrass.Seed.class);
+		potionToSeed.put(PotionOfHaste.class,		Swiftthistle.Seed.class);
+	}
 	
 	public static class SeedToPotion extends Recipe {
 		
