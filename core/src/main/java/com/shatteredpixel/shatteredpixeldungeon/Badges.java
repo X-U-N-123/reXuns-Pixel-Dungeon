@@ -132,6 +132,7 @@ public class Badges {
 		BOSS_SLAIN_1_EXPLORER,
         BOSS_SLAIN_1_WRAITH,
 		BOSS_SLAIN_1_ENGINEER,
+		BOSS_SLAIN_1_PILLAGER,
 		BOSS_SLAIN_1_ALL_CLASSES    ( 54, BadgeType.GLOBAL ),
 		RESEARCHER_2                ( 55, BadgeType.JOURNAL ),
 		GAMES_PLAYED_2              ( 56, BadgeType.GLOBAL ),
@@ -193,6 +194,7 @@ public class Badges {
 		VICTORY_EXPLORER,
         VICTORY_WRAITH,
 		VICTORY_ENGINEER,
+		VICTORY_PILLAGER,
 		VICTORY_ALL_CLASSES         ( 102, BadgeType.GLOBAL ),
 		DEATH_FROM_ALL              ( 103, BadgeType.GLOBAL ),
 		BOSS_SLAIN_3_GLADIATOR,
@@ -222,6 +224,7 @@ public class Badges {
 		BOSS_SLAIN_3_CRAFTSMAN,
 		BOSS_SLAIN_3_HACKER,
 		BOSS_SLAIN_3_GRENADIER,
+		BOSS_SLAIN_3_POACHER,
 		BOSS_SLAIN_3_ALL_SUBCLASSES ( 104, BadgeType.GLOBAL ),
 		BOSS_CHALLENGE_3            ( 105 ),
 		BOSS_CHALLENGE_4            ( 106 ),
@@ -837,6 +840,7 @@ public class Badges {
 		firstBossClassBadges.put(HeroClass.EXPLORER, Badge.BOSS_SLAIN_1_EXPLORER);
         firstBossClassBadges.put(HeroClass.WRAITH, Badge.BOSS_SLAIN_1_WRAITH);
 		firstBossClassBadges.put(HeroClass.ENGINEER, Badge.BOSS_SLAIN_1_ENGINEER);
+		firstBossClassBadges.put(HeroClass.PILLAGER, Badge.BOSS_SLAIN_1_PILLAGER);
 	}
 
 	private static LinkedHashMap<HeroClass, Badge> victoryClassBadges = new LinkedHashMap<>();
@@ -850,6 +854,7 @@ public class Badges {
 		victoryClassBadges.put(HeroClass.EXPLORER, Badge.VICTORY_EXPLORER);
         victoryClassBadges.put(HeroClass.WRAITH, Badge.VICTORY_WRAITH);
 		victoryClassBadges.put(HeroClass.ENGINEER, Badge.VICTORY_ENGINEER);
+		victoryClassBadges.put(HeroClass.PILLAGER, Badge.VICTORY_PILLAGER);
 	}
 
 	private static LinkedHashMap<HeroSubClass, Badge> thirdBossSubclassBadges = new LinkedHashMap<>();
@@ -881,6 +886,7 @@ public class Badges {
 		thirdBossSubclassBadges.put(HeroSubClass.CRAFTSMAN, Badge.BOSS_SLAIN_3_CRAFTSMAN);
 		thirdBossSubclassBadges.put(HeroSubClass.HACKER, Badge.BOSS_SLAIN_3_HACKER);
 		thirdBossSubclassBadges.put(HeroSubClass.GRENADIER, Badge.BOSS_SLAIN_3_GRENADIER);
+		thirdBossSubclassBadges.put(HeroSubClass.POACHER, Badge.BOSS_SLAIN_3_POACHER);
 	}
 	
 	public static void validateBossSlain() {

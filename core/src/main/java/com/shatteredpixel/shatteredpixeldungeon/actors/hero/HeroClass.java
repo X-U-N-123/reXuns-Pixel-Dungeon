@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Replication;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.SmokeBomb;
@@ -61,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Goldarrow;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
+import com.shatteredpixel.shatteredpixeldungeon.items.Satchel;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
@@ -87,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfPurity;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfLullaby;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -96,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRemoveCurse;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetribution;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Extract;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
@@ -105,6 +109,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
@@ -113,6 +118,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.BoneFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
@@ -132,7 +138,8 @@ public enum HeroClass {
 	CLERIC( HeroSubClass.PRIEST, HeroSubClass.PALADIN, HeroSubClass.PREACHER),
 	EXPLORER( HeroSubClass.WAVECHASER, HeroSubClass.TRAPPER, HeroSubClass.ROCKSY),
     WRAITH( HeroSubClass.INCUBUS, HeroSubClass.PLAGUEGOD, HeroSubClass.SOULHANDLER),
-	ENGINEER( HeroSubClass.CRAFTSMAN, HeroSubClass.HACKER, HeroSubClass.GRENADIER);
+	ENGINEER( HeroSubClass.CRAFTSMAN, HeroSubClass.HACKER, HeroSubClass.GRENADIER),
+	PILLAGER( HeroSubClass.POACHER);
 
 	private HeroSubClass[] subClasses;
 
@@ -194,14 +201,18 @@ public enum HeroClass {
 			case ENGINEER:
 				initEngineer( hero );
 				break;
+
+			case PILLAGER:
+				initPillager( hero );
+				break;
 		}
 
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 
-			RingOfEnergy ring = new RingOfEnergy();
-			ring.identify();
+			RingOfEnergy ring = (RingOfEnergy) new RingOfEnergy().identify();
 			ring.level(50);
-			hero.belongings.ring = ring;
+			if (hero.belongings.ring == null) hero.belongings.ring = ring;
+			else hero.belongings.misc = ring;
 			ring.activate(hero);
 
 			new DwarvesTile().identify(false).collect();
@@ -382,6 +393,26 @@ public enum HeroClass {
 		new ScrollOfRecharging().identify();
 	}
 
+	private static void initPillager(Hero hero ) {
+
+		(hero.belongings.weapon = new Fork()).identify();
+		hero.belongings.weapon.activate(hero);
+
+		(hero.belongings.ring = new RingOfMimic()).activate(hero);
+		hero.belongings.ring.identify();
+
+		Dinnerknife knife = new Dinnerknife();
+		knife.identify().collect();
+
+		new Satchel().collect();
+
+		Dungeon.quickslot.setSlot(0, hero.belongings.ring);
+		Dungeon.quickslot.setSlot(1, knife);
+
+		new PotionOfExperience().identify();
+		new ScrollOfTransmutation().identify();
+	}
+
 	public String title() {
 		return Messages.get(HeroClass.class, name());
 	}
@@ -418,6 +449,8 @@ public enum HeroClass {
                 return new ArmorAbility[]{new Transfusion(), new EvilUnfold(), new GhostWander()};
 			case ENGINEER:
 				return new ArmorAbility[]{new ForceField(), new SummoningBeacon(), new Detonator()};
+			case PILLAGER:
+				return new ArmorAbility[]{new Replication()};
 		}
 	}
 
@@ -490,6 +523,8 @@ public enum HeroClass {
                 return Badges.isUnlocked(Badges.Badge.UNLOCK_WRAITH);
 			case ENGINEER:
 				return Badges.isUnlocked(Badges.Badge.UNLOCK_ENGINEER);
+			case PILLAGER:
+				return Badges.isUnlocked(Badges.Badge.GOLD_COLLECTED_2);
 		}
 	}
 	

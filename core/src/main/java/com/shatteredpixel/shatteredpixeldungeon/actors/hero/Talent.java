@@ -1670,6 +1670,8 @@ public enum Talent {
 			case ENGINEER:
 				Collections.addAll(tierTalents, EAT_LITTLE_AND_OFTEN, FINE_INTUITION, TESTED_MAINTENANCE, GENERAL_DISARM, PULSE_ENERGY);
 				break;
+			case PILLAGER:
+				break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1708,6 +1710,8 @@ public enum Talent {
 			case ENGINEER:
 				Collections.addAll(tierTalents, TOILSOME_MEAL, IONIC_LIQUID, STRONG_PULSE, RESONANT_SENSING, APART_ANYTHING, REMOTE_DESTRUCTION);
 				break;
+			case PILLAGER:
+				break;
 		}
 		for (Talent talent : tierTalents){
 			if (replacements.containsKey(talent)){
@@ -1745,6 +1749,8 @@ public enum Talent {
                 break;
 			case ENGINEER:
 				Collections.addAll(tierTalents, DURABLE_MODIFIES, ELECTRONIC_REPAIR, IONIZING_RADIATION);
+				break;
+			case PILLAGER:
 				break;
 		}
 		for (Talent talent : tierTalents){
@@ -1854,6 +1860,8 @@ public enum Talent {
 				break;
 			case GRENADIER:
 				Collections.addAll(tierTalents, EXPLOSION_PROOF, SHOCKWAVE, ADDED_POWDER, MAGICAL_EXPLOSION, BALLISTICA_CALC);
+				break;
+			case POACHER:
 				break;
 		}
 		for (Talent talent : tierTalents){

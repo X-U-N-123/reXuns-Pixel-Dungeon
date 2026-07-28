@@ -142,6 +142,7 @@ public class ItemSpriteSheet {
 	public static final int SHOVEL_SCRAP = REMAIN_ITEM +6;
 	public static final int RESIDUE      = REMAIN_ITEM +7;
 	public static final int REMAIN_TOOL  = REMAIN_ITEM +8;
+	public static final int HOLED_PACK   = REMAIN_ITEM +9;
 	static{
 		assignItemRect(SEAL_SHARD,      11, 11);
 		assignItemRect(BROKEN_STAFF,    14, 10);
@@ -152,6 +153,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SHOVEL_SCRAP,    10, 11);
 		assignItemRect(RESIDUE,         13,  8);
 		assignItemRect(REMAIN_TOOL,     13, 13);
+		assignItemRect(HOLED_PACK,      14, 12);
 	}
 
 	private static final int MISC_CONSUMABLE = xy(1, 3);   //32 slots
@@ -180,7 +182,7 @@ public class ItemSpriteSheet {
 	public static final int DEV_PICKAXE         = MISC_CONSUMABLE +22;
 	public static final int PART                = MISC_CONSUMABLE +23;
 	public static final int DEV_SPYGLASS        = MISC_CONSUMABLE +24;
-	public static final int SATCHEL             = MISC_CONSUMABLE +26;
+	public static final int SATCHEL             = MISC_CONSUMABLE +25;
 	static{
 		assignItemRect(ANKH,            10, 16);
 		assignItemRect(STYLUS,          12, 13);

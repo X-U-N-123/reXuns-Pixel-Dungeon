@@ -560,6 +560,7 @@ public enum Icons {
 			case EXPLORER: return new ItemSprite(ItemSpriteSheet.SHOVEL);
             case WRAITH:   return new ItemSprite(ItemSpriteSheet.BONE_SPIKE);
 			case ENGINEER: return new ItemSprite(ItemSpriteSheet.TOOL);
+			case PILLAGER: return new ItemSprite(ItemSpriteSheet.SATCHEL);
 			default:       return new ItemSprite(ItemSpriteSheet.SOMETHING);
 		}
 	}

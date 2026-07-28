@@ -39,7 +39,7 @@ public class Fork extends MeleeWeapon {
 
     @Override
     public int max(int lvl) {
-        return  Math.round(7f*(tier+1)) +    //13 base, up from 10
+        return  Math.round(6.5f*(tier+1)) +  //13 base, up from 10
                 lvl*(tier+1);                //scaling unchanged
     }
 

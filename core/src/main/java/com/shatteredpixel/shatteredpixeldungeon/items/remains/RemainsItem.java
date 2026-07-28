@@ -98,6 +98,8 @@ public abstract class RemainsItem extends Item {
                 return new ResidualRemain();
 			case ENGINEER:
 				return new RemainTool();
+			case PILLAGER:
+				return new HoledPackage();
 		}
 	}
 }

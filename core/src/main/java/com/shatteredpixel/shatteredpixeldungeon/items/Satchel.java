@@ -81,7 +81,7 @@ public class Satchel extends Item {
 
 				@Override
 				public boolean itemSelectable(Item item) {
-					return !(item instanceof Satchel);
+					return !(item instanceof Satchel) && !item.isEquipped(hero);
 				}
 
 				@Override
@@ -145,6 +145,16 @@ public class Satchel extends Item {
 
 	public ArrayList<Item> items() {
 		return items;
+	}
+
+	@Override
+	public boolean isIdentified() {
+		return true;
+	}
+
+	@Override
+	public boolean isUpgradable() {
+		return false;
 	}
 
 	public static class ItemWindow extends Window {
