@@ -44,7 +44,7 @@ public class Statistics {
 	public static int elixirManaDrunk;
 	public static int conRechargeUsed;
 	public static int conEnergyUsed;
-	public static boolean corrosionUsed;
+	public static boolean deviceGot;
 	public static int wellWaterDug;
 	public static int intuitionIdentify;
 
@@ -99,7 +99,7 @@ public class Statistics {
 		ankhsUsed		= 0;
 
 		enlighteningDrunk = 0;
-		corrosionUsed   = false;
+		deviceGot       = false;
 		wellWaterDug    = 0;
 		elixirManaDrunk = 0;
 		conRechargeUsed = 0;
@@ -154,7 +154,7 @@ public class Statistics {
 	private static final String MANA        = "elixirManaUsed";
 	private static final String CONRECHARGE = "conRechargeUsed";
 	private static final String CONENERGY   = "conEnergyUsed";
-	private static final String CORROSION   = "corrosionUsed";
+	private static final String DEVICEGOT   = "deviceGot";
 	private static final String WELLDUG     = "wellWaterDug";
 	private static final String INTUITON    = "intuition";
 
@@ -206,7 +206,7 @@ public class Statistics {
 		bundle.put( MANA, elixirManaDrunk);
 		bundle.put( CONRECHARGE, conRechargeUsed );
 		bundle.put( CONENERGY, conEnergyUsed );
-		bundle.put( CORROSION, corrosionUsed);
+		bundle.put( DEVICEGOT, deviceGot);
 		bundle.put( WELLDUG, wellWaterDug);
 		bundle.put( INTUITON, intuitionIdentify);
 
@@ -263,7 +263,7 @@ public class Statistics {
 		elixirManaDrunk = bundle.getInt( MANA );
 		conRechargeUsed = bundle.getInt( CONRECHARGE );
 		conEnergyUsed = bundle.getInt( CONENERGY );
-		corrosionUsed   = bundle.getBoolean( CORROSION );
+		deviceGot   = bundle.getBoolean( DEVICEGOT );
 		wellWaterDug    = bundle.getInt(WELLDUG);
 		intuitionIdentify = bundle.getInt(INTUITON);
 

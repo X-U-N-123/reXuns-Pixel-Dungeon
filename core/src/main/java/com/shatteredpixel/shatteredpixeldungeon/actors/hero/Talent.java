@@ -76,7 +76,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.GemPowder;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.Satchel;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.TrackingDevice;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
@@ -87,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
@@ -311,6 +314,8 @@ public enum Talent {
 
 	//Pillager T1
 	GRAND_BANQUET(432), FORESIGHT_INTUITION(433), TESTED_COPY(434), ITEM_LEVERAGE(435), MISSED_SAFETY(436),
+	//Pillager T2
+	FRUGALITY(437), INSCRIBED_TREASURE(438), DECIDED_TRANSMUTE(439), TRACKING_DEVICE(440), PACK_EXPANSION(441), TAILWIND_PICK(442),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1117,6 +1122,16 @@ public enum Talent {
 			GameScene.show(new ScrollOfDivination.WndDivination(IDed, new IconTitle(new TalentIcon(talent),
 					Messages.get(Talent.class, talent.name() + ".title"))));
 		}
+		if (talent == TRACKING_DEVICE && !Statistics.deviceGot){
+			TrackingDevice device = new TrackingDevice();
+			if (!device.collect()) Dungeon.level.drop(device, hero.pos).sprite.drop();
+			Statistics.deviceGot = true;
+		}
+		if (talent == PACK_EXPANSION && !Dungeon.LimitedDrops.SATCHEL.dropped() && hero.heroClass != HeroClass.PILLAGER){
+			Satchel satchel = new Satchel();
+			if (!satchel.collect()) Dungeon.level.drop(satchel, hero.pos).sprite.drop();
+			Dungeon.LimitedDrops.SATCHEL.drop();
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
@@ -1478,6 +1493,17 @@ public enum Talent {
             hero.HP += toHeal;
             hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
 		}
+		if (Random.Int(2) < hero.pointsInTalent(INSCRIBED_TREASURE)){
+			Item toGive;
+			if (Math.round(factor) >= 2)toGive = RingOfWealth.genMidValueConsumable();
+			else						toGive = RingOfWealth.genLowValueConsumable();
+
+			//cancel pickup time
+			if (toGive.doPickUp(hero)) hero.spendAndNext(-toGive.pickupDelay());
+			else Dungeon.level.drop(toGive, hero.pos).sprite.drop();
+
+			GLog.h(Messages.get(Talent.class, INSCRIBED_TREASURE.name() + ".get", toGive.name()));
+		}
 	}
 
 	public static void onRunestoneUsed( Hero hero, int pos, Class<?extends Item> cls ){
@@ -1805,6 +1831,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, TOILSOME_MEAL, IONIC_LIQUID, STRONG_PULSE, RESONANT_SENSING, APART_ANYTHING, REMOTE_DESTRUCTION);
 				break;
 			case PILLAGER:
+				Collections.addAll(tierTalents, FRUGALITY, INSCRIBED_TREASURE, DECIDED_TRANSMUTE, TRACKING_DEVICE, PACK_EXPANSION, TAILWIND_PICK);
 				break;
 		}
 		for (Talent talent : tierTalents){

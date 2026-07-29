@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.TrackingDevice;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -1531,6 +1532,12 @@ public abstract class Level implements Bundlable {
 					int p = heap.pos;
 					for (int i : PathFinder.NEIGHBOURS9) heroMindFov[p+i] = true;
 				}
+			}
+
+			for (Mob m : mobs.toArray(new Mob[0])){
+				if (m.buff(TrackingDevice.GoldMark.class) == null) continue;
+
+				for (int i : PathFinder.NEIGHBOURS9) heroMindFov[m.pos+i] = true;
 			}
 
 			for (TalismanOfForesight.CharAwareness a : c.buffs(TalismanOfForesight.CharAwareness.class)){

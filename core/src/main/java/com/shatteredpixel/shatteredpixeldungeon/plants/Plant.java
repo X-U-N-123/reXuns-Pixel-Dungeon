@@ -210,7 +210,11 @@ public abstract class Plant implements Bundlable {
 
 			if (action.equals( AC_EAT ) && Dungeon.hero.hasTalent(Talent.GRASSMAN)) {
 
-				detach( hero.belongings.backpack );
+				float preserveChance;
+				if (!Dungeon.hero.hasTalent(Talent.FRUGALITY)) preserveChance = 0;
+				else preserveChance = 0.05f + 0.1f * Dungeon.hero.pointsInTalent(Talent.FRUGALITY);
+
+				if (Random.Float() > preserveChance) detach( hero.belongings.backpack );
 				Catalog.countUse(getClass());
 
 				float foodVal = 120;
@@ -232,7 +236,8 @@ public abstract class Plant implements Bundlable {
 						|| hero.hasTalent(Talent.FOCUSED_MEAL)
 						|| hero.hasTalent(Talent.ENLIGHTENING_MEAL)
 						|| hero.hasTalent(Talent.PREPARING_MEAL)
-						|| hero.hasTalent(Talent.TEARING_MEAL))
+						|| hero.hasTalent(Talent.TEARING_MEAL)
+						|| Dungeon.hero.hasTalent(Talent.FRUGALITY))
 					timeToEat = 0;
 
 				if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, Food.ToilsomeMealTracker.class, timeToEat).foodVal = foodVal;

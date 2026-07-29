@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Amulet;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.TrackingDevice;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -143,6 +144,7 @@ public class Dungeon {
 		POTION_BANDOLIER,
 		MAGICAL_HOLSTER,
 		FOOD_POCKET,
+		SATCHEL,
 
 		//lore documents
 		LORE_SEWERS,
@@ -964,6 +966,16 @@ public class Dungeon {
 				//updates adjacent cells too
 				GameScene.updateFog(m.pos, 2);
 			}
+		}
+
+		for (Mob m : level.mobs.toArray(new Mob[0])){
+			if (m.buff(TrackingDevice.GoldMark.class) == null) continue;
+
+			BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
+			BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
+			BArray.or( level.visited, level.heroFOV, m.pos - 1 + level.width(), 3, level.visited );
+			//updates adjacent cells too
+			GameScene.updateFog(m.pos, 2);
 		}
 
 		if (hero.buff(Awareness.class) != null){

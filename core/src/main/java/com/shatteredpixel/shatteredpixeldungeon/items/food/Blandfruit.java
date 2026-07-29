@@ -94,6 +94,11 @@ public class Blandfruit extends Food {
 	}
 
 	@Override
+	protected float preserveChance() {
+		return 0;
+	}
+
+	@Override
 	public void execute( Hero hero, String action ) {
 
 		if (action.equals( Potion.AC_CHOOSE )){

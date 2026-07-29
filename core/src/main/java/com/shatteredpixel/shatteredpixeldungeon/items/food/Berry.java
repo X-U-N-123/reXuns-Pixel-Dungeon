@@ -48,7 +48,8 @@ public class Berry extends Food {
 				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.PREPARING_MEAL)
-                || Dungeon.hero.hasTalent(Talent.TEARING_MEAL)){
+                || Dungeon.hero.hasTalent(Talent.TEARING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.FRUGALITY)){
 			return 0;
 		} else {
 			return 1;
@@ -70,5 +71,5 @@ public class Berry extends Food {
 		return 5 * quantity;
 	}
 
-	public static class SeedCounter extends CounterBuff{{revivePersists = true;}};
+	public static class SeedCounter extends CounterBuff{{revivePersists = true;}}
 }

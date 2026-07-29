@@ -49,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -105,6 +106,9 @@ public class HornOfPlenty extends Artifact {
 					satietyPerCharge /= 3;
 				}
 
+				if (Dungeon.hero.hasTalent(Talent.EAT_LITTLE_AND_OFTEN))
+					satietyPerCharge *= 1.05f + 0.1f * Dungeon.hero.pointsInTalent(Talent.EAT_LITTLE_AND_OFTEN);
+
 				Hunger hunger = Buff.affect(Dungeon.hero, Hunger.class);
 				int chargesToUse = Math.max( 1, hunger.hunger() / satietyPerCharge);
 				if (chargesToUse > charge) chargesToUse = charge;
@@ -139,7 +143,8 @@ public class HornOfPlenty extends Artifact {
 				|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
 				|| Dungeon.hero.hasTalent(Talent.PREPARING_MEAL)
-				|| Dungeon.hero.hasTalent(Talent.TEARING_MEAL))
+				|| Dungeon.hero.hasTalent(Talent.TEARING_MEAL)
+				|| Dungeon.hero.hasTalent(Talent.FRUGALITY))
 			timeToEat -= 2;
 
 		if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, Food.ToilsomeMealTracker.class, timeToEat)
@@ -148,6 +153,13 @@ public class HornOfPlenty extends Artifact {
 
 		Statistics.foodEaten++;
 
+		float chargeDec;
+		if (!Dungeon.hero.hasTalent(Talent.FRUGALITY)) chargeDec = 0;
+		else chargeDec = (0.05f + 0.1f * Dungeon.hero.pointsInTalent(Talent.FRUGALITY)) * chargesToUse;
+
+		while (Random.Float() < chargeDec){
+			chargesToUse --;
+		}
 		charge -= chargesToUse;
 		Talent.onArtifactUsed(hero);
 

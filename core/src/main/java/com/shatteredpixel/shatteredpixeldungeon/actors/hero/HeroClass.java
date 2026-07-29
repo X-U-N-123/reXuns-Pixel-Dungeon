@@ -405,6 +405,7 @@ public enum HeroClass {
 		knife.identify().collect();
 
 		new Satchel().collect();
+		Dungeon.LimitedDrops.SATCHEL.drop();
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.ring);
 		Dungeon.quickslot.setSlot(1, knife);

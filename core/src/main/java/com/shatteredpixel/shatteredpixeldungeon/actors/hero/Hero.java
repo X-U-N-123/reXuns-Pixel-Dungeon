@@ -465,7 +465,7 @@ public class Hero extends Char {
 				&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
 			Bonus += 2;
 		}
-		if (Statistics.corrosionUsed && tier == 3) Bonus += 3;
+		if (corroLostTalent != null && tier == 3) Bonus += 3;
 		return Bonus;
 	}
 	

@@ -25,13 +25,16 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -59,7 +62,7 @@ public class RingOfMimic extends Ring {
 
 	public String statsInfo() {
 		String desc = "";
-		if (time > 0)		desc += Messages.get(this, "desc_effect", mimicRing.trueName());
+		if (time > 0) desc += Messages.get(this, "desc_effect", mimicRing.trueName()) + mimicRing.statsInfo();
 		else if (time < 0)	desc += Messages.get(this, "desc_cd");
 		else				desc += Messages.get(this, "desc_ready");
 		return desc;
@@ -82,22 +85,64 @@ public class RingOfMimic extends Ring {
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
 		if (action.equals(AC_MIMIC) && time == 0){
-			do {
+
+			if (curUser.hasTalent(Talent.DECIDED_TRANSMUTE)) {
+				String[] options;
+
+				Ring ring1 = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
+
+				Ring ring2;
+				do {
+					ring2 = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
+				} while (ring1.getClass() == ring2.getClass());
+
+				Ring ring3 = null;
+				if (curUser.pointsInTalent(Talent.DECIDED_TRANSMUTE) >= 2){
+					do {
+						ring3 = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
+					} while (ring1.getClass() == ring3.getClass() || ring2.getClass() == ring3.getClass());
+
+					options = new String[]{ring1.trueName(), ring2.trueName(), ring3.trueName()};
+				} else options = new String[]{ring1.trueName(), ring2.trueName()};
+
+				time = -100;
+				BuffIndicator.refreshHero();
+
+				Ring Ring2 = ring2;
+				Ring Ring3 = ring3;
+				GameScene.show(new WndOptions(new ItemSprite(this), name(), Messages.get(this, "choose"), options){
+					@Override
+					protected void onSelect(int index) {
+						super.onSelect(index);
+						switch (index){
+							case 0: mimicRing = ring1; break;
+							case 1: mimicRing = Ring2; break;
+							case 2: mimicRing = Ring3; break;
+						}
+						doEffect();
+					}
+					@Override
+					public void onBackPressed() {/*do nothing*/}
+				});
+			} else {
 				mimicRing = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
-			} while (mimicRing instanceof RingOfMimic);
-
-			mimicRing.cursed = false;
-			mimicRing.identify(false);
-			mimicRing.level(level());
-			time = START_TIME;
-
-			mimicRing.activate(hero);
-			updateQuickslot();
-			GLog.p(Messages.get(this, "desc_effect", mimicRing.trueName()));
-			Sample.INSTANCE.play(Assets.Sounds.READ);
-			curUser.sprite.operate(curUser.pos);
-			curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.15f, 4);
+				doEffect();
+			}
 		}
+	}
+
+	private void doEffect() {
+		mimicRing.cursed = false;
+		mimicRing.identify(false);
+		mimicRing.level(level());
+		time = START_TIME;
+
+		mimicRing.activate(curUser);
+		updateQuickslot();
+		GLog.p(Messages.get(this, "desc_effect", mimicRing.trueName()));
+		Sample.INSTANCE.play(Assets.Sounds.READ);
+		curUser.sprite.operate(curUser.pos);
+		curUser.sprite.emitter().start(Speck.factory(Speck.LIGHT), 0.15f, 4);
 	}
 
 	@Override
@@ -176,7 +221,7 @@ public class RingOfMimic extends Ring {
 		@Override
 		public String desc() {
 			String desc = "";
-			if (time > 0)		desc += Messages.get(RingOfMimic.class, "desc_effect", mimicRing.trueName());
+			if (time > 0) desc += Messages.get(this, "desc_effect", mimicRing.trueName()) + mimicRing.statsInfo();
 			else if (time < 0)	desc += Messages.get(RingOfMimic.class, "desc_cd");
 			else				desc += Messages.get(RingOfMimic.class, "desc_ready");
 			return desc + "\n\n" + Messages.get(RingOfMimic.class, "buff_time", Math.abs(RingOfMimic.this.time));

@@ -24,7 +24,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.spells;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -57,7 +56,7 @@ public class Corrosion extends Spell {
 
     @Override
     protected void onCast(final Hero hero){
-        if (Statistics.corrosionUsed || hero.subClass == HeroSubClass.NONE || hero.lvl < 12){
+        if (hero.corroLostTalent != null || hero.subClass == HeroSubClass.NONE || hero.lvl < 12){
             hero.HP = 0;
             Sample.INSTANCE.play(Assets.Sounds.BURNING);
             hero.die(this);
@@ -74,7 +73,7 @@ public class Corrosion extends Spell {
     @Override
     public String desc() {
         String desc = super.desc();
-        if (Statistics.corrosionUsed)
+        if (Dungeon.hero != null && Dungeon.hero.corroLostTalent != null)
             desc += "\n\n" + Messages.get(this, "desc_used");
         if (Dungeon.hero == null || Dungeon.hero.subClass == HeroSubClass.NONE || Dungeon.hero.lvl < 12)
             desc += "\n\n" + Messages.get(this, "desc_no_subclass");

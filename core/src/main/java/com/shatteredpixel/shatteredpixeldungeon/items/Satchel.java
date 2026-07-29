@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -46,27 +48,40 @@ public class Satchel extends Item {
 
 	private static final String AC_STORE = "store";
 	private static final String AC_CHECK = "check";
+	private static final String AC_TAKEOUT = "takeout";
 
 	{
 		image = ItemSpriteSheet.SATCHEL;
 		defaultAction = AC_STORE;
+
+		unique = true;
+		bones = false;
 	}
 
 	private int maxCapacity(){
-		return 5;
+		int capacity = Dungeon.hero.heroClass == HeroClass.PILLAGER ? 5 : 0;
+		if (Dungeon.hero.hasTalent(Talent.PACK_EXPANSION)) capacity += 1 + 2 * Dungeon.hero.pointsInTalent(Talent.PACK_EXPANSION);
+		return capacity;
 	}
 
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
 		actions.add(AC_STORE);
-		if (!items.isEmpty()) actions.add(AC_CHECK);
+		if (!items.isEmpty()) {
+			actions.add(AC_CHECK);
+			actions.add(AC_TAKEOUT);
+		}
 		return actions;
 	}
 
 	@Override
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
+		if (!Dungeon.hero.hasTalent(Talent.PACK_EXPANSION) && hero.heroClass != HeroClass.PILLAGER){
+			action = AC_TAKEOUT;
+			detach(hero.belongings.backpack);
+		}
 		if (action.equals(AC_STORE)){
 			GameScene.selectItem(new WndBag.ItemSelector() {
 				@Override
@@ -110,6 +125,13 @@ public class Satchel extends Item {
 		}
 		if (action.equals(AC_CHECK)){
 			GameScene.show(new ItemWindow(items));
+		}
+		if (action.equals(AC_TAKEOUT)){
+			for (Item i : items) {
+				if (!i.collect()) Dungeon.level.drop(i, Dungeon.hero.pos).sprite.drop();
+			}
+			items.clear();
+			GLog.i(Messages.get(this, "takeout"));
 		}
 	}
 

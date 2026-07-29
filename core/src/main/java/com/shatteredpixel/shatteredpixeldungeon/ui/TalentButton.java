@@ -264,12 +264,10 @@ public class TalentButton extends Button {
 						if (f == talent){
 							Dungeon.hero.talents.get(2).remove(f);
 							Dungeon.hero.corroLostTalent = talent;
-							Talent.onTalentUpgraded(Dungeon.hero, talent);
 							break;
 						}
 					}
 
-					Statistics.corrosionUsed = true;
 					Corrosion.WndTalentForget.corrosion.detach(Dungeon.hero.belongings.backpack);
 					Catalog.countUse(Corrosion.class);
 					Talent.onScrollUsed(Dungeon.hero, Dungeon.hero.pos, 2f, Corrosion.class);

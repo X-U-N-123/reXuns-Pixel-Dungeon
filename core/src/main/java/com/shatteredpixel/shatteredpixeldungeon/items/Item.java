@@ -773,10 +773,12 @@ public class Item implements Bundlable {
 	}
 	
 	public float castDelay( Char user, int cell ){
+		if (hero.pointsInTalent(Talent.TAILWIND_PICK) >= 2 && !(this instanceof MissileWeapon)) return 0;
 		return TIME_TO_THROW;
 	}
 
 	public float pickupDelay(){
+		if (hero.hasTalent(Talent.TAILWIND_PICK)) return 0;
 		return TIME_TO_PICK_UP;
 	}
 

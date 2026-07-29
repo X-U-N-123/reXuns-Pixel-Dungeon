@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -69,6 +70,11 @@ public class Food extends Item {
 		actions.add( AC_EAT );
 		return actions;
 	}
+
+	protected float preserveChance(){
+		if (!Dungeon.hero.hasTalent(Talent.FRUGALITY)) return 0;
+		return 0.05f + 0.1f * Dungeon.hero.pointsInTalent(Talent.FRUGALITY);
+	}
 	
 	@Override
 	public void execute( Hero hero, String action ) {
@@ -77,7 +83,7 @@ public class Food extends Item {
 
 		if (action.equals( AC_EAT )) {
 			
-			detach( hero.belongings.backpack );
+			if (Random.Float() > preserveChance()) detach( hero.belongings.backpack );
 			Catalog.countUse(getClass());
 			
 			satisfy(hero);
@@ -111,7 +117,8 @@ public class Food extends Item {
 			|| Dungeon.hero.hasTalent(Talent.FOCUSED_MEAL)
 			|| Dungeon.hero.hasTalent(Talent.ENLIGHTENING_MEAL)
 			|| Dungeon.hero.hasTalent(Talent.PREPARING_MEAL)
-                || Dungeon.hero.hasTalent(Talent.TEARING_MEAL)){
+            || Dungeon.hero.hasTalent(Talent.TEARING_MEAL)
+			|| Dungeon.hero.hasTalent(Talent.FRUGALITY)){
 			return TIME_TO_EAT - 2;
 		} else {
 			return TIME_TO_EAT;
