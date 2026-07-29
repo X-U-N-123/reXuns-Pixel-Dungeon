@@ -120,6 +120,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.remains.BowFragment;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenHilt;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.BrokenStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.CloakScrap;
+import com.shatteredpixel.shatteredpixeldungeon.items.remains.HoledPackage;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.RemainTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.ResidualRemain;
 import com.shatteredpixel.shatteredpixeldungeon.items.remains.SealShard;
@@ -309,7 +310,7 @@ public enum Catalog {
 				LiquidMetal.class, ArcaneResin.class, GemPowder.class);
 
 		REMAINS.addItems( SealShard.class, BrokenStaff.class, CloakScrap.class, BowFragment.class,
-				BrokenHilt.class, TornPage.class, ShovelScrap.class, ResidualRemain.class, RemainTool.class);
+				BrokenHilt.class, TornPage.class, ShovelScrap.class, ResidualRemain.class, RemainTool.class, HoledPackage.class);
 	}
 
 	//old badges for pre-2.5

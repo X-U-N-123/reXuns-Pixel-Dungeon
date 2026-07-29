@@ -91,8 +91,7 @@ public class FlockTrap extends Trap {
 				Buff.prolong(Actor.findChar(i), Trap.HazardAssistTracker.class, HazardAssistTracker.DURATION);
 
 				if (Dungeon.hero.hasTalent(Talent.SENSITIVE_PEDAL)) {
-					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class,
-					5 + 5 * Dungeon.hero.pointsInTalent(Talent.SENSITIVE_PEDAL))
+					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 10)
 					.charID = Actor.findChar(i).id();
 				}
 			}

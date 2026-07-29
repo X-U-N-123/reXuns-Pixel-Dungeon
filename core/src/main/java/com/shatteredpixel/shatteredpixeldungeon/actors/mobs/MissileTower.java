@@ -208,7 +208,7 @@ public class MissileTower extends Mob {
 			if (alignment != Char.Alignment.ALLY) {
 				GLog.n(Messages.get(MissileTower.class, "load"));
 
-				Buff.affect(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 1)
+				Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 1)
 						.charID = MissileTower.this.id();
 				Dungeon.observe();
 			}
