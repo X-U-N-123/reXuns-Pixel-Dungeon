@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbo
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Bolas;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Boomerang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CoinDart;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FlyingCymbals;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Headdart;
@@ -130,6 +131,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 		ANGULAR_SPEEDS.put(Lancet.class,        1440);
 		
 		ANGULAR_SPEEDS.put(Shuriken.class,                  2160);
+		ANGULAR_SPEEDS.put(Dinnerknife.class,               2160);
 		ANGULAR_SPEEDS.put(CoinDart.class,                  2160);
 		ANGULAR_SPEEDS.put(FlyingCymbals.class,             2160);
 		ANGULAR_SPEEDS.put(TenguSprite.TenguShuriken.class, 2160);

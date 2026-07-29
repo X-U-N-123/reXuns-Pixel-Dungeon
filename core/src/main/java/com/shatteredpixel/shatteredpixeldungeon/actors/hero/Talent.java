@@ -919,32 +919,31 @@ public enum Talent {
 			}
 		}
 		if (Random.Int(3) < hero.pointsInTalent(TESTED_COPY)){
+			Item copy = null;
 			if (item instanceof Potion){
 				if (item instanceof ExoticPotion){
 					item = Reflection.newInstance(ExoticPotion.exoToReg.get(item.getClass()));
 				}
-				if (item instanceof PotionOfStrength || item instanceof PotionOfMastery) {
-					item = null;
-				} else {
-					item = Reflection.newInstance(Potion.potionToSeed.get(item.getClass()));
+				if (!(item instanceof PotionOfStrength) && !(item instanceof PotionOfMastery)) {
+					copy = Reflection.newInstance(Potion.potionToSeed.get(item.getClass()));
 				}
 			} else if (item instanceof Scroll) {
 				if (item instanceof ExoticScroll){
 					item = Reflection.newInstance(ExoticScroll.exoToReg.get(item.getClass()));
 				}
-				item = Reflection.newInstance(Scroll.ScrollToStone.stones.get(item.getClass()));
+				copy = Reflection.newInstance(Scroll.ScrollToStone.stones.get(item.getClass()));
 			} else if (item instanceof Ring) {
-				item = new GemPowder();
+				copy = new GemPowder();
 			} else if (item instanceof Wand) {
-				item = new ArcaneResin().quantity(2);
+				copy = new ArcaneResin().quantity(2);
 			} else if (item instanceof Armor) {
-				item = new Stylus();
+				copy = new Stylus();
 			} else if (item instanceof Weapon) {
-				item = new LiquidMetal().quantity((((Weapon) item).tier + 1) * 2);
+				copy = new LiquidMetal().quantity((((Weapon) item).tier + 1) * 2);
 			}
-			if (item != null){
-				GLog.p(Messages.get(Talent.class, TESTED_COPY.name() + ".get", item.name()));
-				item.collect();
+			if (copy != null){
+				GLog.p(Messages.get(Talent.class, TESTED_COPY.name() + ".get", copy.name()));
+				copy.collect();
 			}
 		}
 	}
