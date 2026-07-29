@@ -89,6 +89,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfMastery;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfIdentify;
@@ -316,6 +317,8 @@ public enum Talent {
 	GRAND_BANQUET(432), FORESIGHT_INTUITION(433), TESTED_COPY(434), ITEM_LEVERAGE(435), MISSED_SAFETY(436),
 	//Pillager T2
 	FRUGALITY(437), INSCRIBED_TREASURE(438), DECIDED_TRANSMUTE(439), TRACKING_DEVICE(440), PACK_EXPANSION(441), TAILWIND_PICK(442),
+	//Pillager T3
+	PERFECT_COLLECTION(443, 3), LIGHT_GREED(444, 3), COUNTERFEIT(445, 3),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1132,6 +1135,15 @@ public enum Talent {
 			if (!satchel.collect()) Dungeon.level.drop(satchel, hero.pos).sprite.drop();
 			Dungeon.LimitedDrops.SATCHEL.drop();
 		}
+		if (talent == LIGHT_GREED && hero.heroClass == HeroClass.PILLAGER){
+			for (Item item : Dungeon.hero.belongings.backpack){
+				if (item instanceof RingOfMimic){
+					if (!hero.belongings.lostInventory() || item.keptThroughLostInventory()) {
+						((RingOfMimic) item).activate(hero);
+					}
+				}
+			}
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
@@ -1872,6 +1884,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, DURABLE_MODIFIES, ELECTRONIC_REPAIR, IONIZING_RADIATION);
 				break;
 			case PILLAGER:
+				Collections.addAll(tierTalents, PERFECT_COLLECTION, LIGHT_GREED, COUNTERFEIT);
 				break;
 		}
 		for (Talent talent : tierTalents){

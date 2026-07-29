@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -75,6 +77,11 @@ public class WndQuickBag extends Window {
 					&& !i.isEquipped(Dungeon.hero)
 					&& (!(i instanceof CloakOfShadows) || !Dungeon.hero.hasTalent(Talent.LIGHT_CLOAK))
 					&& (!(i instanceof HolyTome) || !Dungeon.hero.hasTalent(Talent.LIGHT_READING))){
+				continue;
+			}
+			if (i instanceof Ring
+					&& !i.isEquipped(Dungeon.hero)
+					&& (!(i instanceof RingOfMimic) || !Dungeon.hero.hasTalent(Talent.LIGHT_GREED))){
 				continue;
 			}
 			items.add(i);

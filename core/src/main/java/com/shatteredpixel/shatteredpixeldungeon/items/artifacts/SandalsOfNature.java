@@ -124,14 +124,13 @@ public class SandalsOfNature extends Artifact {
 		if (hero.buff(MagicImmune.class) != null){
 			return actions;
 		}
-		if (isEquipped( hero ) && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
+		if ((isEquipped( hero ) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
+				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
 			actions.add(AC_FEED);
-		}
-		if (isEquipped( hero )
-				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
-				&& curSeedEffect != null
-				&& charge >= seedChargeReqs.get(curSeedEffect)) {
-			actions.add(AC_ROOT);
+
+			if (curSeedEffect != null
+					&& charge >= seedChargeReqs.get(curSeedEffect))
+				actions.add(AC_ROOT);
 		}
 		return actions;
 	}
@@ -148,7 +147,7 @@ public class SandalsOfNature extends Artifact {
 
 		} else if (action.equals(AC_ROOT) && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)){
 
-			if (!isEquipped( hero ))                                GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			if (!isEquipped( hero ) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (curSeedEffect == null)                         GLog.i( Messages.get(this, "no_effect") );
 			else if (charge < seedChargeReqs.get(curSeedEffect))    GLog.i( Messages.get(this, "low_charge") );
 			else {

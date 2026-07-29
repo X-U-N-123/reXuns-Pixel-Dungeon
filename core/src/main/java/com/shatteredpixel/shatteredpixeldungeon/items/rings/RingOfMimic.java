@@ -24,10 +24,12 @@ package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -57,7 +59,12 @@ public class RingOfMimic extends Ring {
 	private Ring mimicRing = null;
 	private int time = 0;
 
-	private static final int COOLDOWN = 100;
+	private int effectCooldown(){
+		int cooldown = 100;
+		if (Dungeon.hero.hasTalent(Talent.LIGHT_GREED) && !isEquipped(Dungeon.hero))
+			cooldown += 130 - 30 * Dungeon.hero.pointsInTalent(Talent.LIGHT_GREED);
+		return cooldown;
+	}
 	private static final int START_TIME = 20;
 
 	public String statsInfo() {
@@ -77,14 +84,26 @@ public class RingOfMimic extends Ring {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
-		if (time == 0) actions.add(AC_MIMIC);
+		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_GREED))
+				&& hero.buff(MagicImmune.class) == null
+				&& time == 0)
+			actions.add(AC_MIMIC);
+
 		return actions;
 	}
 
 	@Override
 	public void execute(Hero hero, String action) {
 		super.execute(hero, action);
-		if (action.equals(AC_MIMIC) && time == 0){
+		if (action.equals(AC_MIMIC)){
+			if (time != 0){
+				GLog.w(Messages.get(this, "desc_cd"));
+				return;
+			}
+			if (!isEquipped(hero) && !hero.hasTalent(Talent.LIGHT_GREED)){
+				GLog.w(Messages.get(this, "desc_cd"));
+				return;
+			}
 
 			if (curUser.hasTalent(Talent.DECIDED_TRANSMUTE)) {
 				String[] options;
@@ -133,7 +152,7 @@ public class RingOfMimic extends Ring {
 
 	private void doEffect() {
 		mimicRing.cursed = false;
-		mimicRing.identify(false);
+		mimicRing.levelKnown = mimicRing.cursedKnown = true;
 		mimicRing.level(level());
 		time = START_TIME;
 
@@ -148,9 +167,12 @@ public class RingOfMimic extends Ring {
 	@Override
 	public boolean doUnequip( Hero hero, boolean collect, boolean single ) {
 		if (super.doUnequip( hero, collect, single )) {
-
-			if (mimicRing != null) {
-				mimicRing.buff.detach();
+			if (!collect || !hero.hasTalent(Talent.LIGHT_GREED)){
+				if (mimicRing != null) {
+					mimicRing.buff.detach();
+				}
+			} else {
+				activate(hero);
 			}
 
 			return true;
@@ -159,6 +181,20 @@ public class RingOfMimic extends Ring {
 
 			return false;
 
+		}
+	}
+
+	@Override
+	public boolean collect( Bag container ) {
+		if (super.collect(container)){
+			if (container.owner instanceof Hero
+					&& buff == null
+					&& ((Hero) container.owner).hasTalent(Talent.LIGHT_GREED)){
+				activate(container.owner);
+			}
+			return true;
+		} else{
+			return false;
 		}
 	}
 
@@ -188,7 +224,7 @@ public class RingOfMimic extends Ring {
 					mimicRing = null;
 					updateQuickslot();
 
-					RingOfMimic.this.time = START_TIME - COOLDOWN;
+					RingOfMimic.this.time = START_TIME - effectCooldown();
 				}
 			} else if (RingOfMimic.this.time < 0) {
 				RingOfMimic.this.time++;
@@ -221,7 +257,7 @@ public class RingOfMimic extends Ring {
 		@Override
 		public String desc() {
 			String desc = "";
-			if (time > 0) desc += Messages.get(this, "desc_effect", mimicRing.trueName()) + mimicRing.statsInfo();
+			if (time > 0) desc += Messages.get(RingOfMimic.class, "desc_effect", mimicRing.trueName()) + mimicRing.statsInfo();
 			else if (time < 0)	desc += Messages.get(RingOfMimic.class, "desc_cd");
 			else				desc += Messages.get(RingOfMimic.class, "desc_ready");
 			return desc + "\n\n" + Messages.get(RingOfMimic.class, "buff_time", Math.abs(RingOfMimic.this.time));

@@ -54,11 +54,13 @@ public class GemPowder extends Item {
 	}
 
 	private static final String AC_APPLY = "APPLY";
+	private static final String AC_CRAFT = "CRAFT";
 
 	@Override
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_APPLY );
+		if (Dungeon.hero.hasTalent(Talent.COUNTERFEIT)) actions.add(AC_CRAFT);
 		return actions;
 	}
 
@@ -72,6 +74,30 @@ public class GemPowder extends Item {
 			curUser = hero;
 			GameScene.selectItem( itemSelector );
 
+		} else if (action.equals(AC_CRAFT)){
+
+			int powderToUse = 1;
+			if (hero.heroClass != HeroClass.PILLAGER) powderToUse ++;
+
+			if (quantity >= powderToUse){
+				Ring crafted = (Ring) Generator.randomUsingDefaults(Generator.Category.RING);
+				crafted.level(0);
+				crafted.cursedKnown = true;
+				crafted.cursed = false;
+				if (!crafted.collect()) Dungeon.level.drop(crafted, hero.pos).sprite.drop();
+
+				if (quantity > powderToUse) {
+					quantity -= powderToUse;
+				} else detachAll(hero.belongings.backpack);
+				Item.updateQuickslot();
+
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				hero.sprite.operate(hero.pos);
+				hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
+				GLog.p(Messages.get(this, "crafted", crafted.name()));
+				hero.spendAndNext(Actor.TICK);
+
+			} else GLog.w(Messages.get(this, "not_enough"));
 		}
 	}
 
@@ -117,16 +143,16 @@ public class GemPowder extends Item {
 					return;
 				}
 
-				int resinToUse = ring.level()+1;
+				int powderToUse = ring.level()+1;
 
-				if (quantity() < resinToUse){
+				if (quantity() < powderToUse){
 					GLog.w(Messages.get(GemPowder.class, "not_enough"));
 
 				} else {
 
-					Catalog.countUses(GemPowder.class, resinToUse);
-					if (resinToUse < quantity()){
-						quantity(quantity()-resinToUse);
+					Catalog.countUses(GemPowder.class, powderToUse);
+					if (powderToUse < quantity()){
+						quantity(quantity()-powderToUse);
 					} else {
 						detachAll(Dungeon.hero.belongings.backpack);
 					}

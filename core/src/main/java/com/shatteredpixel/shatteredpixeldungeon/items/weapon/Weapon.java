@@ -149,6 +149,7 @@ abstract public class Weapon extends KindOfWeapon {
 		boolean wasAlly = defender.alignment == Char.Alignment.ALLY;
 		if (attacker.buff(MagicImmune.class) == null) {
 			Enchantment trinityEnchant = null;
+			Enchantment collectionEnch = null;
 			//only when it's the hero or a char that uses the hero's weapon
 			if (Dungeon.hero.buff(BodyForm.BodyFormBuff.class) != null && this instanceof MeleeWeapon
 					&& (attacker == Dungeon.hero || attacker instanceof MirrorImage || attacker instanceof ShadowClone.ShadowAlly)){
@@ -156,6 +157,22 @@ abstract public class Weapon extends KindOfWeapon {
 				if (enchantment != null && trinityEnchant != null && trinityEnchant.getClass() == enchantment.getClass()){
 					trinityEnchant = null;
 				}
+			}
+
+			if (Random.Int(10) < 3 &&
+					attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.PERFECT_COLLECTION)){
+				ArrayList<MeleeWeapon> weps = Dungeon.hero.belongings.getAllItems(MeleeWeapon.class);
+
+				if (!weps.isEmpty()) {
+					Random.shuffle(weps);
+					MeleeWeapon cur;
+					do {
+						cur = weps.remove(0);
+					} while ((!cur.cursedKnown || cur.enchantment == null) && !weps.isEmpty());
+
+					collectionEnch = cur.enchantment;
+
+				} else GLog.w("!");
 			}
 
 			if (attacker instanceof Hero && isEquipped((Hero) attacker)
@@ -169,6 +186,9 @@ abstract public class Weapon extends KindOfWeapon {
 				}
 				if (defender.isAlive() && !becameAlly && trinityEnchant != null){
 					damage = trinityEnchant.proc(this, attacker, defender, damage);
+				}
+				if (defender.isAlive() && !becameAlly && collectionEnch != null){
+					damage = collectionEnch.proc(this, attacker, defender, damage);
 				}
 				if (defender.isAlive() && !becameAlly) {
 					int dmg = ((Hero) attacker).subClass == HeroSubClass.PALADIN ? 6 : 2;
@@ -185,6 +205,9 @@ abstract public class Weapon extends KindOfWeapon {
 
 				if (defender.isAlive() && !becameAlly && trinityEnchant != null){
 					damage = trinityEnchant.proc(this, attacker, defender, damage);
+				}
+				if (defender.isAlive() && !becameAlly && collectionEnch != null){
+					damage = collectionEnch.proc(this, attacker, defender, damage);
 				}
 			}
 

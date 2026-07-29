@@ -78,12 +78,13 @@ public class HornOfPlenty extends Artifact {
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		if (hero.buff(MagicImmune.class) != null) return actions;
-		if (isEquipped( hero ) && charge > 0) {
-			actions.add(AC_SNACK);
-			actions.add(AC_EAT);
-		}
-		if (isEquipped( hero ) && level() < levelCap && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
-			actions.add(AC_STORE);
+		if (isEquipped(hero) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3){
+			if (charge > 0) {
+				actions.add(AC_SNACK);
+				actions.add(AC_EAT);
+			}
+			if (isEquipped( hero ) && level() < levelCap && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3))
+				actions.add(AC_STORE);
 		}
 		return actions;
 	}
@@ -97,7 +98,7 @@ public class HornOfPlenty extends Artifact {
 
 		if (action.equals(AC_EAT) || action.equals(AC_SNACK)){
 
-			if (!isEquipped(hero)) GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			if (!isEquipped(hero) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3) GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge == 0)  GLog.i( Messages.get(this, "no_food") );
 			else {
 				//consume as much food as it takes to be full, to a minimum of 1

@@ -38,7 +38,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWard;
@@ -46,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.LifeLinkSpell
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.BlastParticle;
@@ -622,6 +620,7 @@ public class Armor extends EquipableItem {
 
 		if (defender.buff(MagicImmune.class) == null) {
 			Glyph trinityGlyph = null;
+			Glyph collectionGlyph = null;
 			//only when it's the hero or a char that uses the hero's armor
 			if (Dungeon.hero.buff(BodyForm.BodyFormBuff.class) != null
 					&& (defender == Dungeon.hero || defender instanceof PrismaticImage || defender instanceof ShadowClone.ShadowAlly)){
@@ -629,6 +628,22 @@ public class Armor extends EquipableItem {
 				if (glyph != null && trinityGlyph != null && trinityGlyph.getClass() == glyph.getClass()){
 					trinityGlyph = null;
 				}
+			}
+
+			if (Random.Int(10) < 3 &&
+					defender instanceof Hero && ((Hero) defender).pointsInTalent(Talent.PERFECT_COLLECTION) >= 2){
+				ArrayList<Armor> armors = Dungeon.hero.belongings.getAllItems(Armor.class);
+
+				if (!armors.isEmpty()) {
+					Random.shuffle(armors);
+					Armor cur;
+					do {
+						cur = armors.remove(0);
+					} while ((!cur.cursedKnown || cur.glyph == null) && !armors.isEmpty());
+
+					collectionGlyph = cur.glyph;
+
+				} else GLog.w("!");
 			}
 
 			if (defender instanceof Hero && isEquipped((Hero) defender)
@@ -640,6 +655,9 @@ public class Armor extends EquipableItem {
 				if (trinityGlyph != null){
 					damage = trinityGlyph.proc( this, attacker, defender, damage );
 				}
+				if (collectionGlyph != null){
+					damage = collectionGlyph.proc( this, attacker, defender, damage );
+				}
 				int blocking = ((Hero) defender).subClass == HeroSubClass.PALADIN ? 3 : 1;
 				damage -= Math.round(blocking * Glyph.genericProcChanceMultiplier(defender));
 
@@ -649,6 +667,9 @@ public class Armor extends EquipableItem {
 				}
 				if (trinityGlyph != null){
 					damage = trinityGlyph.proc( this, attacker, defender, damage );
+				}
+				if (collectionGlyph != null){
+					damage = collectionGlyph.proc( this, attacker, defender, damage );
 				}
 				//so that this effect procs for allies using this armor via aura of protection
 				if (defender.alignment == Dungeon.hero.alignment

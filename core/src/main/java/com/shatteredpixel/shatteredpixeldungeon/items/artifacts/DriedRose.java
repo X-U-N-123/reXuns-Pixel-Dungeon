@@ -116,7 +116,7 @@ public class DriedRose extends Artifact {
 		if (!Ghost.Quest.completed()){
 			return actions;
 		}
-		if (isEquipped( hero )
+		if ((isEquipped( hero ) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
 				&& charge == chargeCap
 				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null
@@ -153,7 +153,7 @@ public class DriedRose extends Artifact {
 
 			if (!Ghost.Quest.completed())                                    GameScene.show(new WndUseItem(null, this));
 			else if (ghost != null)                                          GLog.i( Messages.get(this, "spawned") );
-			else if (!isEquipped( hero ))                                    GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			else if (!isEquipped( hero ) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge != chargeCap)                                    GLog.i( Messages.get(this, "no_charge") );
 			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.i( Messages.get(this, "cursed") );
 			else {
@@ -611,7 +611,7 @@ public class DriedRose extends Artifact {
 		protected boolean act() {
 			updateRose();
 			if (rose == null
-					|| !rose.isEquipped(Dungeon.hero)
+					|| (!rose.isEquipped(Dungeon.hero) && Dungeon.hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)
 					|| Dungeon.hero.buff(MagicImmune.class) != null){
 				damage(1, new NoRoseDamage());
 			}

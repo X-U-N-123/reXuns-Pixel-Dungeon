@@ -54,11 +54,13 @@ public class ArcaneResin extends Item {
 	}
 
 	private static final String AC_APPLY = "APPLY";
+	private static final String AC_CRAFT = "CRAFT";
 
 	@Override
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_APPLY );
+		if (Dungeon.hero.pointsInTalent(Talent.COUNTERFEIT) >= 2) actions.add(AC_CRAFT);
 		return actions;
 	}
 
@@ -72,6 +74,30 @@ public class ArcaneResin extends Item {
 			curUser = hero;
 			GameScene.selectItem( itemSelector );
 
+		} else if (action.equals(AC_CRAFT)){
+
+			int resinToUse = 2;
+			if (hero.heroClass != HeroClass.MAGE) resinToUse += hero.pointsInTalent(Talent.WAND_PRESERVATION);
+
+			if (quantity >= resinToUse){
+				Wand crafted = (Wand) Generator.randomUsingDefaults(Generator.Category.WAND);
+				crafted.level(0);
+				crafted.cursed = false;
+				crafted.identify(false);
+				if (!crafted.collect()) Dungeon.level.drop(crafted, hero.pos).sprite.drop();
+
+				if (quantity > resinToUse) {
+					quantity -= resinToUse;
+				} else detachAll(hero.belongings.backpack);
+				Item.updateQuickslot();
+
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				hero.sprite.operate(hero.pos);
+				hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
+				GLog.p(Messages.get(this, "crafted", crafted.name()));
+				hero.spendAndNext(Actor.TICK);
+
+			} else GLog.w(Messages.get(this, "not_enough"));
 		}
 	}
 

@@ -67,11 +67,13 @@ public class LiquidMetal extends Item {
 	}
 
 	private static final String AC_APPLY = "APPLY";
+	private static final String AC_CRAFT = "CRAFT";
 
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_APPLY );
+		if (Dungeon.hero.pointsInTalent(Talent.COUNTERFEIT) >= 3) actions.add(AC_CRAFT);
 		return actions;
 	}
 
@@ -85,6 +87,30 @@ public class LiquidMetal extends Item {
 			curUser = hero;
 			GameScene.selectItem( itemSelector );
 
+		} else if (action.equals(AC_CRAFT)){
+
+			int floorSet = Math.min(1 + Dungeon.scalingDepth() / 5, 5);
+			int lmToUse = 5 * (floorSet + 2);
+
+			if (quantity >= lmToUse){
+				MissileWeapon crafted = (MissileWeapon) Generator.randomUsingDefaults(Generator.misTiers[floorSet]);
+				crafted.level(0);
+				crafted.cursed = false;
+				crafted.identify(false);
+				if (!crafted.collect()) Dungeon.level.drop(crafted, hero.pos).sprite.drop();
+
+				if (quantity > lmToUse) {
+					quantity -= lmToUse;
+				} else detachAll(hero.belongings.backpack);
+				Item.updateQuickslot();
+
+				Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+				hero.sprite.operate(hero.pos);
+				hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
+				GLog.p(Messages.get(this, "crafted", crafted.name()));
+				hero.spendAndNext(Actor.TICK);
+
+			} else GLog.w(Messages.get(this, "not_enough"));
 		}
 	}
 
@@ -263,7 +289,7 @@ public class LiquidMetal extends Item {
 			}
 		}
 
-		private int metalQuantity(MissileWeapon m){
+		private static int metalQuantity(MissileWeapon m){
 			float quantityPerWeapon = 5*(m.tier+1);
 			if (m.defaultQuantity() != 3){
 				quantityPerWeapon = 3f / m.defaultQuantity();
@@ -274,7 +300,7 @@ public class LiquidMetal extends Item {
 			quantity += 0.25f + 0.0075f*m.durabilityLeft();
 
 			if (Dungeon.hero.hasTalent(Talent.L_M_MASTER))
-				quantity += Math.round(quantity * 0.2f);
+				quantityPerWeapon += Math.round(quantity * 0.2f);
 
 			return Math.round(quantity * quantityPerWeapon);
 		}
