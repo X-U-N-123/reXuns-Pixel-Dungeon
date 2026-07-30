@@ -438,19 +438,19 @@ public class Generator {
 			POTION.probs = POTION.defaultProbs.clone();
 			
 			SEED.classes = new Class<?>[]{
-					Rotberry.Seed.class, //quest item
-					Sungrass.Seed.class,
+					Starflower.Seed.class,
 					Fadeleaf.Seed.class,
-					Icecap.Seed.class,
-					Firebloom.Seed.class,
-					Sorrowmoss.Seed.class,
-					Swiftthistle.Seed.class,
 					Blindweed.Seed.class,
-					Stormvine.Seed.class,
 					Earthroot.Seed.class,
-					Mageroyal.Seed.class,
-					Starflower.Seed.class};
-			SEED.defaultProbs = new float[]{ 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
+					Rotberry.Seed.class, //quest item
+					Firebloom.Seed.class,
+					Swiftthistle.Seed.class,
+					Sungrass.Seed.class,
+					Icecap.Seed.class,
+					Stormvine.Seed.class,
+					Sorrowmoss.Seed.class,
+					Mageroyal.Seed.class};
+			SEED.defaultProbs = new float[]{ 2, 2, 2, 2, 0, 2, 2, 1, 2, 2, 2, 2 };
 			SEED.probs = SEED.defaultProbs.clone();
 			
 			SCROLL.classes = new Class<?>[]{
@@ -725,19 +725,19 @@ public class Generator {
 			FOOD.probs = FOOD.defaultProbs.clone();
 			
 			RING.classes = new Class<?>[]{
+					RingOfVision.class,
 					RingOfAccuracy.class,
-					RingOfArcana.class,
-					//RingOfElements.class,
-					RingOfEnergy.class,
-					RingOfEvasion.class,
 					RingOfForce.class,
+					RingOfMight.class,
 					RingOfFuror.class,
 					RingOfHaste.class,
-					RingOfMight.class,
+					RingOfEnergy.class,
 					RingOfSharpshooting.class,
+					//RingOfElements.class,
 					RingOfTenacity.class,
-					RingOfWealth.class,
-					RingOfVision.class};
+					RingOfEvasion.class,
+					RingOfArcana.class,
+					RingOfWealth.class};
 			RING.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3};
 			RING.probs = RING.defaultProbs.clone();
 			

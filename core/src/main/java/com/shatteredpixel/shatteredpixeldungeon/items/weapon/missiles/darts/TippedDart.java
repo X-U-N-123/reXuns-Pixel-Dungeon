@@ -222,18 +222,18 @@ public abstract class TippedDart extends Dart {
 	
 	public static final LinkedHashMap<Class<?extends Plant.Seed>, Class<?extends TippedDart>> types = new LinkedHashMap<>();
 	static {
-		types.put(Rotberry.Seed.class,      RotDart.class);
-		types.put(Sungrass.Seed.class,      HealingDart.class);
-		types.put(Fadeleaf.Seed.class,      DisplacingDart.class);
-		types.put(Icecap.Seed.class,        ChillingDart.class);
-		types.put(Firebloom.Seed.class,     IncendiaryDart.class);
-		types.put(Sorrowmoss.Seed.class,    PoisonDart.class);
-		types.put(Swiftthistle.Seed.class,  AdrenalineDart.class);
-		types.put(Blindweed.Seed.class,     BlindingDart.class);
-		types.put(Stormvine.Seed.class,     ShockingDart.class);
-		types.put(Earthroot.Seed.class,     ParalyticDart.class);
-		types.put(Mageroyal.Seed.class,     CleansingDart.class);
 		types.put(Starflower.Seed.class,    HolyDart.class);
+		types.put(Fadeleaf.Seed.class,      DisplacingDart.class);
+		types.put(Blindweed.Seed.class,     BlindingDart.class);
+		types.put(Earthroot.Seed.class,     ParalyticDart.class);
+		types.put(Rotberry.Seed.class,      RotDart.class);
+		types.put(Firebloom.Seed.class,     IncendiaryDart.class);
+		types.put(Swiftthistle.Seed.class,  AdrenalineDart.class);
+		types.put(Sungrass.Seed.class,      HealingDart.class);
+		types.put(Icecap.Seed.class,        ChillingDart.class);
+		types.put(Stormvine.Seed.class,     ShockingDart.class);
+		types.put(Sorrowmoss.Seed.class,    PoisonDart.class);
+		types.put(Mageroyal.Seed.class,     CleansingDart.class);
 	}
 	
 	public static TippedDart getTipped( Plant.Seed s, int quantity ){

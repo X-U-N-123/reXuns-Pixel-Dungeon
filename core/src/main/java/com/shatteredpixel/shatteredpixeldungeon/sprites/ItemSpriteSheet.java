@@ -874,43 +874,46 @@ public class ItemSpriteSheet {
 	}
 	
 	private static final int BREWS          = xy(1, 17);  //16 slots
-	public static final int BREW_INFERNAL   = BREWS+0;
-	public static final int BREW_BLIZZARD   = BREWS+1;
-	public static final int BREW_SHOCKING   = BREWS+2;
-	public static final int BREW_CAUSTIC    = BREWS+3;
-	public static final int BREW_AQUA       = BREWS+4;
-	public static final int BREW_UNSTABLE   = BREWS+5;
-	public static final int BREW_HEAT       = BREWS+6;
-	public static final int BREW_REGROWING  = BREWS+7;
-	public static final int BREW_TRACKING   = BREWS+8;
-	public static final int BREW_CONFUSION  = BREWS+9;
-	public static final int BREW_PITFALL    = BREWS+10;
+
+	//3 free slots
+
+	public static final int BREW_HEAT       = BREWS+3;
+	public static final int BREW_PITFALL    = BREWS+4;
+	public static final int BREW_REGROWING  = BREWS+5;
+	public static final int BREW_AQUA       = BREWS+6;
+	public static final int BREW_TRACKING   = BREWS+7;
+	public static final int BREW_CAUSTIC    = BREWS+8;
+	//1 free slot
+	public static final int BREW_INFERNAL   = BREWS+10;
+	public static final int BREW_SHOCKING   = BREWS+11;
+	//1 free slot
+	public static final int BREW_BLIZZARD   = BREWS+13;
+	//1 free slot
+	public static final int BREW_UNSTABLE   = BREWS+15;
 
 	private static final int ELIXIRS        = xy(17, 17);  //16 slots
-	public static final int ELIXIR_HONEY    = ELIXIRS+0;
-	public static final int ELIXIR_AQUA     = ELIXIRS+1;
+	public static final int ELIXIR_ARCANE   = ELIXIRS+0;
+	public static final int ELIXIR_FEATHER  = ELIXIRS+1;
 	public static final int ELIXIR_MIGHT    = ELIXIRS+2;
 	public static final int ELIXIR_DRAGON   = ELIXIRS+3;
-	public static final int ELIXIR_TOXIC    = ELIXIRS+4;
-	public static final int ELIXIR_ICY      = ELIXIRS+5;
-	public static final int ELIXIR_ARCANE   = ELIXIRS+6;
-	public static final int ELIXIR_FEATHER  = ELIXIRS+7;
-	public static final int ELIXIR_ENLIGHT  = ELIXIRS+8;
-	public static final int ELIXIR_OVERDRAFT= ELIXIRS+9;
-	public static final int ELIXIR_MANA     = ELIXIRS+10;
-	public static final int ELIXIR_TEMPERING= ELIXIRS+11;
-	public static final int ELIXIR_AMNESIA  = ELIXIRS+12;
-	public static final int ELIXIR_CONCEAL  = ELIXIRS+13;
-	public static final int ELIXIR_EARTH    = ELIXIRS+14;
+	public static final int ELIXIR_EARTH    = ELIXIRS+4;
+	public static final int ELIXIR_ENLIGHT  = ELIXIRS+5;
+	public static final int ELIXIR_TOXIC    = ELIXIRS+6;
+	public static final int ELIXIR_ICY      = ELIXIRS+7;
+	public static final int ELIXIR_AMNESIA  = ELIXIRS+8;
+	public static final int ELIXIR_CONCEAL  = ELIXIRS+9;
+	public static final int ELIXIR_TEMPERING= ELIXIRS+10;
+	public static final int ELIXIR_WIND     = ELIXIRS+11;
+	public static final int ELIXIR_HONEY    = ELIXIRS+12;
+	public static final int ELIXIR_OVERDRAFT= ELIXIRS+13;
+	public static final int ELIXIR_AQUA     = ELIXIRS+14;
+	public static final int ELIXIR_MANA     = ELIXIRS+15;
 	static{
-		for (int i = BREWS; i < BREWS+32; i++)
-			assignItemRect(i, 12, 14);
+		for (int i = BREWS; i < BREWS+8; i++)
+			assignItemRect(i, 9, 11);
 
-		assignItemRect(BREW_AQUA      ,9, 11);
-		assignItemRect(BREW_HEAT      ,9, 11);
-		assignItemRect(BREW_REGROWING ,9, 11);
-		assignItemRect(BREW_TRACKING  ,9, 11);
-		assignItemRect(BREW_PITFALL   ,9, 11);
+		for (int i = BREWS + 8; i < BREWS+32; i++)
+			assignItemRect(i, 12, 14);
 	}
 
 	private static final int SPELLS         = xy(1, 16);//32 slots

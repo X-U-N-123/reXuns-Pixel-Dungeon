@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfHo
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfIcyTouch;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfOverdraft;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWildWind;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCleansing;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfCorrosiveGas;
@@ -152,6 +153,7 @@ public class Potion extends Item {
 		canThrowPots.add(ElixirOfArcaneArmor.class);
 		canThrowPots.add(ElixirOfDragonsBlood.class);
 		canThrowPots.add(ElixirOfIcyTouch.class);
+		canThrowPots.add(ElixirOfWildWind.class);
 		canThrowPots.add(ElixirOfOverdraft.class);
 		canThrowPots.add(ElixirOfToxicEssence.class);
 		canThrowPots.add(ElixirOfEarthenPower.class);

@@ -85,7 +85,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.keys.SkeletonKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
-import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.ConfusionBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.PitfallBrew;
@@ -108,6 +107,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMa
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfMight;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfOverdraft;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfToxicEssence;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfWildWind;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CeremonialCandle;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
@@ -255,8 +255,8 @@ public enum Catalog {
 
 		WANDS.addItems(Generator.Category.WAND.classes);
 
-		RINGS.addItems(Generator.Category.RING.classes);
 		RINGS.addItems(RingOfMimic.class);
+		RINGS.addItems(Generator.Category.RING.classes);
 
 		ARTIFACTS.addItems(Generator.Category.ARTIFACT.classes);
 
@@ -291,16 +291,17 @@ public enum Catalog {
 
 		TIPPED_DARTS.addItems(TippedDart.types.values().toArray(new Class[0]));
 
-		BREWS_ELIXIRS.addItems( UnstableBrew.class, InfernalBrew.class, BlizzardBrew.class, ConfusionBrew.class, ShockingBrew.class, CausticBrew.class,
-				AquaBrew.class, HeatBrew.class, RegrowingBrew.class, TrackingBrew.class, PitfallBrew.class,
-				ElixirOfHoneyedHealing.class, ElixirOfAquaticRejuvenation.class, ElixirOfArcaneArmor.class, ElixirOfDragonsBlood.class, ElixirOfMana.class,
-				ElixirOfIcyTouch.class, ElixirOfToxicEssence.class, ElixirOfMight.class, ElixirOfFeatherFall.class, ElixirOfEarthenPower.class,
-                ElixirOfAmnesia.class, ElixirOfEnlightening.class, ElixirOfOverdraft.class, ElixirOfCrashCourse.class, ElixirOfConcealment.class);
+		BREWS_ELIXIRS.addItems(HeatBrew.class, PitfallBrew.class, RegrowingBrew.class, AquaBrew.class, TrackingBrew.class,
+				CausticBrew.class, InfernalBrew.class, ShockingBrew.class, BlizzardBrew.class, UnstableBrew.class,
+				ElixirOfArcaneArmor.class, ElixirOfFeatherFall.class, ElixirOfMight.class, ElixirOfDragonsBlood.class,
+				ElixirOfEarthenPower.class, ElixirOfEnlightening.class, ElixirOfToxicEssence.class, ElixirOfIcyTouch.class,
+                ElixirOfAmnesia.class, ElixirOfConcealment.class, ElixirOfCrashCourse.class, ElixirOfWildWind.class,
+				ElixirOfHoneyedHealing.class, ElixirOfOverdraft.class, ElixirOfAquaticRejuvenation.class, ElixirOfMana.class);
 
-		SPELLS.addItems( UnstableSpell.class, WildEnergy.class, TelekineticGrab.class, PhaseShift.class, SummonWraith.class, Watchtower.class, MagicBan.class,
-				Alchemize.class, CurseInfusion.class, MagicalInfusion.class, Recycle.class, MagicalTran.class, Uptier.class, //Extract.class,
-				ReclaimTrap.class, SummonElemental.class, BeaconOfReturning.class, Scout.class, Corrosion.class,
-				CorruptionSpell.class, Support.class, ConstantRecharge.class, ConstantEnergy.class);
+		SPELLS.addItems(WildEnergy.class, SummonWraith.class, TelekineticGrab.class, MagicBan.class, Watchtower.class, PhaseShift.class,
+				CurseInfusion.class, Recycle.class, Uptier.class, MagicalTran.class, MagicalInfusion.class, Alchemize.class,
+				ReclaimTrap.class, Support.class, CorruptionSpell.class, Corrosion.class, SummonElemental.class,
+				ConstantRecharge.class, ConstantEnergy.class, BeaconOfReturning.class, Scout.class, UnstableSpell.class);
 
 		MISC_CONSUMABLES.addItems( Gold.class, EnergyCrystal.class, Dewdrop.class,
 				IronKey.class, GoldenKey.class, CrystalKey.class, SkeletonKey.class,
