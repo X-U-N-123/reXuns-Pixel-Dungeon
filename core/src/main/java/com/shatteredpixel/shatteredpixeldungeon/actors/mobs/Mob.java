@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AllyBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
@@ -90,6 +91,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotio
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfWealth;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ExoticScroll;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.BottledDynamite;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.CursedCoin;
@@ -1029,6 +1031,14 @@ public abstract class Mob extends Char {
 			Buff.affect(hero, SoulHandle.class).gainEnergy(this);
 		}
 
+		if (buff(Bleeding.class) != null && hero.hasTalent(Talent.GLORIOUS_BAG)){
+			int shield = Math.round(buff(Bleeding.class).level() * hero.pointsInTalent(Talent.GLORIOUS_BAG) / 2);
+			if (shield > 0){
+				Buff.affect(hero, Barrier.class).incShield(shield);
+				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+			}
+		}
+
 		super.die( cause );
 
 		if (!(this instanceof Wraith)
@@ -1054,8 +1064,6 @@ public abstract class Mob extends Char {
 	}
 
 	public float lootChance(){
-		float lootChance = this.lootChance;
-
 		float dropBonus = RingOfWealth.dropChanceMultiplier( hero );
 
 		/*if (bhTracker != null){
@@ -1067,8 +1075,10 @@ public abstract class Mob extends Char {
 				dropBonus += bhBonus;
 			}
 		}*/
+		if (buff(Bleeding.class) != null)
+			dropBonus *= 1 + 0.1f * hero.pointsInTalent(Talent.FULLY_RETURN);
 
-		dropBonus += ShardOfOblivion.lootChanceMultiplier()-1f;
+		dropBonus *= ShardOfOblivion.lootChanceMultiplier();
 
 		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) dropBonus /= 2f;
 

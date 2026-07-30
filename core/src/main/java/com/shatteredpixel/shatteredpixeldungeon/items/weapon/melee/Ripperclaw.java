@@ -49,7 +49,7 @@ public class Ripperclaw extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         if (defender.buff(Knife.Cutabilitytracker.class) == null){
-            Buff.affect(defender, Bleeding.class).set( augment.damageFactor((min() + 1) * Random.NormalFloat(1, 1.5f)) );
+            Buff.affect(defender, Bleeding.class).set( augment.damageFactor((min() + 1) * Random.NormalFloat(1, 1.5f)), attacker.getClass());
         }
         return super.proc( attacker, defender, damage );
     }

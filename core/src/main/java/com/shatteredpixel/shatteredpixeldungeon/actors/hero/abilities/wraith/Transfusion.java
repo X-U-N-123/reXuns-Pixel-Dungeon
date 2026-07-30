@@ -101,7 +101,7 @@ public class Transfusion extends ArmorAbility {
 				continue;
 
 			if (b instanceof FlavourBuff)       Buff.affect(c, (Class<?extends FlavourBuff>)b.getClass(), b.cooldown());
-			else if (b instanceof Bleeding)     Buff.affect(c, Bleeding.class).set(((Bleeding) b).level());
+			else if (b instanceof Bleeding)     Buff.affect(c, Bleeding.class).set(((Bleeding) b).level(), Transfusion.class);
 			else if (b instanceof Burning)      Buff.affect(c, Burning.class).reignite(c, ((Burning) b).left());
 			else if (b instanceof Corrosion)    Buff.affect(c, Corrosion.class).set(((Corrosion) b).duration(), ((Corrosion) b).damage());
 			else if (b instanceof Ooze)         Buff.affect(c, Ooze.class).set(((Ooze) b).left());

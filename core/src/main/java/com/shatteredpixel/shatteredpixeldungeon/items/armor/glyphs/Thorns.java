@@ -45,7 +45,7 @@ public class Thorns extends Armor.Glyph {
 
 			float powerMulti = Math.max(1f, procChance);
 
-			Buff.affect( attacker, Bleeding.class).set( Math.round((4 + level)*powerMulti) );
+			Buff.affect( attacker, Bleeding.class).set( Math.round((4 + level)*powerMulti), Thorns.class);
 
 		}
 

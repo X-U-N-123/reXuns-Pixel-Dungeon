@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barkskin;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -93,6 +94,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
@@ -1842,6 +1844,13 @@ public class Hero extends Char {
 				});
 			}
 			break;
+		case POACHER:
+			if (hasTalent(Talent.LIVE_DISSECTION) && !enemy.isImmune(Bleeding.class) && !(enemy instanceof YogFist.RottingFist)){
+				float bleed = damage * 0.3f + 0.1f * pointsInTalent(Talent.LIVE_DISSECTION);
+				Buff.affect(enemy, Bleeding.class).set(bleed, Hero.class);
+				damage = -1;
+
+			} else Buff.affect(enemy, Bleeding.class).set(0.2f * damage, Hero.class);
 		default: break;
 		}
 

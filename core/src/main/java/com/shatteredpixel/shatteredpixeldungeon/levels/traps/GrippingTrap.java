@@ -62,7 +62,7 @@ public class GrippingTrap extends Trap {
 					.charID = c.id();
 				}
 			}
-			Buff.affect( c, Bleeding.class ).set( 2 + scalingDepth()/2f );
+			Buff.affect( c, Bleeding.class ).set( 2 + scalingDepth()/2f, GrippingTrap.class);
 			Buff.prolong( c, Cripple.class, Cripple.DURATION);
 			Wound.hit( c );
 		} else {

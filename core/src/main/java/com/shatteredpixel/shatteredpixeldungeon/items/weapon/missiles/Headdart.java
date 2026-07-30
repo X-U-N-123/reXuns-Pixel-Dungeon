@@ -72,7 +72,7 @@ public class Headdart extends MissileWeapon {
 
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
-		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())) );
+		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())), attacker.getClass());
 		return super.proc( attacker, defender, damage );
 	}
 

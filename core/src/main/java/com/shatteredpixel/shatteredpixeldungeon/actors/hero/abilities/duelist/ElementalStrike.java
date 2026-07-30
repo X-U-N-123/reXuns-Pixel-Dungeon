@@ -291,7 +291,7 @@ public class ElementalStrike extends ArmorAbility {
 
 		//*** Sacrificial ***
 		} else if (ench instanceof Sacrificial){
-			Buff.affect(hero, Bleeding.class).set(10 * powerMulti);
+			Buff.affect(hero, Bleeding.class).set(10 * powerMulti, ElementalStrike.class);
 		}
 
 	}
@@ -574,7 +574,7 @@ public class ElementalStrike extends ArmorAbility {
 		//*** Sacrificial ***
 		} else if (ench instanceof Sacrificial){
 			for (Char ch : affected){
-				Buff.affect(ch, Bleeding.class).set(12f*powerMulti);
+				Buff.affect(ch, Bleeding.class).set(12f*powerMulti, ElementalStrike.class);
 			}
 
 		//*** Wayward ***

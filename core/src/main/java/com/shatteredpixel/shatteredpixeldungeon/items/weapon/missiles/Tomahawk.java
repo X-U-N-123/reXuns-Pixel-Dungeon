@@ -76,7 +76,7 @@ public class Tomahawk extends MissileWeapon {
 		//currently 2-5.3, plus 0.33-1 per level
 		//increasing to 40% results in: 2.4-6.4, plus 0.4-1.2 per level
 		//maybe standardize that to 3-6 plus 0.5-1 per level
-		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())) );
+		Buff.affect( defender, Bleeding.class ).set( augment.damageFactor(Random.NormalFloat(minBleed(), maxBleed())), attacker.getClass());
 		return super.proc( attacker, defender, damage );
 	}
 

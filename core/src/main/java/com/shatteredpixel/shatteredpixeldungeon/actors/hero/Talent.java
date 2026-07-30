@@ -319,6 +319,8 @@ public enum Talent {
 	FRUGALITY(437), INSCRIBED_TREASURE(438), DECIDED_TRANSMUTE(439), TRACKING_DEVICE(440), PACK_EXPANSION(441), TAILWIND_PICK(442),
 	//Pillager T3
 	PERFECT_COLLECTION(443, 3), LIGHT_GREED(444, 3), COUNTERFEIT(445, 3),
+	//Poacher T3
+	ANTITHROMBIN(446, 3), FULLY_RETURN(447, 3), NO_FLOUNDER(448, 3), LIVE_DISSECTION(449, 3), GLORIOUS_BAG(450, 3),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1995,6 +1997,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, EXPLOSION_PROOF, SHOCKWAVE, ADDED_POWDER, MAGICAL_EXPLOSION, BALLISTICA_CALC);
 				break;
 			case POACHER:
+				Collections.addAll(tierTalents, ANTITHROMBIN, FULLY_RETURN, NO_FLOUNDER, LIVE_DISSECTION, GLORIOUS_BAG);
 				break;
 		}
 		for (Talent talent : tierTalents){

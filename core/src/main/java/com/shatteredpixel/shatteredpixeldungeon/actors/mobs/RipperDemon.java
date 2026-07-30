@@ -277,7 +277,7 @@ public class RipperDemon extends Mob {
 	protected void doLeap(Char leapVictim, int endPos) {
 		if (leapVictim != null && alignment != leapVictim.alignment){
 			if (hit(RipperDemon.this, leapVictim, Char.INFINITE_ACCURACY, false)) {
-				Buff.affect(leapVictim, Bleeding.class).set(0.75f * damageRoll());
+				Buff.affect(leapVictim, Bleeding.class).set(0.75f * damageRoll(), RipperDemon.class);
 				leapVictim.sprite.flash();
 				Sample.INSTANCE.play(Assets.Sounds.HIT);
 			} else {

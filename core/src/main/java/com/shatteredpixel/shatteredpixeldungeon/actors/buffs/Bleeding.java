@@ -24,12 +24,16 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sickle;
@@ -73,15 +77,25 @@ public class Bleeding extends Buff {
 		level = bundle.getFloat( LEVEL );
 		source = bundle.getClass( SOURCE );
 	}
-	
-	public void set( float level ) {
-		set( level, null );
-	}
 
 	public void set( float level, Class source ){
 		if (this.level < level) {
 			this.level = Math.max(this.level, level);
 			this.source = source;
+		}
+		if (target != null && target.alignment != Char.Alignment.ALLY
+				&& Dungeon.hero.hasTalent(Talent.NO_FLOUNDER)
+				&& target.HP * (0.4f - 0.05f * Dungeon.hero.pointsInTalent(Talent.NO_FLOUNDER)) <= this.level){
+			if (Char.hasProp(target, Char.Property.BOSS)){
+				spendConstant( -5 );
+			} else {
+				if (target.sprite.visible)
+					Splash.at( target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
+							target.sprite.blood(), Math.min( 10 * target.HP / target.HT, 10 ) );
+
+				target.HP = 0;
+				target.die(this);
+			}
 		}
 	}
 
@@ -102,8 +116,11 @@ public class Bleeding extends Buff {
 	@Override
 	public boolean act() {
 		if (target.isAlive()) {
-			
-			level = Random.NormalFloat(level / 2f, level);
+			float min = 1 / 2f + Dungeon.hero.pointsInTalent(Talent.ANTITHROMBIN) / 12f;
+			if (Dungeon.hero.subClass == HeroSubClass.POACHER && target.alignment == Char.Alignment.ALLY){
+				min = 0;
+			}
+			level = Random.NormalFloat(min * level, level);
 			int dmg = Math.round(level);
 			
 			if (dmg > 0) {
@@ -117,10 +134,14 @@ public class Bleeding extends Buff {
 				if (target == Dungeon.hero && !target.isAlive()) {
 					if (source == Chasm.class){
 						Badges.validateDeathFromFalling();
-					} else if (source == Sacrificial.class){
+					} else if (source == Sacrificial.class || source == ElementalStrike.class){
 						Badges.validateDeathFromFriendlyMagic();
+					} else if (source == Thorns.class){
+						Badges.validateDeathFromEnemyMagic();
 					}
-					Dungeon.fail( this );
+					if (source.isAssignableFrom(Char.class)){
+						Dungeon.fail(source);
+					} else Dungeon.fail( this );
 					GLog.n( Messages.get(this, "ondeath") );
 				}
 
@@ -155,7 +176,17 @@ public class Bleeding extends Buff {
 	public void detach() {
 		super.detach();
 		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
-			Buff.affect(target, Healing.class).setHeal(Math.round(3 + Math.round( ((Hero) target).lvl /2f )
+			Buff.affect(target, Healing.class).setHeal(Math.round((2 + ((Hero) target).lvl /2f )
 					* (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH))), 0, 1);
+	}
+
+	@Override
+	public boolean attachTo(Char target) {
+		if (super.attachTo(target)){
+			if (Dungeon.hero.subClass == HeroSubClass.POACHER && target.alignment != Char.Alignment.ALLY){
+				actPriority = target.actPriority() + 1;
+			}
+			return true;
+		} else return false;
 	}
 }
