@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -33,6 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Flow;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.utils.Bundle;
@@ -154,20 +158,30 @@ public class Artifact extends KindofMisc {
 		}
 
 		if (target.alignment != Char.Alignment.ALLY
-				&& Dungeon.hero.heroClass != HeroClass.CLERIC
-				&& Dungeon.hero.hasTalent(Talent.SEARING_LIGHT)
-				&& Dungeon.hero.buff(Talent.SearingLightCooldown.class) == null){
-			Buff.affect(target, GuidingLight.Illuminated.class);
-			Buff.affect(Dungeon.hero, Talent.SearingLightCooldown.class, 20f);
+				&& Dungeon.hero.heroClass != HeroClass.CLERIC){
+
+			if (Dungeon.hero.hasTalent(Talent.SEARING_LIGHT)
+					&& Dungeon.hero.buff(Talent.SearingLightCooldown.class) == null){
+				Buff.affect(target, GuidingLight.Illuminated.class);
+				Buff.affect(Dungeon.hero, Talent.SearingLightCooldown.class, 20f);
+			}
+			if (Dungeon.hero.hasTalent(Talent.SUNRAY)){
+				// 15/25% chance
+				if (Random.Int(20) < 1 + 2*Dungeon.hero.pointsInTalent(Talent.SUNRAY)){
+					Buff.prolong(target, Blindness.class, 4f);
+				}
+			}
 		}
 
-		if (target.alignment != Char.Alignment.ALLY
-				&& Dungeon.hero.heroClass != HeroClass.CLERIC
-				&& Dungeon.hero.hasTalent(Talent.SUNRAY)){
-			// 15/25% chance
-			if (Random.Int(20) < 1 + 2*Dungeon.hero.pointsInTalent(Talent.SUNRAY)){
-				Buff.prolong(target, Blindness.class, 4f);
-			}
+		Armor a = Dungeon.hero.belongings.armor();
+		if (Random.Int(4) < Dungeon.hero.pointsInTalent(Talent.PERFECT_COLLECTION)
+				&& a != null && a.hasGoodGlyph()){
+			a.glyph.proc(a, target, Dungeon.hero, artifLevel);
+			if (a.glyph instanceof Swiftness)
+				Buff.affect(Dungeon.hero, Haste.class,
+					2.67f * Armor.Glyph.genericProcChanceMultiplier(Dungeon.hero));
+			else if (a.glyph instanceof Flow)
+				Dungeon.level.setCellToWater(true, target.pos);
 		}
 	}
 

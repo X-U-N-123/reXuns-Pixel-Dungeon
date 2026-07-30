@@ -79,11 +79,14 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Vengeance;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ParchmentScrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
@@ -621,7 +624,7 @@ public class Armor extends EquipableItem {
 
 		if (defender.buff(MagicImmune.class) == null) {
 			Glyph trinityGlyph = null;
-			Glyph collectionGlyph = null;
+			Weapon.Enchantment ench = null;
 			//only when it's the hero or a char that uses the hero's armor
 			if (Dungeon.hero.buff(BodyForm.BodyFormBuff.class) != null
 					&& (defender == Dungeon.hero || defender instanceof PrismaticImage || defender instanceof ShadowClone.ShadowAlly)){
@@ -631,20 +634,9 @@ public class Armor extends EquipableItem {
 				}
 			}
 
-			if (Random.Int(10) < 3 &&
-					defender instanceof Hero && ((Hero) defender).pointsInTalent(Talent.PERFECT_COLLECTION) >= 2){
-				ArrayList<Armor> armors = Dungeon.hero.belongings.getAllItems(Armor.class);
-
-				if (!armors.isEmpty()) {
-					Random.shuffle(armors);
-					Armor cur;
-					do {
-						cur = armors.remove(0);
-					} while ((!cur.cursedKnown || cur.glyph == null) && !armors.isEmpty());
-
-					collectionGlyph = cur.glyph;
-
-				} else GLog.w("!");
+			if (defender instanceof Hero && Random.Int(4) < ((Hero) defender).pointsInTalent(Talent.PERFECT_COLLECTION)
+					&& ((Hero) defender).belongings.weapon() != null){
+				ench = ( (Weapon) ( ((Hero) defender).belongings.weapon() ) ).enchantment;
 			}
 
 			if (defender instanceof Hero && isEquipped((Hero) defender)
@@ -656,8 +648,11 @@ public class Armor extends EquipableItem {
 				if (trinityGlyph != null){
 					damage = trinityGlyph.proc( this, attacker, defender, damage );
 				}
-				if (collectionGlyph != null){
-					damage = collectionGlyph.proc( this, attacker, defender, damage );
+				if (ench != null){
+					damage = ench.proc( (Weapon) ( ((Hero) defender).belongings.weapon() ), defender, attacker, damage );
+					if (ench instanceof Projecting)
+						Buff.affect(defender, TalismanOfForesight.CharAwareness.class,
+							6 * Weapon.Enchantment.genericProcChanceMultiplier(defender)).charID = attacker.id();
 				}
 				int blocking = ((Hero) defender).subClass == HeroSubClass.PALADIN ? 3 : 1;
 				damage -= Math.round(blocking * Glyph.genericProcChanceMultiplier(defender));
@@ -669,8 +664,8 @@ public class Armor extends EquipableItem {
 				if (trinityGlyph != null){
 					damage = trinityGlyph.proc( this, attacker, defender, damage );
 				}
-				if (collectionGlyph != null){
-					damage = collectionGlyph.proc( this, attacker, defender, damage );
+				if (ench != null){
+					damage = ench.proc( (Weapon) ( ((Hero) defender).belongings.weapon() ), defender, attacker, damage );
 				}
 				//so that this effect procs for allies using this armor via aura of protection
 				if (defender.alignment == Dungeon.hero.alignment

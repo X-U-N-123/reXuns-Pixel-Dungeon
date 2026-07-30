@@ -156,7 +156,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
-import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
@@ -1320,17 +1319,6 @@ public abstract class Char extends Actor {
 	}
 	
 	public void die( Object src ) {
-		if (hero.pointsInTalent(Talent.CHARISMA) >= 2 && this instanceof Mob && alignment == Alignment.ENEMY
-				&& src instanceof Char && ((Char) src).buff(ScrollOfSirensSong.Enthralled.class) != null
-				&& Random.Int(5) == 0 && !isImmune(ScrollOfSirensSong.Enthralled.class)){
-
-			for (Buff buff : buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
-
-			AllyBuff.affectAndLoot((Mob)this, hero, ScrollOfSirensSong.Enthralled.class);
-			HP = HT;
-			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(HT), FloatingText.HEALING);
-			return;
-		}
         BarricadeCurse.BarricadeTracker tracker = buff(BarricadeCurse.BarricadeTracker.class);
         Barricade barricade = null;
         if (tracker != null && !(this instanceof Barricade)){

@@ -1039,6 +1039,18 @@ public abstract class Mob extends Char {
 			}
 		}
 
+		if (hero.pointsInTalent(Talent.CHARISMA) >= 2 && alignment == Alignment.ENEMY
+				&& cause instanceof Char && ((Char) cause).buff(ScrollOfSirensSong.Enthralled.class) != null
+				&& Random.Int(5) == 0 && !isImmune(ScrollOfSirensSong.Enthralled.class)){
+
+			for (Buff buff : buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
+
+			AllyBuff.affectAndLoot(this, hero, ScrollOfSirensSong.Enthralled.class);
+			HP = HT;
+			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(HT), FloatingText.HEALING);
+			return;
+		}
+
 		super.die( cause );
 
 		if (!(this instanceof Wraith)

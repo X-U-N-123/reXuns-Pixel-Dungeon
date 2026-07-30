@@ -105,12 +105,14 @@ public class UnstableSpellbook extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped( hero ) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
-				&& hero.buff(MagicImmune.class) == null
+		if (isEquipped( hero ) && hero.buff(MagicImmune.class) == null
                 && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
-
-            if (charge > 0)actions.add(AC_READ);
-            if (level() < levelCap) actions.add(AC_ADD);
+            if (charge > 0){
+                actions.add(AC_READ);
+            }
+            if (level() < levelCap){
+                actions.add(AC_ADD);
+            }
 		}
 		return actions;
 	}
@@ -125,7 +127,7 @@ public class UnstableSpellbook extends Artifact {
 		if (action.equals( AC_READ )) {
 
 			if (hero.buff( Blindness.class ) != null) GLog.w( Messages.get(this, "blinded") );
-			else if (!isEquipped( hero ) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			else if (!isEquipped( hero ))             GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge <= 0)                     GLog.i( Messages.get(this, "no_charge") );
 			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.i( Messages.get(this, "cursed") );
 			else {

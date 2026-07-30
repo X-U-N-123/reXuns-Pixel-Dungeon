@@ -72,7 +72,7 @@ public class TalismanOfForesight extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped( hero ) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
+		if (isEquipped( hero )
 				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null) {
 			actions.add(AC_SCRY);
@@ -87,7 +87,7 @@ public class TalismanOfForesight extends Artifact {
 		if (hero.buff(MagicImmune.class) != null) return;
 
 		if (action.equals(AC_SCRY)){
-			if (!isEquipped(hero) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			if (!isEquipped(hero))  GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (charge < 5)    GLog.i( Messages.get(this, "low_charge") );
 			else                    GameScene.selectCell(scry);
 		}

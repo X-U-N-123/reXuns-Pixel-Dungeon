@@ -2760,9 +2760,9 @@ public class Hero extends Char {
                 if (!Dungeon.level.adjacent(pos, attackTarget.pos) && hasTalent(Talent.FAR_STANDOFF))
                     Buff.affect( this, Combo.class ).hit( attackTarget );
 			}
-			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null){
+			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null)
 				Buff.prolong( this, Talent.SkilleddualTracker.class, 10).hit((Weapon)belongings.weapon());
-			}
+
 			if (heroClass == HeroClass.DUELIST)
 				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit();
 			if (hasTalent(Talent.HOMEMADE_DRUG)){
@@ -2774,6 +2774,8 @@ public class Hero extends Char {
 					if (drug != null) drug.spend(3f);
 				}
 			}
+			if (Random.Int(4) < pointsInTalent(Talent.PERFECT_COLLECTION))
+				ArtifactRecharge.chargeArtifacts(this, pointsInTalent(Talent.PERFECT_COLLECTION)/4f);
 		}
 
 		curAction = null;

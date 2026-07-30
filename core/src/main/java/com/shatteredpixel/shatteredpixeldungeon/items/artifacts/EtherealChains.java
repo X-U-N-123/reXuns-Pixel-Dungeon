@@ -73,8 +73,7 @@ public class EtherealChains extends Artifact {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped(hero) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
-				&& charge > 0 && hero.buff(MagicImmune.class) == null
+		if (isEquipped(hero) && charge > 0 && hero.buff(MagicImmune.class) == null
                 && (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)) {
 			actions.add(AC_CAST);
 		}
@@ -96,7 +95,7 @@ public class EtherealChains extends Artifact {
 
 			curUser = hero;
 
-			if (!isEquipped( hero ) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3) {
+			if (!isEquipped( hero )) {
 				GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 				usesTargeting = false;
 

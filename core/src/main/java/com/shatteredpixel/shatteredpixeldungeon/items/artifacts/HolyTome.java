@@ -70,7 +70,7 @@ public class HolyTome extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_READING) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
+		if ((isEquipped( hero ) || hero.hasTalent(Talent.LIGHT_READING))
 				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null) {
 			actions.add(AC_CAST);
@@ -87,9 +87,8 @@ public class HolyTome extends Artifact {
 
 		if (action.equals(AC_CAST)) {
 
-			if (!isEquipped(hero) && !hero.hasTalent(Talent.LIGHT_READING) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)
-				GLog.i(Messages.get(Artifact.class, "need_to_equip"));
-			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3) GLog.i( Messages.get(this, "cursed") );
+			if (!isEquipped(hero) && !hero.hasTalent(Talent.LIGHT_READING)) GLog.i(Messages.get(Artifact.class, "need_to_equip"));
+			else if (cursed && hero.pointsInTalent(Talent.CURSED_POWER) < 3)       GLog.i( Messages.get(this, "cursed") );
 			else {
 
 				GameScene.show(new WndClericSpells(this, hero, false));
@@ -146,8 +145,7 @@ public class HolyTome extends Artifact {
 	}
 
 	public boolean canCast( Hero hero, ClericSpell spell ){
-		return (isEquipped(hero) ||
-				((Dungeon.hero.hasTalent(Talent.LIGHT_READING) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3) && hero.belongings.contains(this)))
+		return (isEquipped(hero) || (Dungeon.hero.hasTalent(Talent.LIGHT_READING) && hero.belongings.contains(this)))
 				&& hero.buff(MagicImmune.class) == null
 				&& charge >= spell.chargeUse(hero)
 				&& spell.canCast(hero);

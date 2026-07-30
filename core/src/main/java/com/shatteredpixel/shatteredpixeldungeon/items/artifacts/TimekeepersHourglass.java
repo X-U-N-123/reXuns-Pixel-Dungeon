@@ -84,7 +84,7 @@ public class TimekeepersHourglass extends Artifact {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if ((isEquipped( hero ) || hero.pointsInTalent(Talent.PERFECT_COLLECTION) >= 3)
+		if (isEquipped( hero )
 				&& (!cursed || hero.pointsInTalent(Talent.CURSED_POWER) >= 3)
 				&& hero.buff(MagicImmune.class) == null
 				&& (charge > 0 || activeBuff != null)) {
@@ -102,7 +102,7 @@ public class TimekeepersHourglass extends Artifact {
 
 		if (action.equals(AC_ACTIVATE)){
 
-			if (!isEquipped( hero ) && hero.pointsInTalent(Talent.PERFECT_COLLECTION) < 3)GLog.i( Messages.get(Artifact.class, "need_to_equip") );
+			if (!isEquipped( hero ))        GLog.i( Messages.get(Artifact.class, "need_to_equip") );
 			else if (activeBuff != null) {
 				if (activeBuff instanceof timeStasis) { //do nothing
 				} else {
