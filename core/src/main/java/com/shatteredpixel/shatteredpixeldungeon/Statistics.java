@@ -49,7 +49,9 @@ public class Statistics {
 	public static int intuitionIdentify;
 
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
+	//tracks every item type copied by Replication
 	public static HashSet<Class> itemTypesDiscovered = new HashSet<>();
+	public static HashSet<Class> itemTypesCopied = new HashSet<>();
 
 	//These are used for score calculation
 	// some are built incrementally, most are assigned when full score is calculated
@@ -107,6 +109,7 @@ public class Statistics {
 		intuitionIdentify = 0;
 
 		itemTypesDiscovered.clear();
+		itemTypesCopied.clear();
 
 		progressScore   = 0;
 		heldItemValue   = 0;
@@ -177,6 +180,7 @@ public class Statistics {
 	private static final String TRAPS		= "trapsActivated";
 
 	private static final String ITEM_TYPES_DISCOVERED    = "item_types_discovered";
+	private static final String ITEM_TYPES_COPIED    = "item_types_copied";
 
 	private static final String SPAWNERS	= "spawnersAlive";
 
@@ -211,6 +215,7 @@ public class Statistics {
 		bundle.put( INTUITON, intuitionIdentify);
 
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
+		bundle.put( ITEM_TYPES_COPIED, itemTypesCopied.toArray(new Class<?>[0]) );
 
 		bundle.put( PROG_SCORE,  progressScore );
 		bundle.put( ITEM_VAL,    heldItemValue );
@@ -271,6 +276,12 @@ public class Statistics {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));
 		} else {
 			itemTypesDiscovered.clear();
+		}
+
+		if (bundle.contains( ITEM_TYPES_COPIED )) {
+			itemTypesCopied = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_COPIED)));
+		} else {
+			itemTypesCopied.clear();
 		}
 
 		progressScore   = bundle.getInt( PROG_SCORE );

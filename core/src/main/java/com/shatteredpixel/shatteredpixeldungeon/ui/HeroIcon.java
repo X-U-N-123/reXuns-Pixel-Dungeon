@@ -67,6 +67,7 @@ public class HeroIcon extends Image {
 	public static final int FORCE_FIELD     = 64;
 	public static final int SUMMON_BEACON   = 65;
 	public static final int DETONATOR       = 66;
+	public static final int REPLICATION     = 67;
 
 	public static final int RATMOGRIFY      = 79;
 

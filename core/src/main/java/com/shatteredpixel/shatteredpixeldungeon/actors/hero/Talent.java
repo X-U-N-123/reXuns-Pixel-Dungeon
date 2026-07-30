@@ -321,6 +321,8 @@ public enum Talent {
 	PERFECT_COLLECTION(443, 3), LIGHT_GREED(444, 3), COUNTERFEIT(445, 3),
 	//Poacher T3
 	ANTITHROMBIN(446, 3), FULLY_RETURN(447, 3), NO_FLOUNDER(448, 3), LIVE_DISSECTION(449, 3), GLORIOUS_BAG(450, 3),
+	//Replication T4
+	MASS_PRODUCTION(461, 4), WORKMANSHIP(462, 4), REUSE(463, 4), CLONING(464, 4),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
@@ -1143,6 +1145,15 @@ public enum Talent {
 						((RingOfMimic) item).activate(hero);
 					}
 				}
+			}
+		}
+		if (talent == REUSE){
+			int reuseTime = 0;
+			while (!Statistics.itemTypesCopied.isEmpty() && reuseTime < 3){
+				Class<? extends Item> cls = Random.element(Statistics.itemTypesCopied);
+				Statistics.itemTypesCopied.remove(cls);
+				GLog.p(Messages.get(Talent.class, REUSE.name() + ".reuse", Reflection.newInstance(cls).name()));
+				reuseTime ++;
 			}
 		}
 	}
