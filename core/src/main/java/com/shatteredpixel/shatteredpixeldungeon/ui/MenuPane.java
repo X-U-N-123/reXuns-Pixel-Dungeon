@@ -91,6 +91,7 @@ public class MenuPane extends Component {
 		depthText = new BitmapText( Integer.toString( Dungeon.depth ), PixelScene.pixelFont);
 		depthText.hardlight( 0xCACFC2 );
 		depthText.measure();
+		depthText.scale.set(PixelScene.align(1.49f));
 		add( depthText );
 
 		depthButton = new Button(){
@@ -125,6 +126,7 @@ public class MenuPane extends Component {
 			challengeText = new BitmapText( Integer.toString( Challenges.activeChallenges() ), PixelScene.pixelFont);
 			challengeText.hardlight( 0xCACFC2 );
 			challengeText.measure();
+			challengeText.scale.set(PixelScene.align(1.49f));
 			add( challengeText );
 
 			challengeButton = new Button(){
@@ -184,7 +186,7 @@ public class MenuPane extends Component {
 		btnJournal.setPos( btnMenu.left() - btnJournal.width() + 2, y );
 
 		depthIcon.x = btnJournal.left() - 7 + (7 - depthIcon.width())/2f - 0.1f;
-		depthIcon.y = y+8;
+		depthIcon.y = y + (versionOverflowBG.visible ? 8 : 1);
 		PixelScene.align(depthIcon);
 
 		depthText.scale.set(PixelScene.align(0.67f));

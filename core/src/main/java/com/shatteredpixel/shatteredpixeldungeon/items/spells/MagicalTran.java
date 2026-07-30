@@ -84,12 +84,12 @@ public class MagicalTran extends InventorySpell{
             return !(item instanceof Dart);
 
             //all non-unique artifacts (no holy tome or cloak of shadows, basically)
-        } else if (item instanceof Artifact) {
+        } else if (item instanceof Artifact || item instanceof Ring) {
             return !item.unique;
 
             //all rings, wands, trinkets
         } else {
-            return item instanceof Ring || item instanceof Wand || item instanceof Trinket;
+            return item instanceof Wand || item instanceof Trinket;
         }
     }
 
