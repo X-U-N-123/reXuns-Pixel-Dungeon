@@ -74,6 +74,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Alienating;
@@ -142,6 +143,7 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Wayward.class,      MagicMissile.SHADOW_CONE);
 		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
 		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
+		effectTypes.put(Rusted.class,       MagicMissile.SHADOW_CONE);
 
 		effectTypes.put(null,            MagicMissile.MAGIC_MISS_CONE);
 	}
@@ -597,6 +599,12 @@ public class ElementalStrike extends ArmorAbility {
 				if (Random.Float() < 0.5f*powerMulti){
 					Buff.affect(ch, Charm.class, 6f).object = hero.id();
 				}
+			}
+
+			//*** Rusted ***
+		} else if (ench instanceof Rusted){
+			for (Char ch : affected){
+				Buff.affect(ch, Viscosity.DeferedDamage.class).extend(20 * powerMulti);
 			}
 
 		//*** Barricade ***

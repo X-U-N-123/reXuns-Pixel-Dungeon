@@ -111,6 +111,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WraithArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Piety;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
@@ -2346,6 +2347,17 @@ public class Hero extends Char {
 	public void earnExp( int exp, Class source ) {
 
 		int expBefore = this.exp;
+
+		if (glyphLevel(Piety.class) >= 0 && source != PotionOfExperience.class){
+			int shield = (int)(exp * (1 - Math.pow(1f/2, Armor.Glyph.genericProcChanceMultiplier(this))));
+
+			if (shield > 0){
+				Buff.affect(this, Barrier.class).setShield(shield);
+				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+
+				exp -= shield;
+			}
+		}
 
 		//xp granted by ascension challenge is only for on-exp gain effects
 		if (source != AscensionChallenge.class) {
