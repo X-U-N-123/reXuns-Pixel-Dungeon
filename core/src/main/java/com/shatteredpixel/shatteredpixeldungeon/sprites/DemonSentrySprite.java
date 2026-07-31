@@ -81,4 +81,9 @@ public class DemonSentrySprite extends MobSprite {
 			shadowOffset = 0.25f - 0.8f*(float) Math.sin(Game.timeTotal);
 		}
 	}
+
+	@Override
+	public int blood() {
+		return 0x111111;
+	}
 }

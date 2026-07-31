@@ -103,7 +103,7 @@ public class Satchel extends Item {
 				public void onSelect(Item item) {
 					if (item == null) return;
 					for (Item i : items) {
-						if (i.isSimilar(item)) {
+						if (i.isSimilar(item) && i.stackable) {
 							item.detachAll(curUser.belongings.backpack);
 							i.merge(item);
 

@@ -731,10 +731,7 @@ public abstract class Char extends Actor {
                 }
 
 				if (hero.hasTalent(Talent.MISSED_SAFETY)){
-					int shieldToGive = Math.min(1 + hero.pointsInTalent(Talent.MISSED_SAFETY),
-							1 + 2 * hero.pointsInTalent(Talent.MISSED_SAFETY) - hero.shielding());
-					if (hero.shielding() <= 1 + 2 * hero.pointsInTalent(Talent.MISSED_SAFETY))
-						Buff.affect(hero, Barrier.class).incShield(shieldToGive);
+					Buff.affect(hero, Barrier.class).setShield(1 + hero.pointsInTalent(Talent.MISSED_SAFETY));
 				}
             }
 
