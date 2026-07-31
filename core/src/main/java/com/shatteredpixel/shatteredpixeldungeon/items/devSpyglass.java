@@ -29,7 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -180,7 +180,7 @@ public class devSpyglass extends Item {
 		}
 		if (action.equals(AC_KILL)){
 			Sample.INSTANCE.play(Assets.Sounds.BURNING);
-			mob.sprite.emitter().burst( ShadowParticle.UP, 5 );
+			Wound.hit(mob);
 			mob.die(devSpyglass.class);
 			curUser.sprite.operate(mob.pos);
 			if (!mob.isAlive()) {

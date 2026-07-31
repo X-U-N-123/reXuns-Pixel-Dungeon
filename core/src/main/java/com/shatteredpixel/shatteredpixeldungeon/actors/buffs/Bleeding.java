@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.El
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Thorns;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -89,9 +90,7 @@ public class Bleeding extends Buff {
 			if (Char.hasProp(target, Char.Property.BOSS)){
 				spendConstant( -5 );
 			} else {
-				if (target.sprite.visible)
-					Splash.at( target.sprite.center(), -PointF.PI / 2, PointF.PI / 6,
-							target.sprite.blood(), Math.min( 10 * target.HP / target.HT, 10 ) );
+				if (target.sprite.visible) Wound.hit(target);
 
 				target.HP = 0;
 				target.die(this);

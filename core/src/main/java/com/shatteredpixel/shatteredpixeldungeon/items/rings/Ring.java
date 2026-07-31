@@ -443,6 +443,11 @@ public class Ring extends KindofMisc {
 		if (hero.belongings.misc() != null && hero.belongings.misc().getClass() == getClass()){
 			bonus += ((Ring)hero.belongings.misc()).soloBonus();
 		}
+		RingOfMimic mimic = hero.belongings.getItem(RingOfMimic.class);
+		if (mimic != null && mimic.mimicRing() != null && mimic.buff != null
+				&& mimic.mimicRing().getClass() == getClass()){
+			bonus += mimic.soloBonus();
+		}
 		return bonus;
 	}
 
@@ -454,6 +459,11 @@ public class Ring extends KindofMisc {
 		}
 		if (hero.belongings.misc() != null && hero.belongings.misc().getClass() == getClass()){
 			bonus += ((Ring)hero.belongings.misc()).soloBuffedBonus();
+		}
+		RingOfMimic mimic = hero.belongings.getItem(RingOfMimic.class);
+		if (mimic != null && mimic.mimicRing() != null && mimic.buff != null
+				&& mimic.mimicRing().getClass() == getClass()){
+			bonus += mimic.soloBuffedBonus();
 		}
 		return bonus;
 	}

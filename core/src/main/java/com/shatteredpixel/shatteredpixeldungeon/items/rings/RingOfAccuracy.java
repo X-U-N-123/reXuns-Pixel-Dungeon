@@ -34,7 +34,7 @@ public class RingOfAccuracy extends Ring {
 	}
 	
 	public String statsInfo() {
-		if (isIdentified()){
+		if (levelKnown || cursedKnown){
 			String info = Messages.get(this, "stats",
 					Messages.decimalFormat("#.##", 100f * (Math.pow(1.3f, soloBuffedBonus()) - 1f)));
 			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){

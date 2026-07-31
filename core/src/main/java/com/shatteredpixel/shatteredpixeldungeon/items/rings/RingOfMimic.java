@@ -59,6 +59,10 @@ public class RingOfMimic extends Ring {
 	private Ring mimicRing = null;
 	private int time = 0;
 
+	public Ring mimicRing(){
+		return mimicRing;
+	}
+
 	private int effectCooldown(){
 		int cooldown = 100;
 		if (Dungeon.hero.hasTalent(Talent.LIGHT_GREED) && !isEquipped(Dungeon.hero))
@@ -124,7 +128,7 @@ public class RingOfMimic extends Ring {
 					options = new String[]{ring1.trueName(), ring2.trueName(), ring3.trueName()};
 				} else options = new String[]{ring1.trueName(), ring2.trueName()};
 
-				time = -100;
+				time = -effectCooldown();
 				BuffIndicator.refreshHero();
 
 				Ring Ring2 = ring2;
@@ -167,12 +171,12 @@ public class RingOfMimic extends Ring {
 	@Override
 	public boolean doUnequip( Hero hero, boolean collect, boolean single ) {
 		if (super.doUnequip( hero, collect, single )) {
-			if (!collect || !hero.hasTalent(Talent.LIGHT_GREED)){
+			if (collect && hero.hasTalent(Talent.LIGHT_GREED)) {
+				activate(hero);
+			} else {
 				if (mimicRing != null) {
 					mimicRing.buff.detach();
 				}
-			} else {
-				activate(hero);
 			}
 
 			return true;
@@ -207,6 +211,14 @@ public class RingOfMimic extends Ring {
 	public void activate( Char ch ) {
 		super.activate(ch);
 		if (mimicRing != null) mimicRing.activate(ch);
+	}
+
+	@Override
+	protected void onDetach() {
+		if (buff != null){
+			buff.detach();
+			buff = null;
+		}
 	}
 
 	@Override

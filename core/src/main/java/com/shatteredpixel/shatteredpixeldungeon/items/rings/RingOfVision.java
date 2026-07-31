@@ -77,7 +77,7 @@ public class RingOfVision extends Ring {
     }
 
     public String statsInfo() {
-        if (isIdentified()){
+        if (levelKnown){
             String info = Messages.get(this, "stats", soloBonus());
             if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
                 info += "\n\n" + Messages.get(this, "combined_stats", getBonus(Dungeon.hero, Vision.class));

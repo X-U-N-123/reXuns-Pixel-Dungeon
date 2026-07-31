@@ -34,7 +34,7 @@ public class RingOfArcana extends Ring {
 	}
 
 	public String statsInfo() {
-		if (isIdentified()){
+		if (levelKnown || cursedKnown){
 			String info = Messages.get(this, "stats",
 					Messages.decimalFormat("#.##", 100f * (Math.pow(1.175f, soloBuffedBonus()) - 1f)));
 			if (isEquipped(Dungeon.hero) && soloBuffedBonus() != combinedBuffedBonus(Dungeon.hero)){
