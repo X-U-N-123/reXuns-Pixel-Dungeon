@@ -257,7 +257,7 @@ public enum Talent {
 	BEAMING_RAY(277, 4), LIFE_LINK(278, 4), STASIS(279, 4), HOLY_CHAMPION(280, 4),
 
 	//Explorer T1
-	KEEN_MEAL(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
+	EAT_LITTLE_AND_OFTEN(288), SECRET_FORESIGHT(289), TESTED_AWARENESS(290), HOME_ADVANTAGE(291), SAFE_SURVEY(292),
 	//Explorer T2
 	PREPARING_MEAL(293), LIQUID_CLAIRVOYANCE(294), BARBED_WIRE(295), WINDING_PORCH(296), REKINDLED_EMBER(297), AGGRESSIVE_ROADBLOCK(298),
 	//Explorer T3
@@ -295,7 +295,7 @@ public enum Talent {
     FACE_TO_FACE_FRIGHT(373, 4), SOUL_VANISHING(374, 4), FEAR_SPREADING(375, 4), SOULFREE_GHOST(376, 4),
 
 	//Engineer T1
-	EAT_LITTLE_AND_OFTEN(384), FINE_INTUITION(385), TESTED_MAINTENANCE(386), GENERAL_DISARM(387), PULSE_ENERGY(388),
+	KEEN_MEAL(384), FINE_INTUITION(385), TESTED_MAINTENANCE(386), GENERAL_DISARM(387), PULSE_ENERGY(388),
 	//Engineer T2
 	TOILSOME_MEAL(389), IONIC_LIQUID(390), STRONG_PULSE(391), RESONANT_SENSING(392), APART_ANYTHING(393), REMOTE_DESTRUCTION(394),
 	//Engineer T3
@@ -1314,9 +1314,9 @@ public enum Talent {
 				}
 			});
 
-			//disarms at most 4/6 traps
-			while (disarmCandidates.size() > 2 + 2*hero.pointsInTalent(KEEN_MEAL)){
-				disarmCandidates.remove(2 + 2*hero.pointsInTalent(KEEN_MEAL));
+			//disarms at most 3/5 traps
+			while (disarmCandidates.size() > 1 + 2*hero.pointsInTalent(KEEN_MEAL)){
+				disarmCandidates.remove(1 + 2*hero.pointsInTalent(KEEN_MEAL));
 			}
 
 			boolean disarmed = false;
@@ -1805,13 +1805,13 @@ public enum Talent {
 				Collections.addAll(tierTalents, SATIATED_SPELLS, HOLY_INTUITION, TESTED_HOLINESS, SEARING_LIGHT, SHIELD_OF_LIGHT);
 				break;
 			case EXPLORER:
-				Collections.addAll(tierTalents, KEEN_MEAL, SECRET_FORESIGHT, TESTED_AWARENESS, HOME_ADVANTAGE, SAFE_SURVEY);
+				Collections.addAll(tierTalents, EAT_LITTLE_AND_OFTEN, SECRET_FORESIGHT, TESTED_AWARENESS, HOME_ADVANTAGE, SAFE_SURVEY);
 				break;
             case WRAITH:
                 Collections.addAll(tierTalents, ANCESTRAL_TRIBUTE, BLOOD_INTUITION, TESTED_ANTIMAGIC, BURIAL_CEREMONY, SAFE_PRICK);
                 break;
 			case ENGINEER:
-				Collections.addAll(tierTalents, EAT_LITTLE_AND_OFTEN, FINE_INTUITION, TESTED_MAINTENANCE, GENERAL_DISARM, PULSE_ENERGY);
+				Collections.addAll(tierTalents, KEEN_MEAL, FINE_INTUITION, TESTED_MAINTENANCE, GENERAL_DISARM, PULSE_ENERGY);
 				break;
 			case PILLAGER:
 				Collections.addAll(tierTalents, GRAND_BANQUET, FORESIGHT_INTUITION, TESTED_COPY, ITEM_LEVERAGE, MISSED_SAFETY);

@@ -1846,7 +1846,7 @@ public class Hero extends Char {
 			break;
 		case POACHER:
 			if (hasTalent(Talent.LIVE_DISSECTION) && !enemy.isImmune(Bleeding.class) && !(enemy instanceof YogFist.RottingFist)){
-				float bleed = damage * 0.3f + 0.1f * pointsInTalent(Talent.LIVE_DISSECTION);
+				float bleed = damage * 0.4f + 0.1f * pointsInTalent(Talent.LIVE_DISSECTION);
 				Buff.affect(enemy, Bleeding.class).set(bleed, Hero.class);
 				damage = -1;
 
