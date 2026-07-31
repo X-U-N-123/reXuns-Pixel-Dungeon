@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
+import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -379,6 +380,8 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe( new GemPowder.Recipe(),
 				new ArrayList<Item>(Arrays.asList(new Ring.PlaceHolder())),
 				new GemPowder()));
+				result.add(null);
+				result.add(new QuickRecipe(new Stylus.StylusToStone()));
 
                 if (Dungeon.isChallenged(Challenges.NO_RETURN))
                     result.add(new QuickRecipe(new Support.Recipe()));

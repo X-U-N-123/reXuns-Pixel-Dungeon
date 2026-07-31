@@ -261,7 +261,8 @@ public abstract class Recipe {
 		new Corrosion.Recipe(),
 		new Uptier.Recipe(),
         new Support.Recipe(),
-		new StewedMeat.twoMeat()
+		new StewedMeat.twoMeat(),
+		new Stylus.StylusToStone()
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{

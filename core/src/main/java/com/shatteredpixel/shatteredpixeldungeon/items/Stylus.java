@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Enchanting;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PurpleParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfEnchantment;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -139,4 +140,17 @@ public class Stylus extends Item {
 			}
 		}
 	};
+
+	public static class StylusToStone extends Recipe.SimpleRecipe {
+		{
+			inputs =  new Class[]{Stylus.class, StoneOfEnchantment.class};
+			inQuantity = new int[]{1, 1};
+
+			cost = 2;
+
+			output = StoneOfEnchantment.class;
+			outQuantity = 2;
+		}
+
+	}
 }

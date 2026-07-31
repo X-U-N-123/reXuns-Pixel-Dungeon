@@ -947,7 +947,7 @@ public enum Talent {
 			}
 			if (copy != null){
 				GLog.p(Messages.get(Talent.class, TESTED_COPY.name() + ".get", copy.name()));
-				copy.collect();
+				if (!copy.collect()) Dungeon.level.drop(copy, hero.pos).sprite.drop();
 			}
 		}
 	}

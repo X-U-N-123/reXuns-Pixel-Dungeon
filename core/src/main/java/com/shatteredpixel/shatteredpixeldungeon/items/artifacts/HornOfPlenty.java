@@ -29,12 +29,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.FoodPocket;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
@@ -159,6 +159,7 @@ public class HornOfPlenty extends Artifact {
 
 		while (Random.Float() < chargeDec){
 			chargesToUse --;
+			chargeDec --;
 		}
 		charge -= chargesToUse;
 		Talent.onArtifactUsed(hero);
@@ -338,7 +339,7 @@ public class HornOfPlenty extends Artifact {
 
 		@Override
 		public Class<?extends Bag> preferredBag(){
-			return Belongings.Backpack.class;
+			return FoodPocket.class;
 		}
 
 		@Override
