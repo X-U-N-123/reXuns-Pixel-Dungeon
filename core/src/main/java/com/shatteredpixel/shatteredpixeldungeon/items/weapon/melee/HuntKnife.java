@@ -26,12 +26,12 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Fork extends MeleeWeapon {
+public class HuntKnife extends MeleeWeapon {
 
     {
-        image = ItemSpriteSheet.Fork;
-        hitSound = Assets.Sounds.HIT_STAB;
-        hitSoundPitch = 1.2f;
+        image = ItemSpriteSheet.HUNT_KNIFE;
+        hitSound = Assets.Sounds.HIT_SLASH;
+        hitSoundPitch = 1.1f;
 
         tier = 1;
         ACC = 0.84f; //16% penalty to accuracy

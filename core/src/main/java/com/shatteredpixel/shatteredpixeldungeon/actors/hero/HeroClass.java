@@ -109,8 +109,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Cudgel;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HuntKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
@@ -395,7 +395,7 @@ public enum HeroClass {
 
 	private static void initPillager(Hero hero ) {
 
-		(hero.belongings.weapon = new Fork()).identify();
+		(hero.belongings.weapon = new HuntKnife()).identify();
 		hero.belongings.weapon.activate(hero);
 
 		(hero.belongings.ring = new RingOfMimic()).activate(hero);

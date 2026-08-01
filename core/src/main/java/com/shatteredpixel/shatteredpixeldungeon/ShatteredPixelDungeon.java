@@ -41,6 +41,10 @@ public class ShatteredPixelDungeon extends Game {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HuntKnife.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork.class" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword.class" );
 
@@ -55,9 +59,6 @@ public class ShatteredPixelDungeon extends Game {
 				com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion.TransfusionTracker.class,
 				"com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan.LifeloanTracker.class" );
 
-        com.watabou.utils.Bundle.addAlias(
-            com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCurse.class,
-            "com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pier.class" );
 	}
 	
 	@Override

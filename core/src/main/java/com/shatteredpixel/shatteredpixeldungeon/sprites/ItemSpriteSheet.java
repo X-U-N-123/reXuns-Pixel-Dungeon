@@ -255,10 +255,10 @@ public class ItemSpriteSheet {
 
 	private static final int WEP_TIER1      = xy(1, 5);//16 slots
 	public static final int CUDGEL          = WEP_TIER1+1;
-	public static final int TOOL            = WEP_TIER1+2;
+	public static final int TOOL            = WEP_TIER1+3;
 	public static final int GLOVES          = WEP_TIER1+5;
 	public static final int WORN_SHORTSWORD = WEP_TIER1+6;
-	public static final int Fork            = WEP_TIER1+7;
+	public static final int HUNT_KNIFE      = WEP_TIER1+7;
 	public static final int RAPIER          = WEP_TIER1+8;
 	public static final int DAGGER          = WEP_TIER1+9;
     public static final int SHOVEL          = WEP_TIER1+10;
@@ -274,7 +274,7 @@ public class ItemSpriteSheet {
 		assignItemRect(DAGGER,          12, 13);
 		assignItemRect(MAGES_STAFF,     15, 16);
 		assignItemRect(TOOL,            15, 16);
-		assignItemRect(Fork,            15, 15);
+		assignItemRect(HUNT_KNIFE,      14, 14);
 		assignItemRect(BONE_SPIKE,      12, 13);
         assignItemRect(SHOVEL,          16, 16);
         assignItemRect(WOOD_SHOVEL,     16, 16);

@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.quest.CorpseDust;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -96,7 +97,8 @@ public class Satchel extends Item {
 
 				@Override
 				public boolean itemSelectable(Item item) {
-					return !(item instanceof Satchel) && !item.isEquipped(hero);
+					return !(item instanceof Satchel) && !(item instanceof CorpseDust)
+							&& !item.isEquipped(hero);
 				}
 
 				@Override

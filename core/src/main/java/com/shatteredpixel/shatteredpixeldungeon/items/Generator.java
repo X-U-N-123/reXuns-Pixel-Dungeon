@@ -185,7 +185,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Erlangknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Etherealsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Futsunomitama;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
@@ -201,6 +200,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HiddenBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Hoe;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HuntKnife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Ironbar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jieniu;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jiewan;
@@ -517,7 +517,7 @@ public class Generator {
 					Gloves.class,
 					Rapier.class,
 					MultiTool.class,      //Engineer's special wep
-					Fork.class,
+					HuntKnife.class,
 					Cudgel.class,
 					BoneSpike.class,    //Wraith's special wep
 					Shovel.class        //Explorer's special wep
