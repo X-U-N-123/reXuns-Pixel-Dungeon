@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.OpticalCamou;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Landmark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
@@ -1555,6 +1556,7 @@ public abstract class Level implements Bundlable {
 				if (m instanceof WandOfWarding.Ward
 						|| m instanceof WandOfRegrowth.Lotus
 						|| m instanceof SpiritHawk.HawkAlly
+						|| m instanceof Landmark.LandMark
 						|| m.buff(PowerOfMany.PowerBuff.class) != null
 						|| (m instanceof MirrorImage && ((Hero)c).subClass == HeroSubClass.PHANTOM)){
 					if (m.fieldOfView == null || m.fieldOfView.length != length()){

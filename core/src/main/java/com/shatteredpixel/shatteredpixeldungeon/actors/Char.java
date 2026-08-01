@@ -99,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Ch
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.SummoningBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.explorer.Sandstorm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Landmark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.AuraOfProtection;
@@ -1280,6 +1281,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(SummoningBeacon.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DwarvesTile.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Item.Leverage.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(Landmark.LandMark.class);
 	}
 	
 	public void destroy() {

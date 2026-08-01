@@ -43,7 +43,7 @@ public class OpticalCamou extends ArmorAbility {
     public float chargeUse( Hero hero ) {
         float chargeUse = super.chargeUse(hero);
         if (hero.buff(Camouflage.class) != null){
-            //reduced charge use by 12%/24%/36%/58%
+            //reduced charge use by 12%/24%/36%/48%
             chargeUse *= 1 - 0.12f * hero.pointsInTalent(Talent.STANDBY);
         }
         return chargeUse;

@@ -49,6 +49,6 @@ public class ResentmentSprite extends MobSprite {
 
     @Override
     public int blood() {
-        return 0xFF111111;
+        return 0xFF222222;
     }
 }

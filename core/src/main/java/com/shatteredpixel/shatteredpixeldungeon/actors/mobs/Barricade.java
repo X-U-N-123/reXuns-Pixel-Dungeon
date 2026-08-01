@@ -141,26 +141,29 @@ public class Barricade extends Mob {
     }
 
     @Override
-    public void damage( int dmg, Object src ) {
-        if (src instanceof Char){
-            if (aggression > 0){
-                ArrayList<Class<? extends FlavourBuff>> debuff = new ArrayList<>();
-                if (((Char)src).buff(Weakness.class) == null)   debuff.add(Weakness.class);
-                if (((Char)src).buff(Vertigo.class) == null)    debuff.add(Vertigo.class);
-                if (((Char)src).buff(Daze.class) == null)       debuff.add(Daze.class);
-                if (((Char)src).buff(Vulnerable.class) == null) debuff.add(Vulnerable.class);
-                if (((Char)src).buff(Slow.class) == null)       debuff.add(Slow.class);
-                if (((Char)src).buff(BrokenArmor.class) == null)debuff.add(BrokenArmor.class);
-                if (((Char)src).buff(Blindness.class) == null)  debuff.add(Blindness.class);
-                if (debuff.isEmpty())                           debuff.add(Paralysis.class);
-                Buff.affect((Char)src, debuff.get(Random.Int(debuff.size())), aggression);
-            }
-
-            if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.EXPLORER && alignment == Alignment.ALLY){
-                Buff.affect((Char) src, Bleeding.class)
-					.set(dmg * (4 + Dungeon.hero.pointsInTalent(Talent.BARBED_WIRE)) / 10f, Barricade.class);
-            }
+    public int defenseProc(Char enemy, int damage) {
+        if (aggression > 0){
+            ArrayList<Class<? extends FlavourBuff>> debuff = new ArrayList<>();
+            if (enemy.buff(Weakness.class) == null)   debuff.add(Weakness.class);
+            if (enemy.buff(Vertigo.class) == null)    debuff.add(Vertigo.class);
+            if (enemy.buff(Daze.class) == null)       debuff.add(Daze.class);
+            if (enemy.buff(Vulnerable.class) == null) debuff.add(Vulnerable.class);
+            if (enemy.buff(Slow.class) == null)       debuff.add(Slow.class);
+            if (enemy.buff(BrokenArmor.class) == null)debuff.add(BrokenArmor.class);
+            if (enemy.buff(Blindness.class) == null)  debuff.add(Blindness.class);
+            if (debuff.isEmpty())                           debuff.add(Paralysis.class);
+            Buff.affect(enemy, debuff.get(Random.Int(debuff.size())), aggression);
         }
+
+        if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.EXPLORER && alignment == Alignment.ALLY){
+            Buff.affect(enemy, Bleeding.class)
+                    .set(damage * (4 + Dungeon.hero.pointsInTalent(Talent.BARBED_WIRE)) / 10f, Barricade.class);
+        }
+        return super.defenseProc(enemy, damage);
+    }
+
+    @Override
+    public void damage( int dmg, Object src ) {
         super.damage( dmg, src );
         sprite.linkVisuals(this);//check sprite
     }

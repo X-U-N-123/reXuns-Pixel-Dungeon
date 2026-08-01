@@ -84,6 +84,6 @@ public class DemonSentrySprite extends MobSprite {
 
 	@Override
 	public int blood() {
-		return 0x111111;
+		return 0xFF222222;
 	}
 }

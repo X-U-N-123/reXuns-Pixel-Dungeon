@@ -325,6 +325,8 @@ public enum Talent {
 	IMPERIALISM(451, 3), PRIMITIVE_ACCU(452, 3), DEALING_DISSIDENTS(453, 3), MONOPOLY(454, 3), SCROOGE(455, 3),
 	//Replication T4
 	MASS_PRODUCTION(461, 4), WORKMANSHIP(462, 4), REUSE(463, 4), CLONING(464, 4),
+	//Landmark T4
+	HARD_LANDMARK(465, 4), WRONG_DIRECT(466, 4), WARP_ANCHOR(467, 4), ARROW_TARGET(468, 4),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one
