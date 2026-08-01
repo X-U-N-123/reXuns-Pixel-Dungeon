@@ -450,10 +450,7 @@ abstract public class MissileWeapon extends Weapon {
 		if (modify == Modification.SMOG_ATTACH){
 			if (enemy != null && enemy.alignment != Char.Alignment.ALLY && !enemy.isImmune(Blindness.class)){
 				Buff.affect(enemy, Blindness.class, 5f);
-				if (parent != null) {
-					parent.decreaseModDurability();
-					if (parent.modify == null) modify = null;
-				} else decreaseModDurability();
+				decreaseModDurability();
 			}
 			Sample.INSTANCE.play(Assets.Sounds.BLAST);
 		}
@@ -891,5 +888,19 @@ abstract public class MissileWeapon extends Weapon {
 				levelThresholds.put(IDs[i], levels[i]);
 			}
 		}
+	}
+
+	@Override
+	public void decreaseModDurability() {
+		if (parent != null) {
+			parent.decreaseModDurability();
+			if (parent.modify == null) modify = null;
+		} else super.decreaseModDurability();
+	}
+
+	@Override
+	public void modify(Modification mod) {
+		if (parent != null) parent.modify(mod);
+		super.modify(mod);
 	}
 }

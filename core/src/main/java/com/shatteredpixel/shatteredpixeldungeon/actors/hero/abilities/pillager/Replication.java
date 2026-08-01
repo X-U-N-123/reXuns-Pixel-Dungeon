@@ -103,6 +103,7 @@ public class Replication extends ArmorAbility {
 						}
 						if (newOne instanceof MissileWeapon){
 							((MissileWeapon) newOne).setID = new SecureRandom().nextLong();
+							((MissileWeapon) newOne).repair(MissileWeapon.MAX_DURABILITY);
 						}
 						if (!newOne.collect()) Dungeon.level.drop(newOne, target).sprite.drop();
 
