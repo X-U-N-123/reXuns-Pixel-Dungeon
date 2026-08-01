@@ -366,6 +366,7 @@ public class WndSettings extends WndTabbed {
 		ColorBlock sep2;
 		CheckBox chkFont;
 		CheckBox chkVibrate;
+		CheckBox chkFastTransition;
 
 		@Override
 		protected void createChildren() {
@@ -561,6 +562,18 @@ public class WndSettings extends WndTabbed {
 
 			}
 
+			chkFastTransition = new CheckBox(Messages.get(this, "fast_transition")){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					SPDSettings.fastTransition(checked());
+				}
+			};
+			if (chkFastTransition.active) {
+				chkFastTransition.checked(SPDSettings.fastTransition());
+			}
+			add(chkFastTransition);
+
 			sep2 = new ColorBlock(1, 1, 0xFF000000);
 			add(sep2);
 
@@ -625,14 +638,25 @@ public class WndSettings extends WndTabbed {
 				}
 			}
 
-			if (btnToolbarSettings != null) {
-				btnToolbarSettings.setRect(0, height + GAP, width, BTN_HEIGHT);
-				height = btnToolbarSettings.bottom();
+			if (width > 200){
+				if (btnToolbarSettings != null) {
+					btnToolbarSettings.setRect(0, height + GAP, width/2-1, BTN_HEIGHT);
+				} else {
+					chkFlipTags.setRect(0, height + GAP, width/2-1, BTN_HEIGHT);
+				}
+				chkFastTransition.setRect(width/2+1, height + GAP, width/2-1, BTN_HEIGHT);
+				height = chkFastTransition.bottom();
 			} else {
-				chkFlipTags.setRect(0, height + GAP, width, BTN_HEIGHT);
-				height = chkFlipTags.bottom();
+				if (btnToolbarSettings != null) {
+					btnToolbarSettings.setRect(0, height + GAP, width, BTN_HEIGHT);
+					height = btnToolbarSettings.bottom();
+				} else {
+					chkFlipTags.setRect(0, height + GAP, width, BTN_HEIGHT);
+					height = chkFlipTags.bottom();
+				}
+				chkFastTransition.setRect(0, height + GAP, width, BTN_HEIGHT);
+				height = chkFastTransition.bottom();
 			}
-
 			sep2.size(width, 1);
 			sep2.y = height + GAP;
 

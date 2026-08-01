@@ -124,7 +124,7 @@ public class LiquidMetal extends Item {
 			if ((Char.hasProp(ch, Char.Property.MECHANICAL) && Dungeon.hero.hasTalent(Talent.REMOTE_DESTRUCTION))
 					|| (Char.hasProp(ch, Char.Property.INORGANIC) && Dungeon.hero.pointsInTalent(Talent.REMOTE_DESTRUCTION) >= 2)){
 				Sample.INSTANCE.play(Assets.Sounds.HIT);
-				Buff.affect(ch, Cripple.class, 8);
+				Buff.affect(ch, Cripple.class, 7);
 				consume = true;
 				Buff.prolong(Dungeon.hero, RemoteDestructionCD.class, 100);
 			}
