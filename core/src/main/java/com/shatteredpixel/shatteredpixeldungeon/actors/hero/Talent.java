@@ -1187,11 +1187,8 @@ public enum Talent {
 
 			}
 		}
-		if (hero.hasTalent(IRON_STOMACH)){
-			if (hero.cooldown() > 0) {
-				Buff.affect(hero, WarriorFoodImmunity.class, hero.cooldown());
-			}
-		}
+		if (hero.hasTalent(IRON_STOMACH) && hero.cooldown() > 0)
+			Buff.affect(hero, WarriorFoodImmunity.class, hero.cooldown() * hero.pointsInTalent(IRON_STOMACH));
 
 		if (hero.hasTalent(EMPOWERING_MEAL)){
 			//2/3 bonus wand damage for next 3 zaps

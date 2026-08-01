@@ -1977,10 +1977,7 @@ public class Hero extends Char {
 			damage = thorns.proc((int)damage, (src instanceof Char ? (Char)src : null),  this);
 		}
 
-		if (buff(Talent.WarriorFoodImmunity.class) != null){
-			if (pointsInTalent(Talent.IRON_STOMACH) == 1)       damage /= 4f;
-			else if (pointsInTalent(Talent.IRON_STOMACH) == 2)  damage = 0;
-		}
+		if (buff(Talent.WarriorFoodImmunity.class) != null) damage = 0;
 
 		if (hasTalent(Talent.EMERGENCY_SHIELD) && dmg > 1 && !(src instanceof Buff) && !(src instanceof Chasm)){
 			int shield = (int)(Math.log(dmg)/Math.log(Math.pow(6 - pointsInTalent(Talent.EMERGENCY_SHIELD), 0.5)));
