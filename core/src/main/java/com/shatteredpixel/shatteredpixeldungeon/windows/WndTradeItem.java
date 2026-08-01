@@ -35,8 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -89,8 +89,11 @@ public class WndTradeItem extends WndInfoItem {
 				add(warn);
 				pos = warn.bottom();
 			}
-
-			RedButton btnSell = new RedButton( Messages.get(this, "sell", item.value()) ) {
+			int value = item.value();
+			if (Dungeon.hero.hasTalent(Talent.MONOPOLY)){
+				value *= 1 + Dungeon.hero.pointsInTalent(Talent.MONOPOLY) / 2f;
+			}
+			RedButton btnSell = new RedButton( Messages.get(this, "sell", value) ) {
 				@Override
 				protected void onClick() {
 					sell( item, finalShop);
@@ -255,7 +258,11 @@ public class WndTradeItem extends WndInfoItem {
 		//selling items in the sell interface doesn't spend time
 		hero.spend(-hero.cooldown());
 
-		new Gold( item.value() ).doPickUp( hero );
+		int value = item.value();
+		if (hero.hasTalent(Talent.MONOPOLY)){
+			value *= 1 + hero.pointsInTalent(Talent.MONOPOLY) / 2f;
+		}
+		new Gold( value ).doPickUp( hero );
 
 		if (item instanceof KiteShield) Badges.validateBlasphemy();
 

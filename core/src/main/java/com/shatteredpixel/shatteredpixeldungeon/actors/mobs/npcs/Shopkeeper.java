@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
@@ -251,7 +252,11 @@ public class Shopkeeper extends NPC {
 				options[i++] = Messages.get(Shopkeeper.this, "sell");
 				options[i++] = Messages.get(Shopkeeper.this, "talk");
 				for (Item item : buybackItems){
-					options[i] = Messages.get(Heap.class, "for_sale", item.value(), Messages.titleCase(item.title()));
+					int value = item.value();
+					if (Dungeon.hero.hasTalent(Talent.MONOPOLY)){
+						value *= 1 + Dungeon.hero.pointsInTalent(Talent.MONOPOLY) / 2f;
+					}
+					options[i] = Messages.get(Heap.class, "for_sale", value, Messages.titleCase(item.title()));
 					if (options[i].length() > maxLen) options[i] = options[i].substring(0, maxLen-3) + "...";
 					i++;
 				}
@@ -267,8 +272,13 @@ public class Shopkeeper extends NPC {
 						} else if (index > 1){
 							GLog.i(Messages.get(Shopkeeper.this, "buyback"));
 							Item returned = buybackItems.remove(index-2);
-							Dungeon.gold -= returned.value();
-							Statistics.goldCollected -= returned.value();
+
+							int value = returned.value();
+							if (Dungeon.hero.hasTalent(Talent.MONOPOLY)){
+								value *= 1 + Dungeon.hero.pointsInTalent(Talent.MONOPOLY) / 2f;
+							}
+							Dungeon.gold -= value;
+							Statistics.goldCollected -= value;
 							if (returned instanceof MissileWeapon && returned.isUpgradable()){
 								Buff.affect(Dungeon.hero, MissileWeapon.UpgradedSetTracker.class).levelThresholds.put(((MissileWeapon) returned).setID, returned.level());
 							}

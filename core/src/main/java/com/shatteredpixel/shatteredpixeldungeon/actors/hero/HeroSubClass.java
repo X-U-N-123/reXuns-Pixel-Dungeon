@@ -67,8 +67,8 @@ public enum HeroSubClass {
 	HACKER,
 	GRENADIER,
 
-	POACHER;
-	//Capitalist;
+	POACHER,
+	CAPITALIST;
 	//Enchanter;
 	
 	public String title() {

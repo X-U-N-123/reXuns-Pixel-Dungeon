@@ -25,7 +25,10 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -69,6 +72,9 @@ public class Gold extends Item {
 		GameScene.pickUp( this, pos );
 		hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
 		hero.spendAndNext( pickupDelay() );
+
+		if (hero.hasTalent(Talent.SCROOGE) && hero.cooldown() > 0)
+			Buff.affect(hero, Scrooge.class, hero.cooldown());
 		
 		Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
 		updateQuickslot();
@@ -91,5 +97,5 @@ public class Gold extends Item {
 		quantity = Random.IntRange( 30 + Dungeon.depth * 10, 60 + Dungeon.depth * 20 );
 		return this;
 	}
-
+	public static class Scrooge extends FlavourBuff{ {actPriority = HERO_PRIO+1;} }
 }

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Capitalism;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Game;
@@ -104,6 +105,8 @@ public class CurrencyIndicator extends Component {
 			
 			gold.text( Integer.toString(lastGold) );
 			gold.measure();
+
+			if (Dungeon.hero.buff(Capitalism.class) != null) ActionIndicator.refresh();
 			
 			gold.visible = true;
 			goldTime = TIME;

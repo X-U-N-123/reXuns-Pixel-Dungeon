@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Capitalism;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hypnosis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Phantom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
@@ -124,6 +125,10 @@ public class TengusMask extends Item {
         if (way == HeroSubClass.INCUBUS){
             ActionIndicator.setAction(Buff.affect(curUser, Hypnosis.class));
         }
+
+		if (way == HeroSubClass.CAPITALIST){
+			ActionIndicator.setAction(Buff.affect(curUser, Capitalism.class));
+		}
 		
 		curUser.sprite.operate( curUser.pos );
 		Sample.INSTANCE.play( Assets.Sounds.MASTERY );

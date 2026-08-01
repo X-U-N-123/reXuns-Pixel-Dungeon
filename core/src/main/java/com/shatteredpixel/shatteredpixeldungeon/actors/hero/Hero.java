@@ -105,6 +105,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap.Type;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -654,6 +655,10 @@ public class Hero extends Char {
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER)
 			accuracy *= 1.15f;
+
+		if (hasTalent(Talent.DEALING_DISSIDENTS)){
+			accuracy *= Dungeon.gold / (lvl * 100f * (5 - pointsInTalent(Talent.DEALING_DISSIDENTS)));
+		}
 
 		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
 			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
@@ -1991,6 +1996,10 @@ public class Hero extends Char {
 		//+0.2 后向下取整，作为削弱（免疫饥饿也太强了）
 		dmg = (int)Math.floor(dmg * RingOfTenacity.damageMultiplier( this ) + 0.2f);
 
+		if (buff(Gold.Scrooge.class) != null)
+			Buff.affect(this, Adrenaline.class, 1.67f + 2 * pointsInTalent(Talent.SCROOGE));
+		//act prority problem
+
 		int preHP = HP + shielding();
 		if (src instanceof Hunger) preHP -= shielding();
 
@@ -2354,14 +2363,22 @@ public class Hero extends Char {
 
 		int expBefore = this.exp;
 
-		if (glyphLevel(Piety.class) >= 0 && source != PotionOfExperience.class){
-			int shield = (int)(exp * (1 - Math.pow(1f/2, Armor.Glyph.genericProcChanceMultiplier(this))));
+		if (source != PotionOfExperience.class){
+			if (glyphLevel(Piety.class) >= 0){
+				int shield = (int)(exp * (1 - Math.pow(1f/2, Armor.Glyph.genericProcChanceMultiplier(this))));
 
-			if (shield > 0){
-				Buff.affect(this, Barrier.class).setShield(shield);
-				sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+				if (shield > 0){
+					Buff.affect(this, Barrier.class).setShield(shield);
+					sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
 
-				exp -= shield;
+					exp -= shield;
+				}
+			}
+			if (subClass == HeroSubClass.CAPITALIST) {
+				Dungeon.gold += (4 + pointsInTalent(Talent.PRIMITIVE_ACCU)) * exp;
+				Statistics.goldCollected += (4 + pointsInTalent(Talent.PRIMITIVE_ACCU)) * exp;
+
+				Item.updateQuickslot();
 			}
 		}
 
