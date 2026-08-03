@@ -46,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corruption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Doom;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EvasionModifier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
@@ -66,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Illusion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
@@ -508,8 +510,7 @@ public abstract class Mob extends Char {
 				return closest;
 			}
 
-		} else
-			return enemy;
+		} else return enemy;
 	}
 	
 	@Override
@@ -766,17 +767,20 @@ public abstract class Mob extends Char {
 			}
 		}
 
-		if ( !surprisedBy(enemy)
-				&& paralysed == 0
-				&& !(alignment == Alignment.ALLY && enemy == hero)) {
-
-			if (buff(JusticeStrike.JusticeStrikeBuff.class) != null){
-				return Math.round((0.75f - 0.25f*hero.pointsInTalent(Talent.JUSTICE_STRIKE))*defenseSkill);
-			} else {
-				return defenseSkill;
-			}
-		} else {
+		if (surprisedBy(enemy)
+				|| paralysed != 0
+				|| (alignment == Alignment.ALLY && enemy == hero)) {
 			return 0;
+		} else {
+
+			float boost = 1f;
+
+			if (buff(JusticeStrike.JusticeStrikeBuff.class) != null)
+				boost *= 0.75f - 0.25f*hero.pointsInTalent(Talent.JUSTICE_STRIKE);
+
+			for (EvasionModifier e : buffs(EvasionModifier.class)) boost *= e.scale;
+
+			return Math.round(defenseSkill * boost);
 		}
 	}
 	
@@ -1093,6 +1097,8 @@ public abstract class Mob extends Char {
 		dropBonus *= ShardOfOblivion.lootChanceMultiplier();
 
 		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) dropBonus /= 2f;
+
+		if (buff(Illusion.WealthTracker.class) != null) dropBonus *= 1 + buff(Illusion.WealthTracker.class).multi;
 
 		return lootChance * dropBonus;
 	}

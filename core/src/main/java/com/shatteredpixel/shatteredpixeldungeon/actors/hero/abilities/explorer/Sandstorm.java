@@ -236,7 +236,7 @@ public class Sandstorm extends ArmorAbility {
 	public String desc() {
 		String desc = Messages.get(this, "desc");
 		if (Game.scene() instanceof GameScene){
-			desc += "\n\n" + terrainDesc(Dungeon.hero);
+			desc += "\n\n" + terrainDesc();
 		}
 		desc += "\n\n" + Messages.get(this, "cost", (int)baseChargeUse);
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
@@ -244,8 +244,8 @@ public class Sandstorm extends ArmorAbility {
 		return desc;
 	}
 
-	public static String terrainDesc(Hero hero){
-		int terr = Dungeon.level.map[hero.pos];
+	public static String terrainDesc(){
+		int terr = Dungeon.level.map[Dungeon.hero.pos];
 		switch (terr){
 			case Terrain.EMPTY: case Terrain.EMPTY_DECO:
 				return Messages.get(Sandstorm.class, "empty_desc");

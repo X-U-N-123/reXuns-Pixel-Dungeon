@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Illusion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DrapeOfRedemption;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Explosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
@@ -116,6 +117,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( DrapeOfRedemption.class);
 
 		RESISTS.add( ElementalBlast.class );
+		RESISTS.add( Illusion.class );
 		RESISTS.add( CursedWand.class );
 		RESISTS.add( WandOfBlastWave.class );
 		RESISTS.add( WandOfDisintegration.class );

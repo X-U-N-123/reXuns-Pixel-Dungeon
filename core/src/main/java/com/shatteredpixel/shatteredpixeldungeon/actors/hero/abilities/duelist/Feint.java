@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EvasionModifier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
@@ -221,7 +222,8 @@ public class Feint extends ArmorAbility {
 					Buff.prolong(enemy, Weakness.class, 2f * Dungeon.hero.pointsInTalent(Talent.EXPOSE_WEAKNESS));
 				}
 				if (Dungeon.hero.hasTalent(Talent.EVASIVE_AFTERIMAGE)){
-					Buff.affect(Dungeon.hero, Evasiveafterimage.class, 2*Dungeon.hero.pointsInTalent(Talent.EVASIVE_AFTERIMAGE));
+					Buff.append(Dungeon.hero, EvasionModifier.class, 2*Dungeon.hero.pointsInTalent(Talent.EVASIVE_AFTERIMAGE))
+							.scale = 1 + 0.5f * Dungeon.hero.pointsInTalent(Talent.EVASIVE_AFTERIMAGE);
 				}
 				if (Dungeon.hero.hasTalent(Talent.COUNTER_ABILITY)) {
 					Buff.prolong(Dungeon.hero, Talent.CounterAbilityTacker.class, 3f);
@@ -276,6 +278,4 @@ public class Feint extends ArmorAbility {
 		}
 
 	}
-
-	public static class Evasiveafterimage extends FlavourBuff {}
 }

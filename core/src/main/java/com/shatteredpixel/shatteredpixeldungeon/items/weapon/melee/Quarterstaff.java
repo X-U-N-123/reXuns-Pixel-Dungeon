@@ -24,11 +24,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EvasionModifier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 
 public class Quarterstaff extends MeleeWeapon {
 
@@ -55,7 +54,7 @@ public class Quarterstaff extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		beforeAbilityUsed(hero, null);
 		//1 turn less as using the ability is instant
-		Buff.prolong(hero, DefensiveStance.class, 3 + buffedLvl());
+		Buff.append(hero, EvasionModifier.class, 3 + buffedLvl()).scale = 3f;
 		hero.sprite.operate(hero.pos);
 		hero.next();
 		afterAbilityUsed(hero);
@@ -74,23 +73,4 @@ public class Quarterstaff extends MeleeWeapon {
 	public String upgradeAbilityStat(int level) {
 		return Integer.toString(4+level);
 	}
-
-	public static class DefensiveStance extends FlavourBuff {
-
-		{
-			announced = true;
-			type = buffType.POSITIVE;
-		}
-
-		@Override
-		public int icon() {
-			return BuffIndicator.DUEL_EVASIVE;
-		}
-
-		@Override
-		public float iconFadePercent() {
-			return Math.max(0, (4 - visualcooldown()) / 4);
-		}
-	}
-
 }

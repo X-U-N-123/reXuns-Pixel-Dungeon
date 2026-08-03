@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.S
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.ElementalBlast;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WildMagic;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Illusion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Landmark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Replication;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.DeathMark;
@@ -452,7 +453,7 @@ public enum HeroClass {
 			case ENGINEER:
 				return new ArmorAbility[]{new ForceField(), new SummoningBeacon(), new Detonator()};
 			case PILLAGER:
-				return new ArmorAbility[]{new Replication(), new Landmark()};
+				return new ArmorAbility[]{new Replication(), new Landmark(), new Illusion()};
 		}
 	}
 

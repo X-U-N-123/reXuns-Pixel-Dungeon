@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EvasionModifier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
@@ -80,8 +81,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.Ratmogrify
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Feint;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.NaturesPower;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Illusion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.EvilUnfold;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.BodyForm;
@@ -176,7 +177,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LightFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RoundShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Sai;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
@@ -592,6 +592,11 @@ public class Hero extends Char {
 		KindOfWeapon wep = belongings.attackingWeapon();
 		
 		float accuracy = 1;
+
+		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
+			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
+		}
+
 		accuracy *= RingOfAccuracy.accuracyMultiplier( this );
 
 		if (weight() > STR() + 0.001f && Dungeon.isChallenged(Challenges.HEAVY_BURDEN)){
@@ -657,11 +662,7 @@ public class Hero extends Char {
 			accuracy *= 1.15f;
 
 		if (hasTalent(Talent.DEALING_DISSIDENTS)){
-			accuracy *= Dungeon.gold / (lvl * 100f * (5 - pointsInTalent(Talent.DEALING_DISSIDENTS)));
-		}
-
-		if(attackDelay() >1 && hasTalent(Talent.OVERWHELMING)){
-			accuracy += accuracy * Math.max (attackDelay()-(pointsInTalent(Talent.OVERWHELMING) / 3f),0.5f);
+			accuracy *= 1 + Dungeon.gold / (lvl * 100f * (5 - pointsInTalent(Talent.DEALING_DISSIDENTS)));
 		}
 
 		if (!RingOfForce.fightingUnarmed(this)) {
@@ -692,11 +693,17 @@ public class Hero extends Char {
 		if (buff(RoundShield.GuardTracker.class) != null){
 			return INFINITE_EVASION;
 		}
+
+		if (paralysed > 0) return 0;
 		
 		float evasion = defenseSkill;
 
 		SoulHandle handle = buff(SoulHandle.class);
 		if (handle != null) evasion += Math.max(0, handle.extraSoul());
+
+		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
+			if (mob instanceof MirrorImage) evasion += pointsInTalent(Talent.MULTIPLE_DODGE);
+		}
 
 		evasion *= RingOfEvasion.evasionMultiplier( this );
 
@@ -712,17 +719,7 @@ public class Hero extends Char {
 			}
 		}
 
-		if (buff(Quarterstaff.DefensiveStance.class) != null){
-			evasion *= 3;
-		}
-
-		if (buff(Feint.Evasiveafterimage.class) != null){
-			evasion *= 1 + 0.5f*pointsInTalent(Talent.EVASIVE_AFTERIMAGE);
-		}
-
-		if (paralysed > 0) {
-			evasion /= 2;
-		}
+		for (EvasionModifier e : buffs(EvasionModifier.class)) evasion *= e.scale;
 
 		if ((Dungeon.level.map[pos] == Terrain.EMPTY || Dungeon.level.map[pos] == Terrain.EMPTY_DECO)
 		&& heroClass == HeroClass.EXPLORER){
@@ -736,10 +733,6 @@ public class Hero extends Char {
 			if (belongings.armor().hasGlyph(Stone.class, this) && !Stone.testingEvasion()){
 				return 0;
 			}
-		}
-
-		for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])){
-			if (mob instanceof MirrorImage) evasion += pointsInTalent(Talent.MULTIPLE_DODGE);
 		}
 
 		return Math.round(evasion);
@@ -1871,6 +1864,12 @@ public class Hero extends Char {
 		if (damage > 0 && subClass == HeroSubClass.BERSERKER){
 			Berserk berserk = Buff.affect(this, Berserk.class);
 			berserk.damage(damage);
+		}
+
+		if (buff(Illusion.TenacityTracker.class) != null){
+			int blocked = (int)Math.ceil(damage / 4f);
+			enemy.damage(blocked, buff(Illusion.TenacityTracker.class));
+			damage -= blocked;
 		}
 
 		if (belongings.armor() != null) {

@@ -79,6 +79,11 @@ public class RingOfMimic extends Ring {
 		return desc;
 	}
 
+	public void extend(int amount){
+		if (time > 0) time += amount;
+		else time = Math.min(time + amount, 0);
+	}
+
 	@Override
 	public ItemSprite.Glowing glowing() {
 		if (mimicRing == null) return null;

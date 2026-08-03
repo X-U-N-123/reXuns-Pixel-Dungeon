@@ -327,6 +327,8 @@ public enum Talent {
 	MASS_PRODUCTION(461, 4), WORKMANSHIP(462, 4), REUSE(463, 4), CLONING(464, 4),
 	//Landmark T4
 	HARD_LANDMARK(465, 4), WRONG_DIRECT(466, 4), WARP_ANCHOR(467, 4), ARROW_TARGET(468, 4),
+	//Illusion T4
+	BLINDING_FLASH(469, 4), MAPPED_ILLUSION(470, 4), LASTING_MIMICRY(471, 4), ENHANCED_RINGS_2(472, 4),
 
 	//universal T4
 	HEROIC_ENERGY(41, 4), //See icon() and title() for special logic for this one

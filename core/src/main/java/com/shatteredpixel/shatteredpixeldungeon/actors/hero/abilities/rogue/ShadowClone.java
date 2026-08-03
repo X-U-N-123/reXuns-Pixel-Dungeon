@@ -204,7 +204,7 @@ public class ShadowClone extends ArmorAbility {
 
 		@Override
 		public int defenseSkill(Char target) {
-			return Math.round(defenseSkill*Dungeon.hero.pointsInTalent(Talent.PRECISE_SHADOW)/4f);
+			return Math.round(super.defenseSkill(target)*Dungeon.hero.pointsInTalent(Talent.PRECISE_SHADOW)/4f);
 		}
 
 		@Override

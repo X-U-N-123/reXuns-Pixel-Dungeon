@@ -27,13 +27,19 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ChampionEnemy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Daze;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EvasionModifier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.ShadowClone;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.ArmoredStatue;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
@@ -45,9 +51,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfAccuracy;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEvasion;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Scimitar;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
@@ -125,6 +131,11 @@ public class FloatingText extends RenderedTextBlock {
 	public static int HIT_SUPR  = 45;
 	public static int HIT_PRES  = 46;
 	public static int HIT_MOMEN = 47;
+	public static int HIT_GUARD = 48;
+	public static int HIT_PRSH  = 49;
+	public static int HIT_EXPLO = 50;
+	public static int HIT_BETRAY= 51;
+	public static int HIT_WORK  = 52;
 
 	//extra row for hit icons that are armor-piercing
 
@@ -137,9 +148,12 @@ public class FloatingText extends RenderedTextBlock {
 	public static int MISS_ACC  = 77;
 	public static int MISS_EVA  = 78;
 	public static int MISS_LIQ  = 79;
-	public static int MISS_DEF  = 80;
+	public static int MISS_PRSH = 80;
 	public static int MISS_TUFT = 81;
 	public static int MISS_RUN  = 82;
+	public static int MISS_MULTI= 83;
+	public static int MISS_EXPLO= 84;
+	public static int MISS_WORK = 85;
 
 	private Image icon;
 	private boolean iconLeft;
@@ -319,10 +333,11 @@ public class FloatingText extends RenderedTextBlock {
 		HashMap<Integer, Float> hitReasons = new HashMap<>();
 
 		//go through some garunteed hit interactions first
-		if (defRoll == 0 && defender.buff(GuidingLight.Illuminated.class) != null){
+		if (defRoll == 0 && (defender.buff(GuidingLight.Illuminated.class) != null || attacker.buff(Smite.SmiteTracker.class) != null)){
 			return HIT_BLS;
 		}
-		if (accRoll == Char.INFINITE_ACCURACY && attacker.invisible > 0){
+		//when stunned, its a garunteed hit
+		if (defender.paralysed > 0 || (accRoll == Char.INFINITE_ACCURACY && attacker.invisible > 0)){
 			return HIT_SUPR;
 		}
 		if (defRoll == 0 && defender instanceof Mob && ((Mob) defender).surprisedBy(attacker)){
@@ -342,6 +357,7 @@ public class FloatingText extends RenderedTextBlock {
 		if (attacker instanceof MirrorImage) wep = Dungeon.hero.belongings.weapon();
 		if (attacker instanceof Statue) wep = ((Statue)attacker).weapon();
 		if (attacker instanceof DriedRose.GhostHero) wep = ((DriedRose.GhostHero)attacker).weapon();
+		if (attacker instanceof MissileTower) wep = ((MissileTower)attacker).mis();
 
 		Armor arm = null;
 		if (defender instanceof Hero) arm = ((Hero) defender).belongings.armor();
@@ -367,8 +383,11 @@ public class FloatingText extends RenderedTextBlock {
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.BLESS)
 				&& attacker.alignment == Char.Alignment.ALLY){
-			// + 3%/5%
-			blessBoost *= 1.01f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			// + 4%/6%
+			blessBoost *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+		}
+		if (attacker instanceof Hero && ((Hero) attacker).hasTalent(Talent.DEALING_DISSIDENTS)){
+			blessBoost *= 1 + Dungeon.gold / (((Hero) attacker).lvl * 100f * (5 - ((Hero) attacker).pointsInTalent(Talent.DEALING_DISSIDENTS)));
 		}
 		if (blessBoost > 1f) hitReasons.put(HIT_BLS, blessBoost);
 		if (RingOfAccuracy.accuracyMultiplier(attacker) > 1)    hitReasons.put(HIT_ACC, RingOfAccuracy.accuracyMultiplier(attacker));
@@ -390,21 +409,48 @@ public class FloatingText extends RenderedTextBlock {
 			}
 		}
 
+		if (attacker instanceof Hero){
+			if (((Hero) attacker).subClass == HeroSubClass.GUARD && attacker.shielding() > 0)
+				hitReasons.put(HIT_GUARD, 1.2f);
+			
+			if (((Hero) attacker).heroClass == HeroClass.EXPLORER
+					&& (Dungeon.level.map[attacker.pos] == Terrain.EMPTY || Dungeon.level.map[attacker.pos] == Terrain.EMPTY_DECO))
+				hitReasons.put(HIT_EXPLO, 1.15f);
+
+			if (Char.hasProp(defender, Char.Property.UNDEAD) || Char.hasProp(defender, Char.Property.DEMONIC)){
+				switch (((Hero)attacker).pointsInTalent(Talent.VICIOUS_BETRAYAL)){
+					case 1: hitReasons.put(HIT_BETRAY, 1.2f); break;
+					case 2: hitReasons.put(HIT_BETRAY, 1.5f); break;
+					case 3: hitReasons.put(HIT_BETRAY, 2f);   break;
+					default:                                  break;
+				}
+			}
+
+			if (wep != null && wep.modify != null && ((Hero) attacker).hasTalent(Talent.FAVORITE_WORK))
+				hitReasons.put(HIT_WORK, ((Hero) attacker).pointsInTalent(Talent.FAVORITE_WORK) / 12f);
+		}
+
+		if (attacker instanceof ShadowClone.ShadowAlly && Dungeon.hero.hasTalent(Talent.PRECISE_SHADOW)){
+			hitReasons.put(HIT_PRSH, attacker.attackSkill(defender) / (((ShadowClone.ShadowAlly) attacker).defenseSkill + 5f));
+		}
+
 		//evasion reductions (always < 1)
 		if (defender.buff(Hex.class) != null)                   hitReasons.put(HIT_HEX, 0.8f);
 		if (defender.buff(Daze.class) != null)                  hitReasons.put(HIT_DAZE, 0.5f);
-		if (RingOfEvasion.evasionMultiplier(defender) < 1)      hitReasons.put(HIT_EVA, RingOfEvasion.evasionMultiplier(defender));
+		if (defender.buff(JusticeStrike.JusticeStrikeBuff.class) != null)
+			hitReasons.put(HIT_BLS, 0.75f - 0.25f * Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE));
+
+		float scale = 1;
+		if (RingOfEvasion.evasionMultiplier(defender) < 1) scale *= RingOfEvasion.evasionMultiplier(defender);
+		for (EvasionModifier m : defender.buffs(EvasionModifier.class)) if (m.scale < 1) scale *= m.scale;
+		if (scale < 1)                                          hitReasons.put(HIT_EVA, scale);
+
 		if (arm != null && arm.evasionFactor(defender, 100) < 100) {
 			//we express armor's normally flat evasion boost as a %, yes this is very awkward
 			Armor.testingNoArmDefSkill = true;
 			int baseDef = defender.defenseSkill(attacker);
 			Armor.testingNoArmDefSkill = false;
 			hitReasons.put(HIT_ARM, defender.defenseSkill(attacker)/(float)baseDef);
-		}
-		//hero specifically gets 1/2 eva when stunned, for mobs its a garunteed hit
-		if (defender.paralysed > 0)  {
-			if (defender instanceof Hero)   hitReasons.put(HIT_SUPR, 0.5f);
-			else                            return HIT_SUPR;
 		}
 
 		//sort from largest modifier to smallest one
@@ -439,11 +485,15 @@ public class FloatingText extends RenderedTextBlock {
 			return MISS_LIQ;
 		}
 
+		if (defender instanceof ShadowClone.ShadowAlly && Dungeon.hero.hasTalent(Talent.PRECISE_SHADOW))
+			return MISS_PRSH;
+
 		KindOfWeapon wep = null;
 		if (attacker instanceof Hero) wep = ((Hero) attacker).belongings.attackingWeapon();
 		if (attacker instanceof MirrorImage) wep = Dungeon.hero.belongings.weapon();
 		if (attacker instanceof Statue) wep = ((Statue)attacker).weapon();
 		if (attacker instanceof DriedRose.GhostHero) wep = ((DriedRose.GhostHero)attacker).weapon();
+		if (attacker instanceof MissileTower) wep = ((MissileTower)attacker).mis();
 
 		Armor arm = null;
 		if (defender instanceof Hero) arm = ((Hero) defender).belongings.armor();
@@ -461,13 +511,17 @@ public class FloatingText extends RenderedTextBlock {
 		if (Dungeon.hero.heroClass != HeroClass.CLERIC
 				&& Dungeon.hero.hasTalent(Talent.BLESS)
 				&& defender.alignment == Char.Alignment.ALLY){
-			// + 3%/5%
-			blessBoost *= 1.01f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
+			// + 4%/6%
+			blessBoost *= 1.02f + 0.02f*Dungeon.hero.pointsInTalent(Talent.BLESS);
 		}
 		if (blessBoost > 1f)                                    missReasons.put(MISS_BLS, blessBoost);
 		if (FerretTuft.evasionMultiplier() > 1)                 missReasons.put(MISS_TUFT, FerretTuft.evasionMultiplier());
-		if (RingOfEvasion.evasionMultiplier(defender) > 1)      missReasons.put(MISS_EVA, RingOfEvasion.evasionMultiplier(defender));
-		if (defender.buff(Quarterstaff.DefensiveStance.class) != null)  missReasons.put(MISS_DEF, 3f);
+
+		float scale = 1;
+		if (RingOfEvasion.evasionMultiplier(defender) > 1) scale *= RingOfEvasion.evasionMultiplier(defender);
+		for (EvasionModifier m : defender.buffs(EvasionModifier.class)) if (m.scale > 1) scale *= m.scale;
+		if (scale > 1)                                          missReasons.put(MISS_EVA, scale);
+
 		if (arm != null && arm.evasionFactor(defender, 100) > 100) {
 			//we express armor's normally flat evasion boost as a %, yes this is very awkward
 			Armor.testingNoArmDefSkill = true;
@@ -479,12 +533,30 @@ public class FloatingText extends RenderedTextBlock {
 			} else {
 				missReasons.put(MISS_ARM, defender.defenseSkill(attacker) / (float) baseDef);
 			}
+			if (defender instanceof Hero && ((Hero) defender).hasTalent(Talent.MULTIPLE_DODGE)){
+				//this is cheating a little, as evasion aug gets wrapped into this too
+				missReasons.put(MISS_MULTI, defender.defenseSkill(attacker) / (float) baseDef);
+			} else {
+				missReasons.put(MISS_ARM, defender.defenseSkill(attacker) / (float) baseDef);
+			}
 		}
 		if (defender.buff(Talent.LiquidAgilEVATracker.class) != null)   missReasons.put(MISS_LIQ, 3f);
 
 		//accuracy reductions (always < 1)
 		if (wep != null && wep.accuracyFactor(attacker, defender) < 1){
 			missReasons.put( MISS_WEP, wep.accuracyFactor(attacker, defender));
+		}
+
+		if (defender instanceof Hero){
+			if (((Hero) defender).subClass == HeroSubClass.GUARD && defender.shielding() > 0)
+				missReasons.put(SHIELDING, 1.2f);
+
+			if (((Hero) defender).heroClass == HeroClass.EXPLORER
+					&& (Dungeon.level.map[defender.pos] == Terrain.EMPTY || Dungeon.level.map[defender.pos] == Terrain.EMPTY_DECO))
+				missReasons.put(MISS_EXPLO, 1.15f);
+
+			if (arm != null && arm.modify != null && ((Hero) attacker).hasTalent(Talent.FAVORITE_WORK))
+				missReasons.put(MISS_WORK, ((Hero) attacker).pointsInTalent(Talent.FAVORITE_WORK) / 12f);
 		}
 		if (attacker.buff(Hex.class) != null)                   missReasons.put(MISS_HEX, 0.8f);
 		if (attacker.buff(Daze.class) != null)                  missReasons.put(MISS_DAZE, 0.5f);
