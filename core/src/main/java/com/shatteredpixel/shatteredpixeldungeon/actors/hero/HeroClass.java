@@ -141,7 +141,7 @@ public enum HeroClass {
 	EXPLORER( HeroSubClass.WAVECHASER, HeroSubClass.TRAPPER, HeroSubClass.ROCKSY),
     WRAITH( HeroSubClass.INCUBUS, HeroSubClass.PLAGUEGOD, HeroSubClass.SOULHANDLER),
 	ENGINEER( HeroSubClass.CRAFTSMAN, HeroSubClass.HACKER, HeroSubClass.GRENADIER),
-	PILLAGER( HeroSubClass.POACHER, HeroSubClass.CAPITALIST);
+	PILLAGER( HeroSubClass.POACHER, HeroSubClass.CAPITALIST, HeroSubClass.DISGUISER);
 
 	private HeroSubClass[] subClasses;
 

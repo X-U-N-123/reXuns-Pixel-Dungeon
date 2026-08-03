@@ -111,7 +111,7 @@ public class Corrosion extends Buff implements Hero.Doom {
 
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
+		if (target.isAlive() && !target.isImmune(Corrosion.class)) {
 			target.damage((int)damage, this);
 			if (damage < (Dungeon.scalingDepth()/2)+2) {
 				damage++;

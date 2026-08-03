@@ -98,7 +98,7 @@ public class Ooze extends Buff {
 		//washing away happens before debuff effects if debuff has gotten to act
 		if (acted && Dungeon.level.water[target.pos] && !target.isFlying()){
 			detach();
-		} else if (target.isAlive()) {
+		} else if (target.isAlive() && !target.isImmune(Ooze.class)) {
 
 			acted = true;
 			if (Dungeon.scalingDepth() > 5) {

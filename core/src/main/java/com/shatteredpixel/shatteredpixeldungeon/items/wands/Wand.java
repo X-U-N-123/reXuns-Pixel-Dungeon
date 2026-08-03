@@ -42,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MobDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -733,6 +734,7 @@ public abstract class Wand extends Item {
 		}
 
 		Invisibility.dispel();
+		if (Dungeon.hero.buff(MobDisguise.class) != null) Dungeon.hero.buff(MobDisguise.class).discover();
 		updateQuickslot();
 
 		Blob gas = Dungeon.level.blobs.get(ToxicGas.class);

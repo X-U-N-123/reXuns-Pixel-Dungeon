@@ -68,8 +68,8 @@ public enum HeroSubClass {
 	GRENADIER,
 
 	POACHER,
-	CAPITALIST;
-	//Enchanter;
+	CAPITALIST,
+	DISGUISER;
 	
 	public String title() {
 		return Messages.get(this, name());

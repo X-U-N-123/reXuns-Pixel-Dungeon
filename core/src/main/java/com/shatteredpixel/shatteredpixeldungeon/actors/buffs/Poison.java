@@ -102,7 +102,7 @@ public class Poison extends Buff implements Hero.Doom {
 
 	@Override
 	public boolean act() {
-		if (target.isAlive()) {
+		if (target.isAlive() && !target.isImmune(Poison.class)) {
 			
 			if (!(target instanceof Hero) || ((Hero) target).subClass != HeroSubClass.PLAGUEGOD)
 				target.damage( (int)(left / 3) + 1, this );

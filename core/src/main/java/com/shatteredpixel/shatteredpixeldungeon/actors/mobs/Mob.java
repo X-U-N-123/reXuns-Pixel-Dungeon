@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MobDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
@@ -381,6 +382,11 @@ public abstract class Mob extends Char {
 			}
 		}
 
+		//disguiser ability
+		MobDisguise disguise = hero.buff(MobDisguise.class);
+		if (disguise != null && disguise.disguiseCls() == getClass())
+			newEnemy = true;
+
 		//moreover, if the hero has talent and there's a barricade(target) in our FOV
 		if (enemy != null && enemy.alignment == Alignment.ALLY && !(enemy instanceof Barricade)
 		&& hero.hasTalent(Talent.AGGRESSIVE_ROADBLOCK)){
@@ -445,7 +451,9 @@ public abstract class Mob extends Char {
 				if (fieldOfView[hero.pos] && hero.invisible <= 0) {
 					enemies.add(hero);
 				}
-				
+				//disguiser ability
+				if (disguise != null && disguise.disguiseCls() == getClass())
+					enemies.remove(hero);
 			}
 
 			//do not target anything that's charming us
@@ -1054,6 +1062,11 @@ public abstract class Mob extends Char {
 			sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(HT), FloatingText.HEALING);
 			return;
 		}
+
+		MobDisguise disguise = hero.buff(MobDisguise.class);
+		if (disguise != null && disguise.lastCls() != null && disguise.lastCls() == getClass()
+				&& hero.hasTalent(Talent.BURY_THE_DEAD))
+			disguise.decreaseCD();
 
 		super.die( cause );
 

@@ -32,20 +32,24 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AcidRain;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.CounterBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Cripple;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EnhancedRings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MobDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
@@ -84,6 +88,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfStrength;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.ExoticPotion;
@@ -323,6 +328,8 @@ public enum Talent {
 	ANTITHROMBIN(446, 3), FULLY_RETURN(447, 3), NO_FLOUNDER(448, 3), LIVE_DISSECTION(449, 3), GLORIOUS_BAG(450, 3),
 	//Capitalist T3
 	IMPERIALISM(451, 3), PRIMITIVE_ACCU(452, 3), DEALING_DISSIDENTS(453, 3), MONOPOLY(454, 3), SCROOGE(455, 3),
+	//Disguiser T3
+	REASONABLE_TRACE(456, 3), FRIENDLY_MOB(457, 3), CANNIBALISM(458, 3), COSPLAY(459, 3), BURY_THE_DEAD(460, 3),
 	//Replication T4
 	MASS_PRODUCTION(461, 4), WORKMANSHIP(462, 4), REUSE(463, 4), CLONING(464, 4),
 	//Landmark T4
@@ -1162,6 +1169,18 @@ public enum Talent {
 				reuseTime ++;
 			}
 		}
+		if (talent == COSPLAY){
+			MobDisguise disguise = hero.buff(MobDisguise.class);
+			if (disguise.disguiseCls() != null) {
+				if (Char.hasProp(Reflection.newInstance(disguise.disguiseCls()), Char.Property.ICY)) {
+					Buff.detach(hero, Chill.class);
+					Buff.detach(hero, Frost.class);
+				}
+				if (hero.pointsInTalent(COSPLAY) >= 3 && Char.hasProp(Reflection.newInstance(disguise.disguiseCls()), Char.Property.IMMOVABLE)) {
+					Buff.detach(hero, Vertigo.class);
+				}
+			}
+		}
 	}
 
 	public static class CachedRationsDropped extends CounterBuff{{revivePersists = true;}}
@@ -1714,10 +1733,19 @@ public enum Talent {
         if (enemy.HP <= enemy.HT * (0.3f + 0.3f * hero.pointsInTalent(BURIAL_CEREMONY)) && hero.hasTalent(BURIAL_CEREMONY)){
             dmg ++;
         }
+		if (dmg > 0 && hero.hasTalent(BLADE_OF_ANGER))
+			Buff.affect(hero, Berserk.class).damage((int)(dmg * hero.pointsInTalent(BLADE_OF_ANGER)*0.3f));
 
-		if (hero.hasTalent(Talent.GENERAL_DISARM) && hero.heroClass != HeroClass.ENGINEER
+		if (hero.hasTalent(GENERAL_DISARM) && hero.heroClass != HeroClass.ENGINEER
 				&& Dungeon.level.map[hero.pos] == Terrain.INACTIVE_TRAP)
 			dmg += Random.IntRange(hero.pointsInTalent(GENERAL_DISARM), 2);
+
+		if (hero.pointsInTalent(TOILSOME_MEAL) < 2) Buff.detach(hero, Food.ToilsomeMealTracker.class);
+
+		MobDisguise disguise = hero.buff(MobDisguise.class);
+		if (disguise != null && disguise.lastCls() != null && enemy.getClass() == disguise.lastCls()
+				&& hero.hasTalent(CANNIBALISM))
+			dmg += Math.round(dmg * 0.08f * hero.pointsInTalent(CANNIBALISM));
 
         TearingMealTracker tear = hero.buff(TearingMealTracker.class);
 
@@ -1733,6 +1761,7 @@ public enum Talent {
 
 			tear.detach();
 		}
+
 
 		return dmg;
 	}
@@ -2015,6 +2044,9 @@ public enum Talent {
 				break;
 			case CAPITALIST:
 				Collections.addAll(tierTalents, IMPERIALISM, PRIMITIVE_ACCU, DEALING_DISSIDENTS, MONOPOLY, SCROOGE);
+				break;
+			case DISGUISER:
+				Collections.addAll(tierTalents, REASONABLE_TRACE, FRIENDLY_MOB, CANNIBALISM, COSPLAY, BURY_THE_DEAD);
 				break;
 		}
 		for (Talent talent : tierTalents){

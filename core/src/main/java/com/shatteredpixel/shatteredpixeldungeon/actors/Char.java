@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LifeLink;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSleep;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MobDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
@@ -1561,6 +1562,10 @@ public abstract class Char extends Actor {
 			if (((Hero) this).subClass == HeroSubClass.INCUBUS) stealth += 2;
 
 			if (((Hero) this).heroClass != HeroClass.WRAITH) stealth += ((Hero) this).pointsInTalent(Talent.BLURING_BODY);
+
+			MobDisguise disguise = buff(MobDisguise.class);
+			if (disguise != null && disguise.disguiseCls() != null)
+				stealth += 1.2f * ((Hero) this).pointsInTalent(Talent.FRIENDLY_MOB);
 		}
 
 		if (buff(ElixirOfConcealment.Conceal.class) != null) stealth += 4;

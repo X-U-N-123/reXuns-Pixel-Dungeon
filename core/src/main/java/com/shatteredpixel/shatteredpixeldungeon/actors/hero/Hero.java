@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Electricity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.StenchGas;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
@@ -49,12 +50,16 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Drowsy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.EvasionModifier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.GreaterHaste;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HeroDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.HoldFast;
@@ -64,8 +69,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Levitation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.LostInventory;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MobDisguise;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
@@ -222,6 +229,7 @@ import com.watabou.utils.GameMath;
 import com.watabou.utils.PathFinder;
 import com.watabou.utils.Point;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -537,6 +545,7 @@ public class Hero extends Char {
 		belongings.thrownWeapon = wep;
 		boolean hit = attack( enemy );
 		Invisibility.dispel();
+		if (buff(MobDisguise.class) != null) buff(MobDisguise.class).discover();
 		belongings.thrownWeapon = null;
 
 		if (hit && wasEnemy){
@@ -1802,10 +1811,6 @@ public class Hero extends Char {
 			}
 		}
 
-		if (damage > 0 && hasTalent(Talent.BLADE_OF_ANGER)){
-			Berserk berserk = Buff.affect(this, Berserk.class);
-			berserk.damage((int)(damage*pointsInTalent(Talent.BLADE_OF_ANGER)*0.3f));
-		}
 		switch (subClass) {
         case NINJA:
             if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(this) && buff(NinjaInvisCooldown.class) == null)
@@ -1851,9 +1856,6 @@ public class Hero extends Char {
 			} else Buff.affect(enemy, Bleeding.class).set(0.2f * damage, Hero.class);
 		default: break;
 		}
-
-		if (pointsInTalent(Talent.TOILSOME_MEAL) < 2)
-			for ( Buff b : buffs(Food.ToilsomeMealTracker.class)) b.detach();
 
 		return damage;
 	}
@@ -2754,6 +2756,7 @@ public class Hero extends Char {
 		boolean hit = attack(attackTarget);
 		
 		Invisibility.dispel();
+		if (buff(MobDisguise.class) != null) buff(MobDisguise.class).discover();
 		spend( attackDelay() );
 
 		if (hit && wasEnemy){
@@ -3138,6 +3141,30 @@ public class Hero extends Char {
 	public boolean isImmune(Class effect){
 		if (effect == ToxicGas.class && subClass == HeroSubClass.PLAGUEGOD) return true;
 		if (effect == StenchGas.class && hasTalent(Talent.CORPSE_DECAY))    return true;
-		else return super.isImmune(effect);
+
+		MobDisguise disguise = buff(MobDisguise.class);
+		if (disguise != null && disguise.disguiseCls() != null) {
+			Mob m = Reflection.newInstance(disguise.disguiseCls());
+			switch (pointsInTalent(Talent.COSPLAY)){
+				case 3:
+					if (Char.hasProp(m, Property.INORGANIC)
+						&& (effect == Bleeding.class || effect == ToxicGas.class || effect == Poison.class))
+						return true;
+					if (Char.hasProp(m, Property.IMMOVABLE) && effect == Vertigo.class)
+						return true;
+				case 2:
+					if (Char.hasProp(m, Property.ACIDIC) && (effect == Corrosion.class || effect == Ooze.class))
+						return true;
+					if (Char.hasProp(m, Property.ELECTRIC) && effect == Electricity.class)
+						return true;
+				case 1:
+					if (Char.hasProp(m, Property.ICY) && (effect == Chill.class || effect == Frost.class))
+						return true;
+					if (Char.hasProp(m, Property.FIERY) && effect == Burning.class)
+						return true;
+				default: break;
+			}
+		}
+		return super.isImmune(effect);
 	}
 }
