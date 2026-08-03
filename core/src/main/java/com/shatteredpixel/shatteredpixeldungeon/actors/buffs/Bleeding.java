@@ -31,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.ElementalStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyTrap;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DwarfKing;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
@@ -93,7 +94,13 @@ public class Bleeding extends Buff {
 				if (target.sprite.visible) Wound.hit(target);
 
 				target.HP = 0;
-				target.die(this);
+				Buff.detach(target, Brute.BruteRage.class);
+				if (!target.isAlive()) {
+					target.die(this);
+				} else {
+					//helps with triggering any on-damage effects that need to activate
+					target.damage(-1, this);
+				}
 			}
 		}
 	}

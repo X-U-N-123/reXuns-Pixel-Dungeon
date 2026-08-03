@@ -63,6 +63,11 @@ public class Landmark extends ArmorAbility {
 	}
 
 	@Override
+	public boolean useTargeting() {
+		return false;
+	}
+
+	@Override
 	public String targetingPrompt() {
 		if (getLandMark() != null) {
 			return super.targetingPrompt();
