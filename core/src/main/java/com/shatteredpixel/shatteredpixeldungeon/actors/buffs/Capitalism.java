@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -112,8 +113,8 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 		SILENCE;
 
 		public int cost(boolean enhanced){
-			int cost = (ordinal() + 1) * 6 * Dungeon.scalingDepth();
-			if (enhanced) cost = Math.round(cost * (11 - Dungeon.hero.pointsInTalent(Talent.IMPERIALISM)) / 6f);
+			int cost = (ordinal() + 1) * 8 * Statistics.deepestFloor;
+			if (enhanced) cost = Math.round(cost * (13 - Dungeon.hero.pointsInTalent(Talent.IMPERIALISM)) / 8f);
 			return cost;
 		}
 
@@ -182,7 +183,7 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 							break;
 						}
 					}
-					if (!found) Buff.affect(Dungeon.hero, PrismaticGuard.class).set( (int)(PrismaticGuard.maxHP( Dungeon.hero ) * ratio) );
+					if (!found) Buff.affect(Dungeon.hero, PrismaticGuard.class).extend( (int)(PrismaticGuard.maxHP( Dungeon.hero ) * ratio) );
 
 					Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 					Dungeon.gold -= ability.cost(enhanced);
@@ -203,7 +204,7 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 							if (!enhanced) ((Mob)c).maxLvl = -6;
 							Wound.hit( c );
 							Sample.INSTANCE.play(Assets.Sounds.HIT_SLASH, 1f, 0.8f);
-							if (Char.hasProp(c, Char.Property.BOSS)){
+							if (Char.hasProp(c, Char.Property.BOSS) || Char.hasProp(c, Char.Property.MINIBOSS)){
 								c.damage( 4 * Dungeon.scalingDepth(), new Gold());
 							} else {
 								c.HP = 0;

@@ -2374,8 +2374,8 @@ public class Hero extends Char {
 				}
 			}
 			if (subClass == HeroSubClass.CAPITALIST) {
-				Dungeon.gold += (4 + pointsInTalent(Talent.PRIMITIVE_ACCU)) * exp;
-				Statistics.goldCollected += (4 + pointsInTalent(Talent.PRIMITIVE_ACCU)) * exp;
+				Dungeon.gold += (3 + pointsInTalent(Talent.PRIMITIVE_ACCU)) * exp;
+				Statistics.goldCollected += (3 + pointsInTalent(Talent.PRIMITIVE_ACCU)) * exp;
 
 				Item.updateQuickslot();
 			}

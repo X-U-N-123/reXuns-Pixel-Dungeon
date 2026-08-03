@@ -55,6 +55,10 @@ import java.util.HashMap;
 
 public class SummoningBeacon extends ArmorAbility {
 
+	{
+		baseChargeUse = 50;
+	}
+
 	static final HashMap<Class<? extends Mob>, Float> MACHINES = new HashMap<>();
 
 	@Override

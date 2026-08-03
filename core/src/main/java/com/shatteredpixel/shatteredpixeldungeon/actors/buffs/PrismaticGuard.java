@@ -41,7 +41,7 @@ public class PrismaticGuard extends Buff {
 		type = buffType.POSITIVE;
 	}
 	
-	private float HP;
+	private float HP = 0;
 
 	private float powerOfManyTurns = 0;
 	
@@ -108,6 +108,11 @@ public class PrismaticGuard extends Buff {
 	
 	public void set( int HP ){
 		this.HP = HP;
+		powerOfManyTurns = 0;
+	}
+
+	public void extend( int amount ){
+		HP = Math.min(HP + amount, maxHP());
 		powerOfManyTurns = 0;
 	}
 

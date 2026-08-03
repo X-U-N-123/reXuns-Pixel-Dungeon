@@ -131,7 +131,6 @@ public class HeroIcon extends Image {
     public static final int HYPNOSIS        = 187;
 	public static final int ACID            = 188;
 	public static final int SOUL            = 189;
-	public static final int PULSE           = 190;
 	public static final int GOLD            = 191;
 
 	public HeroIcon(HeroSubClass subCls){
