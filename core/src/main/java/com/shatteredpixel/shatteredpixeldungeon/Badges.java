@@ -58,6 +58,8 @@ import java.util.List;
 
 public class Badges {
 
+	public static final int SCORE_5 = 1000000;
+
 	public enum BadgeType {
 		HIDDEN, //internal badges used for data tracking
 		LOCAL,  //unlocked on a per-run basis and added to overall player profile
@@ -1195,7 +1197,7 @@ public class Badges {
 			badge = Badge.HIGH_SCORE_4;
 			local.add( badge );
 		}
-		if (score >= 1_000_000) {
+		if (score >= SCORE_5) {
 			unlock(badge);
 			badge = Badge.HIGH_SCORE_5;
 			local.add( badge );

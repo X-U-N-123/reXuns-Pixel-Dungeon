@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
-import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
@@ -55,7 +54,8 @@ import java.util.Collections;
 
 public class WelcomeScene extends PixelScene {
 
-	private static final int LATEST_UPDATE = 868;
+	private static final int LATEST_UPDATE = 893;
+	private static final int V4_0_0 = 893;
 
 	//used so that the game does not keep showing the window forever if cleaning fails
 	private static boolean triedCleaningTemp = false;
@@ -263,7 +263,11 @@ public class WelcomeScene extends PixelScene {
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_EXPLORER)) Badges.unlock(Badges.Badge.UNLOCK_EXPLORER);
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_WRAITH))   Badges.unlock(Badges.Badge.UNLOCK_WRAITH);
 				if (!Badges.isUnlocked(Badges.Badge.UNLOCK_ENGINEER)) Badges.unlock(Badges.Badge.UNLOCK_ENGINEER);
+				// those who already have a win have must got 1000 golds, pillager is alredy unlocked for them
 			}
+
+			if (previousVersion < V4_0_0)
+				Document.ADVENTURERS_GUIDE.deletePage(Document.GUIDE_INTRO); //for those previous players
 
 			try {
 				Rankings.INSTANCE.load();

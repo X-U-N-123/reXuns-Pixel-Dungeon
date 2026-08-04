@@ -935,7 +935,7 @@ public enum Talent {
 				}
 			}
 		}
-		if (Random.Int(3) < hero.pointsInTalent(TESTED_COPY)){
+		if (Random.Int(4) < hero.pointsInTalent(TESTED_COPY)){
 			Item copy = null;
 			if (item instanceof Potion){
 				if (item instanceof ExoticPotion){
@@ -1539,7 +1539,7 @@ public enum Talent {
             hero.HP += toHeal;
             hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(toHeal), FloatingText.HEALING);
 		}
-		if (Random.Int(2) < hero.pointsInTalent(INSCRIBED_TREASURE)){
+		if (Random.Int(3) < hero.pointsInTalent(INSCRIBED_TREASURE)){
 			Item toGive;
 			if (Math.round(factor) >= 2)toGive = RingOfWealth.genMidValueConsumable();
 			else						toGive = RingOfWealth.genLowValueConsumable();
