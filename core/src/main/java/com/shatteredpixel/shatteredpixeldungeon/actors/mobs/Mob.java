@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Warp;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -587,11 +588,20 @@ public abstract class Mob extends Char {
 		return true;
 	}
 
+	protected static boolean warping = false; //only used for Warp curse
+
 	protected boolean getCloser( int target ) {
 		
 		if (rooted || target == pos || !Dungeon.level.insideMap(target)) {
 			return false;
 		}
+
+		if (glyphLevel(Warp.class) >= 0 && !warping
+				&& Random.Float() > Math.pow(6/7f, Armor.Glyph.genericProcChanceMultiplier(this))){
+			warping = true;
+			return getFurther(target);
+		}
+		warping = false;
 
 		int step = -1;
 
@@ -715,6 +725,13 @@ public abstract class Mob extends Char {
 		if (rooted || target == pos) {
 			return false;
 		}
+
+		if (glyphLevel(Warp.class) >= 0 && !warping
+				&& Random.Float() > Math.pow(6/7f, Armor.Glyph.genericProcChanceMultiplier(this))){
+			warping = true;
+			return getCloser(target);
+		}
+		warping = false;
 		
 		int step = Dungeon.flee( this, target, Dungeon.level.passable, fieldOfView, true );
 		if (step != -1) {

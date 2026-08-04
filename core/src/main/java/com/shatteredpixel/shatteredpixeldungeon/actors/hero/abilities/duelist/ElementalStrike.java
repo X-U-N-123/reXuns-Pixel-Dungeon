@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
@@ -72,6 +73,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCur
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fluctuation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
@@ -144,6 +146,7 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
 		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(Rusted.class,       MagicMissile.SHADOW_CONE);
+		effectTypes.put(Fluctuation.class,  MagicMissile.SHADOW_CONE);
 
 		effectTypes.put(null,            MagicMissile.MAGIC_MISS_CONE);
 	}
@@ -623,6 +626,12 @@ public class ElementalStrike extends ArmorAbility {
 
 				ScrollOfTeleportation.appear(barricade, barricade.pos);
 				Buff.affect(barricade, StoneOfAggression.Aggression.class, 5f * powerMulti);
+			}
+		} else if (ench instanceof Fluctuation) {
+			for (Char ch : affected){
+				if (Random.Float() < 0.5f*powerMulti){
+					Buff.affect(ch, Vertigo.class, 6f);
+				}
 			}
 		}
 

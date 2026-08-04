@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCur
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fluctuation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
@@ -137,6 +138,7 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         enchPrio.put(Sacrificial.class, 1);
         enchPrio.put(Wayward.class, 2);
         enchPrio.put(BarricadeCurse.class, 0);
+        enchPrio.put(Fluctuation.class, 0);
     }
 
     @Override

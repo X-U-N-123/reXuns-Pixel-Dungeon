@@ -124,6 +124,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.WraithArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Piety;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Warp;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Stone;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Swiftness;
@@ -2160,6 +2161,15 @@ public class Hero extends Char {
 
 		int step = -1;
 
+		int len = Dungeon.level.length();
+		boolean[] p = Dungeon.level.passable;
+		boolean[] v = Dungeon.level.visited;
+		boolean[] m = Dungeon.level.mapped;
+		boolean[] passable = new boolean[len];
+		for (int i = 0; i < len; i++) {
+			passable[i] = p[i] && (v[i] || m[i]);
+		}
+
 		if (Dungeon.level.adjacent( pos, target )) {
 
 			path = null;
@@ -2190,16 +2200,6 @@ public class Hero extends Char {
 			}
 
 			if (newPath) {
-
-				int len = Dungeon.level.length();
-				boolean[] p = Dungeon.level.passable;
-				boolean[] v = Dungeon.level.visited;
-				boolean[] m = Dungeon.level.mapped;
-				boolean[] passable = new boolean[len];
-				for (int i = 0; i < len; i++) {
-					passable[i] = p[i] && (v[i] || m[i]);
-				}
-
 				PathFinder.Path newpath = Dungeon.findPath(this, target, passable, fieldOfView, true);
 				if (newpath != null && path != null && newpath.size() > 2*path.size()){
 					path = null;
@@ -2211,6 +2211,11 @@ public class Hero extends Char {
 			if (path == null) return false;
 			step = path.removeFirst();
 
+		}
+
+		if (glyphLevel(Warp.class) >= 0
+				&& Random.Float() > Math.pow(6/7f, Armor.Glyph.genericProcChanceMultiplier(this))){
+			step = Dungeon.flee(this, target, passable, fieldOfView, true);
 		}
 
 		if (step != -1) {

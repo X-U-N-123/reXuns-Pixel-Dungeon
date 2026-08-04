@@ -56,6 +56,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.BarricadeCur
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Dazzling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Displacing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fluctuation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
@@ -407,6 +408,10 @@ abstract public class Weapon extends KindOfWeapon {
 			multi += 0.6f;
 		}
 
+		if (enchantment instanceof Fluctuation){
+			multi /= 0.5f + Random.Float(2.5f * (float)Math.pow(0.6f, enchantment.procChanceMultiplier(owner)));
+		}
+
 		return multi;
 	}
 
@@ -652,8 +657,8 @@ abstract public class Weapon extends KindOfWeapon {
 		};
 
 		public static final Class<?>[] curses = new Class<?>[]{
-				Annoying.class, Displacing.class, Dazzling.class, Explosive.class, Rusted.class,
-				Sacrificial.class, Wayward.class, Polarized.class, Friendly.class, BarricadeCurse.class
+				Annoying.class, Displacing.class, Dazzling.class, Explosive.class, Rusted.class, Sacrificial.class,
+				Wayward.class, Polarized.class, Friendly.class, BarricadeCurse.class, Fluctuation.class
 		};
 		
 			
