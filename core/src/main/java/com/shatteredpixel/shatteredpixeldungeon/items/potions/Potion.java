@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeavinessBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfDragonsBlood;
@@ -335,8 +336,9 @@ public class Potion extends Item {
 	
 	@Override
 	protected void onThrow( int cell ) {
-		if (Dungeon.level.map[cell] == Terrain.WELL || Dungeon.level.pit[cell]) {
-			
+		if (Dungeon.level.map[cell] == Terrain.WELL
+				|| (Dungeon.level.pit[cell] && !(this instanceof HeavinessBrew && Actor.findChar(cell) != null))) {
+
 			super.onThrow( cell );
 			
 		} else  {

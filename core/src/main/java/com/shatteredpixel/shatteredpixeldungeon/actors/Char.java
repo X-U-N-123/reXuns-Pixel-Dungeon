@@ -62,6 +62,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FrostImbue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Heaviness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invulnerability;
@@ -914,6 +915,7 @@ public abstract class Char extends Actor {
 	public float speed() {
 		float speed = baseSpeed;
 		if ( buff( Cripple.class ) != null ) speed /= 2f;
+		if ( buff( Heaviness.class ) != null && !flying) speed /= 1.5f;
 		if ( buff( Stamina.class ) != null) speed *= 1.5f;
 		if (buff(DMdrill.DMcombo.class) != null){
 			if ( buff( DMdrill.DMcombo.class).isOverloading()) speed *= 2f;
@@ -1695,7 +1697,7 @@ public abstract class Char extends Actor {
 	}
 
 	public boolean isFlying(){
-		return flying || buff(Levitation.class) != null;
+		return (flying && buff(Heaviness.class) == null) || buff(Levitation.class) != null;
 	}
 
 	protected HashSet<Property> properties = new HashSet<>();

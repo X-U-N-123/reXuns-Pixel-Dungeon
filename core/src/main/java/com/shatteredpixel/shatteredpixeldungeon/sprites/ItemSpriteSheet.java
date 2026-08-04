@@ -874,9 +874,9 @@ public class ItemSpriteSheet {
 	}
 	
 	private static final int BREWS          = xy(1, 17);  //16 slots
-
-	//3 free slots
-
+	//1 free slot
+	public static final int BREW_HEAVINESS  = BREWS+1;
+	//1 free slot
 	public static final int BREW_HEAT       = BREWS+3;
 	public static final int BREW_PITFALL    = BREWS+4;
 	public static final int BREW_REGROWING  = BREWS+5;

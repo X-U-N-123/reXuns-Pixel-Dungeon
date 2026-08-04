@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeavinessBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.PitfallBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.RegrowingBrew;
@@ -209,6 +210,7 @@ public abstract class Recipe {
 		new HeatBrew.Recipe(),
 		new PitfallBrew.Recipe(),
 		new RegrowingBrew.Recipe(),
+		new HeavinessBrew.Recipe(),
 		new TrackingBrew.Recipe(),
 		new ShockingBrew.Recipe(),
 		new ElixirOfDragonsBlood.Recipe(),

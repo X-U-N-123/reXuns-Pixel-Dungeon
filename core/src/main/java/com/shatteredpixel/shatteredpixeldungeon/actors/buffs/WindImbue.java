@@ -80,7 +80,7 @@ public class WindImbue extends Buff {
 				//trim it to just be the part that goes past them
 				trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
 				//knock them back along that ballistica
-				WandOfBlastWave.throwChar(c, trajectory, 2, true, true, target);
+				WandOfBlastWave.throwChar(c, trajectory, 2, true, false, target);
 
 				c.sprite.emitter().burst(Speck.factory(Speck.JET), 5);
 				Sample.INSTANCE.play(Assets.Sounds.MISS);

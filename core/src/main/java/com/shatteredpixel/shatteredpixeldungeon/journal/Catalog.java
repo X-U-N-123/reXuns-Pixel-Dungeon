@@ -86,6 +86,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.CausticBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeavinessBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.InfernalBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.PitfallBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.RegrowingBrew;
@@ -291,7 +292,7 @@ public enum Catalog {
 
 		TIPPED_DARTS.addItems(TippedDart.types.values().toArray(new Class[0]));
 
-		BREWS_ELIXIRS.addItems(HeatBrew.class, PitfallBrew.class, RegrowingBrew.class, AquaBrew.class, TrackingBrew.class,
+		BREWS_ELIXIRS.addItems(HeavinessBrew.class, HeatBrew.class, PitfallBrew.class, RegrowingBrew.class, AquaBrew.class, TrackingBrew.class,
 				CausticBrew.class, InfernalBrew.class, ShockingBrew.class, BlizzardBrew.class, UnstableBrew.class,
 				ElixirOfArcaneArmor.class, ElixirOfFeatherFall.class, ElixirOfMight.class, ElixirOfDragonsBlood.class,
 				ElixirOfEarthenPower.class, ElixirOfEnlightening.class, ElixirOfToxicEssence.class, ElixirOfIcyTouch.class,

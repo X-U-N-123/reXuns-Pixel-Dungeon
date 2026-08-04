@@ -48,7 +48,8 @@ public class Levitation extends FlavourBuff {
 	@Override
 	public boolean attachTo( Char target ) {
 		if (super.attachTo( target )) {
-			Roots.detach( target, Roots.class );
+			Buff.detach( target, Roots.class );
+			Buff.detach( target, Heaviness.class );
 			return true;
 		} else {
 			return false;
