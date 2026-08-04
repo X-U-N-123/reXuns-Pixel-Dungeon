@@ -345,13 +345,14 @@ public abstract class Mob extends Char {
 		
 		//if we are an alert enemy, auto-hunt a target that is affected by aggression, even another enemy
 		if ((alignment == Alignment.ENEMY || buff(Amok.class) != null ) && state != PASSIVE && state != SLEEPING) {
-			if (enemy != null && enemy.buff(StoneOfAggression.Aggression.class) != null){
+			if (enemy != null && (enemy.buff(StoneOfAggression.Aggression.class) != null
+					|| (enemy.buff(MobDisguise.ElderMajesty.class) != null && enemy.buff(MobDisguise.ElderMajesty.class).cls == getClass()))){
 				state = HUNTING;
 				return enemy;
 			}
 			for (Char ch : Actor.chars()) {
-				if (ch != this && fieldOfView[ch.pos] &&
-						ch.buff(StoneOfAggression.Aggression.class) != null) {
+				if (ch != this && fieldOfView[ch.pos] && (ch.buff(StoneOfAggression.Aggression.class) != null
+						|| (ch.buff(MobDisguise.ElderMajesty.class) != null && ch.buff(MobDisguise.ElderMajesty.class).cls == getClass()))) {
 					state = HUNTING;
 					return ch;
 				}

@@ -73,8 +73,10 @@ public class Gold extends Item {
 		hero.sprite.showStatusWithIcon( CharSprite.NEUTRAL, Integer.toString(quantity), FloatingText.GOLD );
 		hero.spendAndNext( pickupDelay() );
 
-		if (hero.hasTalent(Talent.SCROOGE) && hero.cooldown() > 0)
-			Buff.affect(hero, Scrooge.class, hero.cooldown());
+		if (hero.hasTalent(Talent.SCROOGE)) {
+			if (hero.cooldown() > 0) Buff.affect(hero, Scrooge.class, hero.cooldown());
+			else Buff.affect(hero, Scrooge.class, 1);
+		}
 		
 		Sample.INSTANCE.play( Assets.Sounds.GOLD, 1, 1, Random.Float( 0.9f, 1.1f ) );
 		updateQuickslot();

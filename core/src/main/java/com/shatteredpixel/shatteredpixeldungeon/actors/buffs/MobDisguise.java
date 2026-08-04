@@ -36,8 +36,10 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.BitmapText;
+import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -89,12 +91,14 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 
 	private static final String COOLDOWN = "cd";
 	private static final String EFFECT_TIME = "effect_time";
+	private static final String DISGUISE = "disguise";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
 		super.storeInBundle(bundle);
 		bundle.put(COOLDOWN, CD);
 		bundle.put(EFFECT_TIME, effectTime);
+		bundle.put(DISGUISE, disguiseCls);
 	}
 
 	@Override
@@ -102,6 +106,7 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 		super.restoreFromBundle(bundle);
 		CD = bundle.getInt(COOLDOWN);
 		effectTime = bundle.getInt(EFFECT_TIME);
+		disguiseCls = bundle.getClass(DISGUISE);
 		ActionIndicator.setAction(this);
 	}
 
@@ -137,7 +142,7 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 	@Override
 	public void doAction(){
 		
-		if (CD > 0){
+		if (CD > 0 && effectTime < 0){
 			GLog.w(Messages.get(this, "cd"));
 			return;
 		}
@@ -157,28 +162,41 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 				if (ch == null || !Dungeon.level.heroFOV[cell]) GLog.w(Messages.get(this, "no_mob"));
 
 				else if (ch instanceof Mob) {
-					if (ch.alignment == Char.Alignment.ENEMY && !Char.hasProp(ch, Char.Property.BOSS)){
+					if (effectTime <= 0){
+						if (ch.alignment == Char.Alignment.ENEMY && !Char.hasProp(ch, Char.Property.BOSS)) {
 
-						disguiseCls = (Class<? extends Mob>) ch.getClass();
+							disguiseCls = (Class<? extends Mob>) ch.getClass();
 
-						effectTime = 16; //as this spends a turn
-						CD = 101;
+							effectTime = 16; //as this spends a turn
+							CD = 51;
 
-						target.sprite.operate(cell);
-						target.sprite.emitter().burst( Speck.factory( Speck.WOOL ), 6 );
-						Sample.INSTANCE.play( Assets.Sounds.PUFF );
-						((Hero)target).spendAndNext(1);
+							target.sprite.operate(cell);
+							target.sprite.emitter().burst(Speck.factory(Speck.WOOL), 6);
+							Sample.INSTANCE.play(Assets.Sounds.PUFF);
+							((Hero) target).spendAndNext(1);
 
+							ActionIndicator.refresh();
+
+							if (((Hero) target).hasTalent(Talent.COSPLAY) && Char.hasProp(ch, Char.Property.ICY)) {
+								Buff.detach(target, Chill.class);
+								Buff.detach(target, Frost.class);
+							}
+							if (((Hero) target).pointsInTalent(Talent.COSPLAY) >= 3 && Char.hasProp(ch, Char.Property.IMMOVABLE)) {
+								Buff.detach(target, Vertigo.class);
+							}
+						} else GLog.w(Messages.get(this, "cant_disguise"));
+
+					} else if (((Hero)target).hasTalent(Talent.ELDER_MAJESTY) && ch.getClass() != disguiseCls){
+						Buff.affect(ch, ElderMajesty.class,
+								effectTime * ((Hero)target).pointsInTalent(Talent.ELDER_MAJESTY) / 3f).cls = disguiseCls;
+						effectTime = 0;
+
+						ch.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
+
+						Sample.INSTANCE.play(Assets.Sounds.CHALLENGE);
+						((Hero) target).spendAndNext(1);
 						ActionIndicator.refresh();
-
-						if (((Hero)target).hasTalent(Talent.COSPLAY) && Char.hasProp(ch, Char.Property.ICY)){
-							Buff.detach(target, Chill.class);
-							Buff.detach(target, Frost.class);
-						}
-						if (((Hero)target).pointsInTalent(Talent.COSPLAY) >= 3 && Char.hasProp(ch, Char.Property.IMMOVABLE)){
-							Buff.detach(target, Vertigo.class);
-						}
-					} else GLog.w(Messages.get(this, "cant_disguise"));
+					}
 				} else {
 					//easter eggs!
 					Buff.prolong(ch, HeroDisguise.class, 15);
@@ -187,5 +205,63 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 				}
 			}
 		});
+	}
+
+	public static class ElderMajesty extends FlavourBuff {
+
+		{
+			type = buffType.NEGATIVE;
+			announced = true;
+		}
+
+		public Class<? extends Mob> cls = null;
+
+		@Override
+		public int icon() {
+			return BuffIndicator.TARGETED;
+		}
+
+		@Override
+		public float iconFadePercent() {
+			return Math.max(0, (10 - visualcooldown()) / 10);
+		}
+
+		@Override
+		public void tintIcon(Image icon) {
+			icon.hardlight(0f, 1f, 0);
+		}
+
+		@Override
+		public void detach() {
+			//if our target is an enemy, reset any enemy-to-enemy aggro involving it
+			if (target.isAlive()) {
+				if (target.alignment == Char.Alignment.ENEMY) {
+					for (Mob m : Dungeon.level.mobs) {
+						if (m.alignment == Char.Alignment.ENEMY && m.isTargeting(target)) {
+							m.aggro(null);
+						}
+						if (target instanceof Mob && ((Mob) target).isTargeting(m)){
+							((Mob) target).aggro(null);
+						}
+					}
+				}
+			}
+			super.detach();
+
+		}
+
+		private static final String CLS = "class";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(CLS, cls);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			cls = bundle.getClass(CLS);
+		}
 	}
 }

@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Capitalism;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Charm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
@@ -2444,6 +2445,10 @@ public class Hero extends Char {
 
 				if (buff(WellWater.DigTheWellCooldown.class) != null){
 					buff(WellWater.DigTheWellCooldown.class).decreaseCD();
+				}
+
+				if (buff(Capitalism.class) != null){
+					buff(Capitalism.class).canInvest = true;
 				}
 
 				if (buff(RingOfMimic.Mimic.class) != null){

@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.UnstableBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.UnstableSpell;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Rotberry;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -54,11 +55,13 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
-public class Capitalism extends Buff implements ActionIndicator.Action{
+public class Capitalism extends Buff implements ActionIndicator.Action {
 
 	{
 		revivePersists = true;
 	}
+
+	public boolean canInvest = true;
 
 	@Override
 	public String iconTextDisplay() {
@@ -99,17 +102,26 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 		GameScene.show(new WndCapitalism());
 	}
 
+	private static final String CAN_INVEST = "can_invest";
+
+	@Override
+	public void storeInBundle(Bundle bundle) {
+		super.storeInBundle(bundle);
+		bundle.put(CAN_INVEST, canInvest);
+	}
+
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
+		bundle.put(CAN_INVEST, canInvest);
 		ActionIndicator.setAction(this);
 	}
 
 	public enum Ability {
 		CONCEAL,
-		INVESTMENT,
 		OPPOSITION,
 		MERCENARY,
+		INVESTMENT,
 		SILENCE;
 
 		public int cost(boolean enhanced){
@@ -133,18 +145,22 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 					Item.updateQuickslot();
 					break;
 				case INVESTMENT:
+					if (!Dungeon.hero.buff(Capitalism.class).canInvest) return;
 					Item toGet;
 					Item toGet2 = null;
 					if (Random.Int(2) == 0) {
 						toGet = Reflection.newInstance(Random.chances(UnstableSpell.scrollChances));
 
 						if (enhanced)
-							toGet2 = (Item) Reflection.newInstance(Random.element(Generator.Category.STONE.classes));
+							do {
+								toGet2 = (Item) Reflection.newInstance(Random.element(Generator.Category.STONE.classes));
+							} while (toGet2 instanceof StoneOfAugmentation);
 					} else {
 						toGet = Reflection.newInstance(Random.chances(UnstableBrew.potionChances));
-						while (enhanced && toGet2 instanceof Rotberry.Seed){
-							toGet2 = (Item) Reflection.newInstance(Random.element(Generator.Category.SEED.classes));
-						}
+						if (enhanced)
+							do {
+								toGet2 = (Item) Reflection.newInstance(Random.element(Generator.Category.SEED.classes));
+							} while (toGet2 instanceof Rotberry.Seed);
 					}
 
 					if (!toGet.collect()) Dungeon.level.drop(toGet, Dungeon.hero.pos).sprite.drop();
@@ -158,13 +174,14 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 					Dungeon.hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 					Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 
+					Dungeon.hero.sprite.operate(Dungeon.hero.pos);
 					Dungeon.gold -= ability.cost(enhanced);
 					Item.updateQuickslot();
 					break;
 				case OPPOSITION:
 					for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) {
 						if (Dungeon.level.heroFOV[m.pos])
-							Buff.affect(m, Amok.class, enhanced ? 11 : 7);//as this is instant
+							Buff.affect(m, Amok.class, enhanced ? 9 : 5);//as this is instant
 					}
 					Dungeon.hero.sprite.centerEmitter().start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );
 
@@ -174,7 +191,7 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 					break;
 				case MERCENARY:
 					boolean found = false;
-					float ratio = enhanced ? 1/2f : 1/3f;
+					float ratio = enhanced ? 1/3f : 1/4f;
 					for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
 						if (m instanceof PrismaticImage){
 							found = true;
@@ -223,5 +240,4 @@ public class Capitalism extends Buff implements ActionIndicator.Action{
 			}
 		}
 	}
-
 }

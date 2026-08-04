@@ -329,7 +329,7 @@ public enum Talent {
 	//Capitalist T3
 	IMPERIALISM(451, 3), PRIMITIVE_ACCU(452, 3), DEALING_DISSIDENTS(453, 3), MONOPOLY(454, 3), SCROOGE(455, 3),
 	//Disguiser T3
-	REASONABLE_TRACE(456, 3), FRIENDLY_MOB(457, 3), CANNIBALISM(458, 3), COSPLAY(459, 3), BURY_THE_DEAD(460, 3),
+	REASONABLE_TRACE(456, 3), FRIENDLY_MOB(457, 3), ELDER_MAJESTY(458, 3), COSPLAY(459, 3), BURY_THE_DEAD(460, 3),
 	//Replication T4
 	MASS_PRODUCTION(461, 4), WORKMANSHIP(462, 4), REUSE(463, 4), CLONING(464, 4),
 	//Landmark T4
@@ -1742,11 +1742,6 @@ public enum Talent {
 
 		if (hero.pointsInTalent(TOILSOME_MEAL) < 2) Buff.detach(hero, Food.ToilsomeMealTracker.class);
 
-		MobDisguise disguise = hero.buff(MobDisguise.class);
-		if (disguise != null && disguise.lastCls() != null && enemy.getClass() == disguise.lastCls()
-				&& hero.hasTalent(CANNIBALISM))
-			dmg += Math.round(dmg * 0.08f * hero.pointsInTalent(CANNIBALISM));
-
         TearingMealTracker tear = hero.buff(TearingMealTracker.class);
 
 		if (tear != null && !enemy.isImmune(Bleeding.class)){
@@ -2046,7 +2041,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, IMPERIALISM, PRIMITIVE_ACCU, DEALING_DISSIDENTS, MONOPOLY, SCROOGE);
 				break;
 			case DISGUISER:
-				Collections.addAll(tierTalents, REASONABLE_TRACE, FRIENDLY_MOB, CANNIBALISM, COSPLAY, BURY_THE_DEAD);
+				Collections.addAll(tierTalents, REASONABLE_TRACE, FRIENDLY_MOB, ELDER_MAJESTY, COSPLAY, BURY_THE_DEAD);
 				break;
 		}
 		for (Talent talent : tierTalents){
