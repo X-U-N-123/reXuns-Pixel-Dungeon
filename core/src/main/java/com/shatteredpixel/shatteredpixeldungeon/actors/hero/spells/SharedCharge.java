@@ -44,13 +44,13 @@ public class SharedCharge extends ClericSpell{
     }
 
     @Override
-    public float chargeUse(Hero hero) {
+    public int chargeUse(Hero hero) {
         return 2;
     }
 
     @Override
     public String desc(){
-        return Messages.get(this, "desc", 2+Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE)) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", 2+Dungeon.hero.pointsInTalent(Talent.SHARED_CHARGE)) + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
     @Override

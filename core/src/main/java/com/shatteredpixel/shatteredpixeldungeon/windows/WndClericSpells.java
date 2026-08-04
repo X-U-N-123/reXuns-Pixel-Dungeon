@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -43,6 +42,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RightClickMenu;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.input.PointerEvent;
+import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
@@ -143,6 +143,7 @@ public class WndClericSpells extends Window {
 		ClericSpell spell;
 		HolyTome tome;
 		boolean info;
+		BitmapText txt;
 
 		NinePatch bg;
 
@@ -153,22 +154,16 @@ public class WndClericSpells extends Window {
 			this.tome = tome;
 			this.info = info;
 
-			if (!tome.canCast(Dungeon.hero, spell)){
-				icon.alpha( 0.3f );
-			} else if (spell == GuidingLight.INSTANCE && spell.chargeUse(Dungeon.hero) == 0){
-				icon.brightness(3);
-			}
+			if (!tome.canCast(Dungeon.hero, spell)) icon.alpha( 0.3f );
+
+			txt = new BitmapText(PixelScene.pixelFont);
+			txt.text( Integer.toString(spell.chargeUse(Dungeon.hero)) );
+			txt.hardlight(0xBBBB00);
+			txt.measure();
+			addToFront(txt);
 
 			bg = Chrome.get(Chrome.Type.TOAST);
 			addToBack(bg);
-		}
-
-		@Override
-		protected void onPointerDown() {
-			super.onPointerDown();
-			if (spell == GuidingLight.INSTANCE && spell.chargeUse(Dungeon.hero) == 0){
-				icon.brightness(4);
-			}
 		}
 
 		@Override
@@ -176,8 +171,6 @@ public class WndClericSpells extends Window {
 			super.onPointerUp();
 			if (!tome.canCast(Dungeon.hero, spell)){
 				icon.alpha( 0.3f );
-			} else if (spell == GuidingLight.INSTANCE && spell.chargeUse(Dungeon.hero) == 0){
-				icon.brightness(3);
 			}
 		}
 
@@ -189,6 +182,9 @@ public class WndClericSpells extends Window {
 				bg.size(width, height);
 				bg.x = x;
 				bg.y = y;
+
+				txt.x = x + 15;
+				txt.y = y + 13;
 			}
 		}
 

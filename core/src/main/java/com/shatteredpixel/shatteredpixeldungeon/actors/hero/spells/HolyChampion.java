@@ -48,7 +48,7 @@ public class HolyChampion extends ClericSpell {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 20*(Dungeon.hero.pointsInTalent(Talent.HOLY_CHAMPION) +1)) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", 20*(Dungeon.hero.pointsInTalent(Talent.HOLY_CHAMPION) +1)) +"\n\n"+ Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class HolyChampion extends ClericSpell {
     }
 
     @Override
-    public float chargeUse(Hero hero) {
+    public int chargeUse(Hero hero) {
         return 3;
     }
 

@@ -51,7 +51,7 @@ public class Cleanse extends ClericSpell {
 	}
 
 	@Override
-	public float chargeUse(Hero hero) {
+	public int chargeUse(Hero hero) {
 		return 2;
 	}
 
@@ -59,7 +59,7 @@ public class Cleanse extends ClericSpell {
 		int immunity = 2 * (Dungeon.hero.pointsInTalent(Talent.CLEANSE)-1);
 		if (immunity > 0) immunity++;
 		int shield = 10 * Dungeon.hero.pointsInTalent(Talent.CLEANSE);
-		return Messages.get(this, "desc", immunity, shield) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return Messages.get(this, "desc", immunity, shield) + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
 	}
 
 	@Override

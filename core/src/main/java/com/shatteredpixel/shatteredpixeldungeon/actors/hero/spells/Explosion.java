@@ -70,13 +70,13 @@ public class Explosion extends TargetedClericSpell{
             desc = Messages.get(this, "desc_2");
             desc += Messages.get(this, "desc_immune");
         }
-        desc += "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        desc += "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
         return desc;
     }
 
     @Override
-    public float chargeUse(Hero hero) {
-        return 3f;
+    public int chargeUse(Hero hero) {
+        return 3;
     }
 
     @Override

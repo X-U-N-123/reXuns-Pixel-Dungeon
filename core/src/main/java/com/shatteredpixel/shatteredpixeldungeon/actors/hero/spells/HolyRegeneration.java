@@ -52,7 +52,7 @@ public class HolyRegeneration extends TargetedClericSpell{
     }
 
     @Override
-    public float chargeUse(Hero hero) {
+    public int chargeUse(Hero hero) {
         return 1;
     }
 
@@ -105,7 +105,7 @@ public class HolyRegeneration extends TargetedClericSpell{
 
     @Override
     public String desc(){
-        return Messages.get(this, "desc", 20*(1+Dungeon.hero.pointsInTalent(Talent.HOLY_REGENERATION)) ) + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", 20*(1+Dungeon.hero.pointsInTalent(Talent.HOLY_REGENERATION)) ) + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
 }

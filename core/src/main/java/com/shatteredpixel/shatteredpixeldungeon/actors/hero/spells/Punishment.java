@@ -58,7 +58,7 @@ public class Punishment extends TargetedClericSpell {
 
     @Override
     public String desc() {
-        return Messages.get(this, "desc", 2+Dungeon.hero.pointsInTalent(Talent.PUNISHMENT)) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", 2+Dungeon.hero.pointsInTalent(Talent.PUNISHMENT)) +"\n\n"+ Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
     @Override

@@ -45,7 +45,7 @@ public class HolyWeapon extends ClericSpell {
 	}
 
 	@Override
-	public float chargeUse(Hero hero) {
+	public int chargeUse(Hero hero) {
 		return 2;
 	}
 
@@ -69,7 +69,7 @@ public class HolyWeapon extends ClericSpell {
 		if (Dungeon.hero.subClass == HeroSubClass.PALADIN){
 			desc += "\n\n" + Messages.get(this, "desc_paladin");
 		}
-		return desc + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return desc + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
 	}
 
 	public static class HolyWepBuff extends FlavourBuff {

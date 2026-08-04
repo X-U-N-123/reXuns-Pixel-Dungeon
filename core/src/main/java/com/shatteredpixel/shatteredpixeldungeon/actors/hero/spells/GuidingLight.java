@@ -138,7 +138,7 @@ public class GuidingLight extends TargetedClericSpell {
 	}
 
 	@Override
-	public float chargeUse(Hero hero) {
+	public int chargeUse(Hero hero) {
 		if ((hero.subClass == HeroSubClass.PRIEST || hero.subClass == HeroSubClass.PREACHER)
 			&& hero.buff(GuidingLightPriestCooldown.class) == null){
 			return 0;
@@ -155,7 +155,7 @@ public class GuidingLight extends TargetedClericSpell {
 		if (Dungeon.hero.subClass == HeroSubClass.PREACHER){
 			desc += "\n\n" + Messages.get(this, "desc_preacher");
 		}
-		return desc + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		return desc + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
 	}
 
 	public static class GuidingLightPriestCooldown extends FlavourBuff {

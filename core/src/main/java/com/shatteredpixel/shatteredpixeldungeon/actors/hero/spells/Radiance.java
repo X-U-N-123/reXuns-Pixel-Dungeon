@@ -61,13 +61,13 @@ public class Radiance extends ClericSpell {
 		} else {
 			desc = Messages.get(this, "desc", 3) + Messages.get(this, "desc_0");//+0
 		}
-		desc += Messages.get(this, "light_desc") + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+		desc += Messages.get(this, "light_desc") + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
 		return desc;
 
 	}
 
 	@Override
-	public float chargeUse(Hero hero) {
+	public int chargeUse(Hero hero) {
 		return 2;
 	}
 

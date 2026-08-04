@@ -41,7 +41,7 @@ public class Flash extends TargetedClericSpell {
 	}
 
 	@Override
-	public float chargeUse(Hero hero) {
+	public int chargeUse(Hero hero) {
 		if (hero.buff(AscendedForm.AscendBuff.class) != null){
 			return 2 + hero.buff(AscendedForm.AscendBuff.class).flashCasts;
 		} else {

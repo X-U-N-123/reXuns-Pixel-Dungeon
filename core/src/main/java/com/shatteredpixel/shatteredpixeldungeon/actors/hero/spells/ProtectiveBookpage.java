@@ -57,7 +57,7 @@ public class ProtectiveBookpage extends ClericSpell {
         int dmg = Dungeon.hero.lvl / 3;
         if (Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 2) dmg = Dungeon.hero.lvl / 2;
         int shieldAmt = Dungeon.hero.pointsInTalent(Talent.ENHANCED_BOOKPAGE) >= 1 ? 2 : 1;
-        return Messages.get(this, "desc", pageTime, dmg, shieldAmt) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc", pageTime, dmg, shieldAmt) +"\n\n"+ Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
     @Override

@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells;
 
-import static com.shatteredpixel.shatteredpixeldungeon.Dungeon.hero;
-
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -55,18 +53,18 @@ public class DrapeOfRedemption extends ClericSpell {
 
     @Override
     public String desc() {
-        int max = 24 + 12 * hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
+        int max = 24 + 12 * Dungeon.hero.pointsInTalent(Talent.DRAPE_OF_REDEMPTION);
 
         int amount = 0;
         for (Char ch : Dungeon.level.mobs.toArray(new Mob[0]))
-            if (hero.fieldOfView[ch.pos])
+            if (Dungeon.hero.fieldOfView[ch.pos])
                 if (ch.alignment != Char.Alignment.NEUTRAL && !(ch instanceof Hero)
                     && !ch.isInvulnerable(DrapeOfRedemption.class)) amount ++;
 
         int min = Math.round(max * amount / (float)(amount + 1));
 
         return Messages.get(this, "desc", min, max)
-                + "\n\n" + Messages.get(this, "charge_cost", (int)chargeUse(hero));
+                + "\n\n" + Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
     @Override
@@ -75,7 +73,7 @@ public class DrapeOfRedemption extends ClericSpell {
     }
 
     @Override
-    public float chargeUse(Hero hero) {
+    public int chargeUse(Hero hero) {
         return 2;
     }
 

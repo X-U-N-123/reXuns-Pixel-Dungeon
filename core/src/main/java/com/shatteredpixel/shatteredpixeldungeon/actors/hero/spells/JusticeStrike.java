@@ -51,12 +51,12 @@ public class JusticeStrike extends TargetedClericSpell{
     @Override
     public String desc() {
         int point = 1 + Dungeon.hero.pointsInTalent(Talent.JUSTICE_STRIKE);
-        return Messages.get(this, "desc",0.06f*point, 0.25f*point) +"\n\n"+ Messages.get(this, "charge_cost", (int)chargeUse(Dungeon.hero));
+        return Messages.get(this, "desc",0.06f*point, 0.25f*point) +"\n\n"+ Messages.get(this, "charge_cost", chargeUse(Dungeon.hero));
     }
 
     @Override
-    public float chargeUse(Hero hero) {
-        return 2f;
+    public int chargeUse(Hero hero) {
+        return 2;
     }
 
     @Override
