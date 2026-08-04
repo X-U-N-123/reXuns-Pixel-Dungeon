@@ -32,8 +32,8 @@ import com.watabou.utils.Point;
 public class TowerRoom extends SpecialRoom {
 
 	@Override //increase min size slightly to prevent reaching the tower too easy
-	public int minWidth() { return 7; }
-	public int minHeight() { return 7; }
+	public int minWidth() { return 6; }
+	public int minHeight() { return 6; }
 
 	public void paint( Level level ) {
 
@@ -51,15 +51,27 @@ public class TowerRoom extends SpecialRoom {
 
 		if (door.x == left) {
 			cx = right - 1;
+			Painter.set( level, new Point( right-1, top+1 ), Terrain.STATUE );
+			Painter.set( level, new Point( right-1, bottom-1 ), Terrain.STATUE );
+			Painter.set(level, door.y * level.width() + door.x + 1, Terrain.STATUE );
 
 		} else if (door.x == right) {
 			cx = left + 1;
+			Painter.set( level, new Point( left+1, top+1 ), Terrain.STATUE );
+			Painter.set( level, new Point( left+1, bottom-1 ), Terrain.STATUE );
+			Painter.set(level, door.y * level.width() + door.x - 1, Terrain.STATUE );
 
 		} else if (door.y == top) {
 			cy = bottom - 1;
+			Painter.set( level, new Point( left+1, bottom-1 ), Terrain.STATUE );
+			Painter.set( level, new Point( right-1, bottom-1 ), Terrain.STATUE );
+			Painter.set(level, (door.y + 1) * level.width() + door.x, Terrain.STATUE );
 
 		} else if (door.y == bottom) {
 			cy = top + 1;
+			Painter.set( level, new Point( left+1, top+1 ), Terrain.STATUE );
+			Painter.set( level, new Point( right-1, top+1 ), Terrain.STATUE );
+			Painter.set(level, (door.y - 1) * level.width() + door.x, Terrain.STATUE );
 
 		}
 		MissileTower tower = new MissileTower();
