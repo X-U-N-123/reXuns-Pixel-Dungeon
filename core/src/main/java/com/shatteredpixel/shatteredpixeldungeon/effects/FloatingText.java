@@ -555,8 +555,8 @@ public class FloatingText extends RenderedTextBlock {
 					&& (Dungeon.level.map[defender.pos] == Terrain.EMPTY || Dungeon.level.map[defender.pos] == Terrain.EMPTY_DECO))
 				missReasons.put(MISS_EXPLO, 1.15f);
 
-			if (arm != null && arm.modify != null && ((Hero) attacker).hasTalent(Talent.FAVORITE_WORK))
-				missReasons.put(MISS_WORK, ((Hero) attacker).pointsInTalent(Talent.FAVORITE_WORK) / 12f);
+			if (arm != null && arm.modify != null && ((Hero) defender).hasTalent(Talent.FAVORITE_WORK))
+				missReasons.put(MISS_WORK, ((Hero) defender).pointsInTalent(Talent.FAVORITE_WORK) / 12f);
 		}
 		if (attacker.buff(Hex.class) != null)                   missReasons.put(MISS_HEX, 0.8f);
 		if (attacker.buff(Daze.class) != null)                  missReasons.put(MISS_DAZE, 0.5f);
