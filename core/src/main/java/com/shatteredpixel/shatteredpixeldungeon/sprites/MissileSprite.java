@@ -195,6 +195,7 @@ public class MissileSprite extends ItemSprite implements Tweener.Listener {
 
 		} else if (item instanceof SpiritBow.SpiritArrow
 				|| item instanceof ScorpioSprite.ScorpioShot
+				|| item instanceof ThrowerSprite.Bone
 				|| item instanceof TenguSprite.TenguShuriken
 				|| (item instanceof MissileWeapon && ((MissileWeapon) item).inTower)){
 			speed *= 1.5f;

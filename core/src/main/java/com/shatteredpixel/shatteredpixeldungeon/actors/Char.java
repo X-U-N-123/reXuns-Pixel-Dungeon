@@ -199,6 +199,7 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.MobSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ThrowerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TargetHealthIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -1287,6 +1288,7 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Item.Leverage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Landmark.LandMark.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Illusion.TenacityTracker.class);
+		NO_ARMOR_PHYSICAL_SOURCES.add(ThrowerSprite.Bone.class);
 	}
 	
 	public void destroy() {

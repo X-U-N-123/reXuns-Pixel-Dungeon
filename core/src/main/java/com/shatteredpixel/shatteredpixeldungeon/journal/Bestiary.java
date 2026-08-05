@@ -95,6 +95,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Succubus;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Swarm;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Tengu;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thief;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Thrower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.TormentedSpirit;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
@@ -236,7 +237,7 @@ public enum Bestiary {
 				Statue.class, GuardianTrap.Guardian.class, SentryRoom.Sentry.class, MissileTower.class);
 
 		RARE.addEntities(Albino.class, GnollExile.class, HermitCrab.class, CausticSlime.class,
-				Bandit.class, SpectralNecromancer.class,
+				Bandit.class, SpectralNecromancer.class, Thrower.class,
 				ArmoredBrute.class, DM201.class, Shaman.GreenShaman.class,
 				Elemental.ChaosElemental.class, Senior.class, Marlock.class,
 				Acidic.class, Parasite.class,
