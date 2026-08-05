@@ -61,7 +61,6 @@ public class MobSpawner extends Actor {
 
 	public static ArrayList<Class<? extends Mob>> getMobRotation(int depth ){
 		ArrayList<Class<? extends Mob>> mobs = standardMobRotation( depth );
-		addRareMobs(depth, mobs);
 		swapMobAlts(mobs);
 		Random.shuffle(mobs);
 		return mobs;
@@ -218,35 +217,6 @@ public class MobSpawner extends Actor {
 						DemonSentry.class, DemonSentry.class));
 		}
 
-	}
-
-	//has a chance to add a rarely spawned mobs to the rotation
-	public static void addRareMobs( int depth, ArrayList<Class<?extends Mob>> rotation ){
-
-		switch (depth){
-
-			// Sewers
-			default:
-				return;
-			case 4:
-				if (Random.Float() < 0.025f) rotation.add(Thief.class);
-				return;
-
-			// Prison
-			case 9:
-				if (Random.Float() < 0.025f) rotation.add(Bat.class);
-				return;
-
-			// Caves
-			case 14:
-				if (Random.Float() < 0.025f) rotation.add(Ghoul.class);
-				return;
-
-			// City
-			case 19:
-				if (Random.Float() < 0.025f) rotation.add(Succubus.class);
-				return;
-		}
 	}
 
 	//switches out regular mobs for their alt versions when appropriate
