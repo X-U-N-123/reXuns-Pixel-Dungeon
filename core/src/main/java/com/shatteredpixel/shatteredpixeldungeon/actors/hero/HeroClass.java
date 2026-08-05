@@ -477,6 +477,8 @@ public enum HeroClass {
                 return Assets.Sprites.H_WRAITH;
 			case ENGINEER:
 				return Assets.Sprites.H_ENGINEER;
+			case PILLAGER:
+				return Assets.Sprites.PILLAGER;
 			default:
 				return Assets.Sprites.MITA;
 		}

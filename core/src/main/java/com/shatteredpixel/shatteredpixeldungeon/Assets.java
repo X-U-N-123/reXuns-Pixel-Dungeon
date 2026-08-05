@@ -276,6 +276,7 @@ public class Assets {
 		public static final String CLERIC   = "sprites/cleric.png";
 		public static final String H_WRAITH ="sprites/herowraith.png";
 		public static final String H_ENGINEER ="sprites/heroengineer.png";
+		public static final String PILLAGER ="sprites/pillager.png";
 		public static final String MITA     = "sprites/mita.png";
 		public static final String EXPLORER = "sprites/explorer.png";
 		public static final String AVATARS  = "sprites/avatars.png";
