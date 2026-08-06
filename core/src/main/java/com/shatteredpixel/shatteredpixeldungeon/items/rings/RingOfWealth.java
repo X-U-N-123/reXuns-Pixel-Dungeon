@@ -285,23 +285,22 @@ public class RingOfWealth extends Ring {
 				break;
 			case 5:
 				MissileWeapon m = Generator.randomMissile(floorset, true);
-				result = m.quantity(2);
+				if (!m.hasGoodEnchant() && Random.Int(10) < level) m.enchant();
+				else if (m.hasCurseEnchant())                           m.enchant(null);
+				result = m;
 				break;
 		}
 		//minimum level is 1/2/3/4/5/6 when ring level is 1/3/5/7/9/11
 		if (result.isUpgradable()){
 			int minLevel = (level+1)/2;
-			if (result instanceof MissileWeapon) {
-				result.quantity(result.quantity() + minLevel);
-			} else {
-				if (result.level() < minLevel) {
-					result.level(minLevel);
-				}
+			if (result.level() < minLevel) {
+				result.level(minLevel);
+				result.levelKnown = true;
 			}
 		}
 		result.cursed = false;
 		result.cursedKnown = true;
-		if (result.level() >= 2 || result.quantity() > 4) {
+		if (result.level() >= 2) {
 			latestDropTier = 4;
 		} else {
 			latestDropTier = 3;
