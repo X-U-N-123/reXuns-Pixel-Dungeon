@@ -256,18 +256,22 @@ public class ItemSpriteSheet {
 	}
 
 	private static final int WEP_TIER1      = xy(1, 5);//16 slots
+
 	public static final int CUDGEL          = WEP_TIER1+1;
-	public static final int TOOL            = WEP_TIER1+3;
+	public static final int WOOD_STICK      = WEP_TIER1+2;
+	public static final int SHOVEL          = WEP_TIER1+3;
+
 	public static final int GLOVES          = WEP_TIER1+5;
 	public static final int WORN_SHORTSWORD = WEP_TIER1+6;
 	public static final int HUNT_KNIFE      = WEP_TIER1+7;
 	public static final int RAPIER          = WEP_TIER1+8;
 	public static final int DAGGER          = WEP_TIER1+9;
-    public static final int SHOVEL          = WEP_TIER1+10;
-    public static final int WOOD_SHOVEL     = WEP_TIER1+11;
-    public static final int WATER_SHOVEL    = WEP_TIER1+12;
-	public static final int BONE_SPIKE      = WEP_TIER1+14;
-	public static final int MAGES_STAFF     = WEP_TIER1+15;
+
+	public static final int MAGES_STAFF     = WEP_TIER1+11;
+	public static final int TOOL            = WEP_TIER1+12;
+	public static final int BONE_SPIKE      = WEP_TIER1+13;
+    public static final int WOOD_SHOVEL     = WEP_TIER1+14;
+    public static final int WATER_SHOVEL    = WEP_TIER1+15;
 	static{
 		assignItemRect(WORN_SHORTSWORD, 14, 14);
 		assignItemRect(CUDGEL,          15, 15);
@@ -281,6 +285,7 @@ public class ItemSpriteSheet {
         assignItemRect(SHOVEL,          16, 16);
         assignItemRect(WOOD_SHOVEL,     16, 16);
         assignItemRect(WATER_SHOVEL,    16, 16);
+		assignItemRect(WOOD_STICK,      15, 16);
 	}
 
 	private static final int WEP_TIER2      = xy(17, 5);   //16 slots
@@ -299,6 +304,7 @@ public class ItemSpriteSheet {
 	public static final int Jiewan          = WEP_TIER2+12;
 	public static final int SLEEVE_ARROW    = WEP_TIER2+13;
 	public static final int Havoc           = WEP_TIER2+14;
+	//Pickaxe
 	static{
 		assignItemRect(SHORTSWORD,      13, 13);
 		assignItemRect(HAND_AXE,        12, 14);
@@ -333,6 +339,7 @@ public class ItemSpriteSheet {
 	public static final int Knife           = WEP_TIER3+12;
 	public static final int ZHOUYI          = WEP_TIER3+13;
 	public static final int WINDBLADE       = WEP_TIER3+14;
+	//Hidden blade
 	static{
 		assignItemRect(SWORD,           14, 14);
 		assignItemRect(MACE,            15, 15);
@@ -356,6 +363,7 @@ public class ItemSpriteSheet {
 	public static final int BATTLE_AXE         = WEP_TIER4+1;
 	public static final int Halberd            = WEP_TIER4+2;
 	public static final int Crystalsword       = WEP_TIER4+3;
+	//Kite shield
 	public static final int Twobroadaxe        = WEP_TIER4+5;
 	public static final int Wolftailgrassspear = WEP_TIER4+6;
 	public static final int Hoe                = WEP_TIER4+7;
@@ -399,6 +407,7 @@ public class ItemSpriteSheet {
 	public static final int HeavyFlail        = WEP_TIER5+10;
 	public static final int Longrunicblade    = WEP_TIER5+11;
 	public static final int Greatknife        = WEP_TIER5+12;
+	//Blade of unreal
 	public static final int Lightsword        = WEP_TIER5+14;
 	public static final int DMdrill           = WEP_TIER5+15;
 	static{
