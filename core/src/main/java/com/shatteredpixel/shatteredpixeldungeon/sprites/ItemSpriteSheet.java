@@ -923,9 +923,9 @@ public class ItemSpriteSheet {
 	public static final int WILD_ENERGY     = SPELLS+0;
 	public static final int SUMMON_WRAITH   = SPELLS+1;
 	public static final int TELE_GRAB       = SPELLS+2;
-
-
-	//4 unused slots
+	//1 unused slot
+	public static final int POKEBALL        = SPELLS+4;
+	//2 unused slots
 
 	public static final int MAGICBAN        = SPELLS+7;
 	public static final int WATCHTOWER      = SPELLS+8;

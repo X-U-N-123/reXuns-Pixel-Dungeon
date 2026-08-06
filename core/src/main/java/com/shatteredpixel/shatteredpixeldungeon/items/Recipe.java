@@ -70,6 +70,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicBan;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.PokeBall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
@@ -224,6 +225,7 @@ public abstract class Recipe {
 		new ElixirOfMana.Recipe(),
 		new ElixirOfConcealment.Recipe(),
 		new MagicalInfusion.Recipe(),
+		new PokeBall.Recipe(),
 		new BeaconOfReturning.Recipe(),
 		new PhaseShift.Recipe(),
 		new Watchtower.Recipe(),

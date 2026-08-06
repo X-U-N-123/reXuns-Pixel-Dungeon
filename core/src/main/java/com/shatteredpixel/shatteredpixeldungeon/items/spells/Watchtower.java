@@ -25,14 +25,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.RevealedArea;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMagicMapping;
-import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-
-import java.util.ArrayList;
 
 public class Watchtower extends TargetedSpell {
 	
@@ -76,18 +71,10 @@ public class Watchtower extends TargetedSpell {
 			output = Watchtower.class;
 			outQuantity = OUT_QUANTITY;
 		}
-
-		@Override
-		public Item brew(ArrayList<Item> ingredients) {
-			Catalog.countUse(MetalShard.class);
-			return super.brew(ingredients);
-		}
-		
 	}
 
 	@Override
 	public float weight(){
 		return 0.1f * quantity() / Recipe.OUT_QUANTITY;
 	}
-	
 }

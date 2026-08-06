@@ -82,6 +82,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicBan;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.PokeBall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
@@ -426,6 +427,7 @@ public class QuickRecipe extends Component {
 				result.add(new QuickRecipe(new SummonWraith.Recipe()));
 				result.add(new QuickRecipe(new Watchtower.Recipe()));
 				result.add(new QuickRecipe(new MagicBan.Recipe()));
+				result.add(new QuickRecipe(new PokeBall.Recipe()));
 				if (!PixelScene.landscape()) result.add(null);
 				result.add(null);
 				result.add(new QuickRecipe(new Alchemize.Recipe(), new ArrayList<>(Arrays.asList(new Plant.Seed.PlaceHolder(), new Runestone.PlaceHolder())), new Alchemize().quantity(8)));

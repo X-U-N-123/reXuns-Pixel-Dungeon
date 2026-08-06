@@ -140,6 +140,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicBan;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalInfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.MagicalTran;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.PokeBall;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.ReclaimTrap;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Recycle;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
@@ -299,7 +300,7 @@ public enum Catalog {
                 ElixirOfAmnesia.class, ElixirOfConcealment.class, ElixirOfCrashCourse.class, ElixirOfWildWind.class,
 				ElixirOfHoneyedHealing.class, ElixirOfOverdraft.class, ElixirOfAquaticRejuvenation.class, ElixirOfMana.class);
 
-		SPELLS.addItems(WildEnergy.class, SummonWraith.class, TelekineticGrab.class, MagicBan.class, Watchtower.class, PhaseShift.class,
+		SPELLS.addItems(WildEnergy.class, SummonWraith.class, TelekineticGrab.class, PokeBall.class, MagicBan.class, Watchtower.class, PhaseShift.class,
 				CurseInfusion.class, Recycle.class, Uptier.class, MagicalTran.class, MagicalInfusion.class, Alchemize.class,
 				ReclaimTrap.class, Support.class, CorruptionSpell.class, Corrosion.class, SummonElemental.class,
 				ConstantRecharge.class, ConstantEnergy.class, BeaconOfReturning.class, Scout.class, UnstableSpell.class);

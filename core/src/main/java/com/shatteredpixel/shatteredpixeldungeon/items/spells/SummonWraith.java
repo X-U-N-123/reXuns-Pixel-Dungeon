@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Wraith;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfMirrorImage;
@@ -35,6 +36,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Callback;
 
 import java.util.ArrayList;
 
@@ -73,7 +75,17 @@ public class SummonWraith extends TargetedSpell {
 	public int energyVal() {
 		return (int)(12 * (quantity/(float) Recipe.OUT_QUANTITY));
 	}
-	
+
+	@Override
+	protected void fx(Ballistica bolt, Callback callback) {
+		MagicMissile.boltFromChar( curUser.sprite.parent,
+				MagicMissile.SHADOW,
+				curUser.sprite,
+				bolt.collisionPos,
+				callback);
+		Sample.INSTANCE.play( Assets.Sounds.ZAP );
+	}
+
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
 		private static final int OUT_QUANTITY = 6;
