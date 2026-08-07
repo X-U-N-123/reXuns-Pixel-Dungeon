@@ -99,6 +99,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.TrinketCatalyst;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longinus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.KindOfBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Chasm;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.Door;
@@ -697,6 +698,8 @@ public abstract class Level implements Bundlable {
 		for (KindOfBoomerang.CircleBack b : Dungeon.hero.buffs(KindOfBoomerang.CircleBack.class)){
 			if (b.activeDepth() == Dungeon.depth) items.add(b.cancel());
 		}
+		Longinus.CircleBack longinus = Dungeon.hero.buff(Longinus.CircleBack.class);
+		if (longinus != null) items.add(longinus.cancel());
 		return items;
 	}
 

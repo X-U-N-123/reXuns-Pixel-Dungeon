@@ -407,7 +407,7 @@ public class ItemSpriteSheet {
 	public static final int HeavyFlail        = WEP_TIER5+10;
 	public static final int Longrunicblade    = WEP_TIER5+11;
 	public static final int Greatknife        = WEP_TIER5+12;
-	//Blade of unreal
+	public static final int LONGINUS          = WEP_TIER5+13;
 	public static final int Lightsword        = WEP_TIER5+14;
 	public static final int DMdrill           = WEP_TIER5+15;
 	static{
@@ -426,6 +426,7 @@ public class ItemSpriteSheet {
 		assignItemRect(HeavyFlail,        14, 15);
 		assignItemRect(Lightsword,        15, 15);
 		assignItemRect(DMdrill,           16, 16);
+		assignItemRect(LONGINUS,          16, 16);
 	}
 
 	private static final int WEP_TIER6 = xy(17,  7);   //16 slots

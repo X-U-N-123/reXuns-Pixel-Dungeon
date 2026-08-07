@@ -174,6 +174,7 @@ public abstract class KindOfBoomerang extends MissileWeapon {
 		private static final String RETURN_POS = "return_pos";
 		private static final String RETURN_DEPTH = "return_depth";
 		private static final String RETURN_BRANCH = "return_branch";
+		private static final String LEFT = "left";
 
 		@Override
 		public void storeInBundle(Bundle bundle) {
@@ -183,6 +184,7 @@ public abstract class KindOfBoomerang extends MissileWeapon {
 			bundle.put(RETURN_POS, returnPos);
 			bundle.put(RETURN_DEPTH, returnDepth);
 			bundle.put(RETURN_BRANCH, returnBranch);
+			bundle.put(LEFT, left);
 		}
 
 		@Override
@@ -193,6 +195,7 @@ public abstract class KindOfBoomerang extends MissileWeapon {
 			returnPos = bundle.getInt(RETURN_POS);
 			returnDepth = bundle.getInt(RETURN_DEPTH);
 			returnBranch = bundle.contains(RETURN_BRANCH) ? bundle.getInt(RETURN_BRANCH) : 0;
+			left = bundle.getInt(LEFT);
 		}
 	}
 }

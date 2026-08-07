@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longinus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.KindOfBoomerang;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -338,6 +339,18 @@ public class PrisonBossLevel extends Level {
 			}
 		}
 		
+		for (KindOfBoomerang.CircleBack b : Dungeon.hero.buffs(KindOfBoomerang.CircleBack.class)){
+			if (b.activeDepth() == Dungeon.depth
+					&& (safeArea == null || !safeArea.inside(cellToPoint(b.returnPos())))){
+				storedItems.add(b.cancel());
+			}
+		}
+
+		Longinus.CircleBack longinus = Dungeon.hero.buff(Longinus.CircleBack.class);
+		if (longinus != null && longinus.activeDepth() == Dungeon.depth
+				&& (safeArea == null || !safeArea.inside(cellToPoint(Dungeon.hero.pos)))) {
+			storedItems.add(longinus.cancel());
+		}
 		for (KindOfBoomerang.CircleBack b : Dungeon.hero.buffs(KindOfBoomerang.CircleBack.class)){
 			if (b.activeDepth() == Dungeon.depth
 					&& (safeArea == null || !safeArea.inside(cellToPoint(b.returnPos())))){

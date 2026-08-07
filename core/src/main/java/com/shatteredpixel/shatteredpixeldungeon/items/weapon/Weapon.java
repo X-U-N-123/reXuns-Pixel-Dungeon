@@ -77,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longinus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.RunicBlade;
@@ -419,6 +420,9 @@ abstract public class Weapon extends KindOfWeapon {
 	public int reachFactor(Char owner) {
 		int reach = RCH;
 		if (modify == Modification.LONG_HANDLE) reach ++;
+		if (owner instanceof Hero && ((Hero)owner).belongings.abilityWeapon == this
+				&& this instanceof Longinus) reach ++;
+
 		MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
 		if (tool != null && tool.modify == Modification.LONG_HANDLE && tool != this
 				&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)){

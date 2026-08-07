@@ -105,7 +105,6 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		CD = bundle.getInt(COOLDOWN);
-		if (CD > 55) CD = 65535;
 		effectTime = bundle.getInt(EFFECT_TIME);
 		disguiseCls = bundle.getClass(DISGUISE);
 		ActionIndicator.setAction(this);
