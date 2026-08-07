@@ -1749,6 +1749,10 @@ public class Hero extends Char {
 	public Char attackTarget(){
 		return attackTarget;
 	}
+
+	public void target(Char target){
+		attackTarget = target;
+	}
 	
 	public void rest( boolean fullRest ) {
 		spendAndNextConstant( TIME_TO_REST );
@@ -2772,7 +2776,7 @@ public class Hero extends Char {
 		if (hit && wasEnemy){
 			NinjaInvisCooldown invis = buff(NinjaInvisCooldown.class);
 			if (invis != null && !invis.invisGiven){
-				Buff.affect(this, Invisibility.class, 3f);
+				Buff.affect(this, Invisibility.class, 4f);
 				invis.invisGiven = true;
 			}
 			Char.ExtremistTracker extreme = buff(ExtremistTracker.class);

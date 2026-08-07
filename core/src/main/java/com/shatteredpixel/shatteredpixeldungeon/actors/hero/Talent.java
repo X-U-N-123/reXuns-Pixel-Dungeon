@@ -110,7 +110,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ShardOfOblivion;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dagger;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
@@ -125,7 +124,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -196,7 +194,7 @@ public enum Talent {
 	//Freerunner T3
 	EVASIVE_ARMOR(115, 3), PROJECTILE_MOMENTUM(116, 3), SPEEDY_STEALTH(117, 3), ARCANE_STEP(118, 3), STRETCHING(119, 3),
 	//Ninja T3
-	BLADE_OF_UNREAL(120, 3), HIDDEN_IN_THE_CITY(121, 3), FLYING_LOCUST_STONE(122, 3), STEALTH_LEAP(123, 3), WEAKENING_SNEAK(124, 3),
+	SHADOW_SLASH(120, 3), HIDDEN_IN_THE_CITY(121, 3), FLYING_LOCUST_STONE(122, 3), STEALTH_LEAP(123, 3), WEAKENING_SNEAK(124, 3),
 	//Smoke Bomb T4
 	HASTY_RETREAT(125, 4), BODY_REPLACEMENT(126, 4), SHADOW_STEP(127, 4), STATIC_SMOKE(128, 4),
 	//Death Mark T4
@@ -1053,17 +1051,6 @@ public enum Talent {
 			}
 		}
 
-		if (talent == BLADE_OF_UNREAL){
-			if (hero.pointsInTalent(talent) == 1){
-	            Item toGive = new BladeOfUnreal().identify();
-				if (!toGive.collect()){
-					Dungeon.level.drop(toGive, hero.pos).sprite.drop();
-				}
-			} else if (hero.pointsInTalent(talent) == 3) {
-				AttackIndicator.updateState();
-			}
-		}
-
 		if (talent == STEALTH_LEAP){
 			ActionIndicator.refresh();
 		}
@@ -1660,10 +1647,10 @@ public enum Talent {
 
 			int point = hero.pointsInTalent(WEAKENING_SNEAK);
 			if (point > 0 && enemy.buff(WeakeningSneakTracker.class) == null){
-				Buff.affect(enemy, Blindness.class, 5f);
+				Buff.affect(enemy, Blindness.class, 4f);
 				Buff.affect(enemy, WeakeningSneakTracker.class);
-				if (point > 2) Buff.affect(enemy, Vertigo.class, 5f);
-				if (point > 1) Buff.affect(enemy, Cripple.class, 5f);
+				if (point > 2) Buff.affect(enemy, Vertigo.class, 4f);
+				if (point > 1) Buff.affect(enemy, Cripple.class, 4f);
 			}
 		}
 
@@ -1978,7 +1965,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, EVASIVE_ARMOR, PROJECTILE_MOMENTUM, SPEEDY_STEALTH, ARCANE_STEP, STRETCHING);
 				break;
 			case NINJA:
-				Collections.addAll(tierTalents, BLADE_OF_UNREAL, HIDDEN_IN_THE_CITY, FLYING_LOCUST_STONE, STEALTH_LEAP, WEAKENING_SNEAK);
+				Collections.addAll(tierTalents, SHADOW_SLASH, HIDDEN_IN_THE_CITY, FLYING_LOCUST_STONE, STEALTH_LEAP, WEAKENING_SNEAK);
 				break;
 			case SNIPER:
 				Collections.addAll(tierTalents, FARSIGHT, SHARED_ENCHANTMENT, SHARED_UPGRADES, SUPRESSING_MARK, RESONANCE_FETCH);

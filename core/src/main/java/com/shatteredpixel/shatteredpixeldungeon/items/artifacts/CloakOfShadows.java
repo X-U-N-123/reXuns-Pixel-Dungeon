@@ -23,8 +23,10 @@ package com.shatteredpixel.shatteredpixeldungeon.items.artifacts;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
@@ -44,6 +46,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
+import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.HeroIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -70,6 +73,7 @@ public class CloakOfShadows extends Artifact {
 		chargeCap = Math.min(level()+3, 10);
 
 		defaultAction = AC_STEALTH;
+		usesTargeting = false;
 
 		unique = true;
 		bones = false;
@@ -154,7 +158,7 @@ public class CloakOfShadows extends Artifact {
 			if (container.owner instanceof Hero
 					&& passiveBuff == null
 					&& ((Hero) container.owner).hasTalent(Talent.LIGHT_CLOAK)){
-				activate((Hero) container.owner);
+				activate(container.owner);
 			}
 			return true;
 		} else{
@@ -214,7 +218,6 @@ public class CloakOfShadows extends Artifact {
 		return super.upgrade();
 	}
 
-	private static final String STEALTHED = "stealthed";
 	private static final String BUFF = "buff";
 
 	@Override
@@ -296,7 +299,7 @@ public class CloakOfShadows extends Artifact {
 		@Override
 		public Visual secondaryVisual() {
 			BitmapText txt = new BitmapText(PixelScene.pixelFont);
-			txt.text(String.valueOf( (int)Math.floor((charge + partialCharge) / perBlockChargeUse()) ));
+			txt.text(Integer.toString( (int)((charge + partialCharge) / perBlockChargeUse()) ));
 			txt.hardlight(CharSprite.POSITIVE);
 			txt.measure();
 			return txt;
@@ -322,15 +325,51 @@ public class CloakOfShadows extends Artifact {
 					if (cell == null) return;
 
 					PathFinder.buildDistanceMap(cell, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null));
-					float chargesToCost = PathFinder.distance[Dungeon.hero.pos] * perBlockChargeUse();
+					float chargesToCost = PathFinder.distance[target.pos] * perBlockChargeUse();
 
 					if (Dungeon.level.pit[cell] || !Dungeon.level.heroFOV[cell]
-					|| chargesToCost > charge + partialCharge) {
-						GLog.w(Messages.get(this, "reach"));
+							|| chargesToCost > charge + partialCharge) {
+						GLog.w(Messages.get(ScrollOfTeleportation.class, "cant_reach"));
 						return;
 					}
+					Char ch = Actor.findChar(cell);
 
-					if (ScrollOfTeleportation.teleportToLocation(Dungeon.hero, cell)){
+					if (Dungeon.hero.hasTalent(Talent.SHADOW_SLASH) && ch != null
+							&& ch.alignment != Char.Alignment.ALLY && !Char.hasProp(ch, Char.Property.IMMOVABLE)
+							&& (!Char.hasProp(ch, Char.Property.LARGE) || Dungeon.level.openSpace[target.pos])) {
+
+						int tempPos = ch.pos;
+						ch.pos = target.pos; //temporarily move char to proc the talent
+						if (ScrollOfTeleportation.teleportToLocation(target, cell)){
+							ScrollOfTeleportation.appear(ch, ch.pos);
+
+							partialCharge -= chargesToCost;
+							while (partialCharge < 0) {
+								partialCharge++;
+								charge--;
+								onChargescost((Hero) target);
+							}
+							if (Dungeon.hero.pointsInTalent(Talent.SHADOW_SLASH) >= 2){
+								AttackIndicator.target(ch);
+								((Hero)target).target(ch);
+
+								target.attack(ch);
+								Invisibility.dispel();
+								if (Dungeon.hero.pointsInTalent(Talent.SHADOW_SLASH) < 3)
+									((Hero)target).spendAndNext(((Hero) target).attackDelay());
+
+								AttackIndicator.updateState();
+							}
+							updateQuickslot();
+							ActionIndicator.refresh();
+							Dungeon.hero.checkVisibleMobs();
+
+
+						} else {
+							ch.pos = tempPos;
+							GLog.w(Messages.get(ScrollOfTeleportation.class, "cant_reach"));
+						}
+					} else if (ScrollOfTeleportation.teleportToLocation(target, cell)){
 						partialCharge -= chargesToCost;
 						while (partialCharge < 0) {
 							partialCharge++;
@@ -444,7 +483,6 @@ public class CloakOfShadows extends Artifact {
 		}
 		
 		private static final String TURNSTOCOST = "turnsToCost";
-		private static final String BARRIER_INC = "barrier_inc";
 		
 		@Override
 		public void storeInBundle(Bundle bundle) {
