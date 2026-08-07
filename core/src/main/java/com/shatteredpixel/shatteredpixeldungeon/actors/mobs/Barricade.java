@@ -155,7 +155,8 @@ public class Barricade extends Mob {
             Buff.affect(enemy, debuff.get(Random.Int(debuff.size())), aggression);
         }
 
-        if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.EXPLORER && alignment == Alignment.ALLY){
+        if (Dungeon.hero != null && Dungeon.hero.heroClass == HeroClass.EXPLORER
+                && alignment == Alignment.ALLY && enemy.alignment != Alignment.ALLY){
             Buff.affect(enemy, Bleeding.class)
                     .set(damage * (4 + Dungeon.hero.pointsInTalent(Talent.BARBED_WIRE)) / 10f, Barricade.class);
         }

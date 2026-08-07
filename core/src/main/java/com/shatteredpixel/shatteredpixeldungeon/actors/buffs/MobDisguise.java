@@ -105,6 +105,7 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 	public void restoreFromBundle(Bundle bundle) {
 		super.restoreFromBundle(bundle);
 		CD = bundle.getInt(COOLDOWN);
+		if (CD > 55) CD = 65535;
 		effectTime = bundle.getInt(EFFECT_TIME);
 		disguiseCls = bundle.getClass(DISGUISE);
 		ActionIndicator.setAction(this);
@@ -163,12 +164,12 @@ public class MobDisguise extends Buff implements ActionIndicator.Action {
 
 				else if (ch instanceof Mob) {
 					if (effectTime <= 0){
-						if (ch.alignment == Char.Alignment.ENEMY && !Char.hasProp(ch, Char.Property.BOSS)) {
+						if (ch.alignment == Char.Alignment.ENEMY && !Char.hasProp(ch, Char.Property.BOSS) && CD <= 0) {
 
 							disguiseCls = (Class<? extends Mob>) ch.getClass();
 
 							effectTime = 16; //as this spends a turn
-							CD = 51;
+							CD += 51;
 
 							target.sprite.operate(cell);
 							target.sprite.emitter().burst(Speck.factory(Speck.WOOL), 6);
