@@ -23,8 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.bags;
 
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.FrozenCarpaccio;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.MysteryMeat;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class FoodPocket extends Bag {
@@ -51,10 +49,8 @@ public class FoodPocket extends Bag {
         if (super.collect( container )) {
             if (owner != null) {
                 for (Item item : items) {
-                    if (item instanceof FrozenCarpaccio) {
-                        ((FrozenCarpaccio)item).pocket = true;
-                    } else if (item instanceof MysteryMeat){
-                        ((MysteryMeat)item).pocket = true;
+                    if (item instanceof Food){
+                        ((Food) item).pocket = true;
                     }
                 }
             }
@@ -68,11 +64,8 @@ public class FoodPocket extends Bag {
     public void onDetach( ) {
         super.onDetach();
         for (Item item : items) {
-            if (item instanceof FrozenCarpaccio) {
-                ((FrozenCarpaccio)item).pocket = false;
-            } else if (item instanceof MysteryMeat){
-                ((MysteryMeat)item).pocket = false;
-
+            if (item instanceof Food){
+                ((Food) item).pocket = true;
             }
         }
     }

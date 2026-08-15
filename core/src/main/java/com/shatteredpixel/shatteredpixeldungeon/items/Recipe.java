@@ -25,8 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.MeatPie;
-import com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.BlizzardBrew;
@@ -236,7 +236,7 @@ public abstract class Recipe {
 		new Scout.Recipe(),
 		new ConstantRecharge.Recipe(),
 		new ConstantEnergy.Recipe(),
-		new StewedMeat.oneMeat(),
+		new ChargrilledMeat.oneMeat(),
 		new TrinketCatalyst.Recipe(),
 		new Trinket.UpgradeTrinket()
 	};
@@ -265,13 +265,13 @@ public abstract class Recipe {
 		new Corrosion.Recipe(),
 		new Uptier.Recipe(),
         new Support.Recipe(),
-		new StewedMeat.twoMeat(),
+		new ChargrilledMeat.twoMeat(),
 		new Stylus.StylusToStone()
 	};
 	
 	private static Recipe[] threeIngredientRecipes = new Recipe[]{
 		new Potion.SeedToPotion(),
-		new StewedMeat.threeMeat(),
+		new ChargrilledMeat.threeMeat(),
 		new MeatPie.Recipe()
 	};
 	

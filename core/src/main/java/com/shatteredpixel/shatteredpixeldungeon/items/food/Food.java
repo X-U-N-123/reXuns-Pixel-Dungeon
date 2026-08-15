@@ -30,12 +30,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.WellFed;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.SpellSprite;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
+import com.shatteredpixel.shatteredpixeldungeon.items.bags.FoodPocket;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -54,6 +57,8 @@ public class Food extends Item {
 	public static final String AC_EAT	= "EAT";
 	
 	public float energy = Hunger.HUNGRY;
+
+	public boolean pocket = false;
 	
 	{
 		stackable = true;
@@ -74,6 +79,12 @@ public class Food extends Item {
 	protected float preserveChance(){
 		if (!Dungeon.hero.hasTalent(Talent.FRUGALITY)) return 0;
 		return 0.05f + 0.1f * Dungeon.hero.pointsInTalent(Talent.FRUGALITY);
+	}
+
+	@Override
+	public boolean collect(Bag container) {
+		pocket = container instanceof FoodPocket;
+		return super.collect(container);
 	}
 	
 	@Override
@@ -139,6 +150,8 @@ public class Food extends Item {
 
 		if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, ToilsomeMealTracker.class, eatingTime()).foodVal = foodVal;
 		else Buff.affect(hero, Hunger.class).satisfy(foodVal);
+
+		if (pocket) Buff.affect(hero, WellFed.class).reset((int)(foodVal / 10));
 	}
 	
 	@Override

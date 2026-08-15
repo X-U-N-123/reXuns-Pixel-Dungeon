@@ -27,8 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
-import com.shatteredpixel.shatteredpixeldungeon.items.bags.FoodPocket;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -48,18 +46,10 @@ public class FrozenCarpaccio extends Food {
 		super.satisfy(hero);
 		effect(hero);
 	}
-
-	@Override
-	public boolean collect(Bag container) {
-		pocket = container instanceof FoodPocket;
-		return super.collect(container);
-	}
 	
 	public int value() {
 		return 10 * quantity;
 	}
-
-	public static boolean pocket = false;
 
 	public static void effect(Hero hero){
 		switch (Random.Int( 5 )) {
@@ -80,11 +70,7 @@ public class FrozenCarpaccio extends Food {
 				hero.HP = Math.min( hero.HP + hero.HT / 4, hero.HT );
 				hero.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString(hero.HT / 4), FloatingText.HEALING );
 				break;
-			case 4:
-				if (pocket){
-					effect(hero);
-					break;
-				}
+			case 4: break;
 		}
 	}
 	

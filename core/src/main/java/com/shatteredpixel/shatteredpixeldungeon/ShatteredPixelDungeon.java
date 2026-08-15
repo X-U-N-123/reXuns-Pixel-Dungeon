@@ -41,6 +41,10 @@ public class ShatteredPixelDungeon extends Game {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
 
 		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.food.StewedMeat.class" );
+
+		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HuntKnife.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork.class" );
 
