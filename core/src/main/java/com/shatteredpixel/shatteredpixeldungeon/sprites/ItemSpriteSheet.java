@@ -334,7 +334,7 @@ public class ItemSpriteSheet {
 	public static final int Scythe          = WEP_TIER3+7;
 	public static final int Bayonet         = WEP_TIER3+8;
 	public static final int Roguedagger     = WEP_TIER3+9;
-	public static final int LightFlail      = WEP_TIER3+10;
+	public static final int BLADE_UNREAL    = WEP_TIER3+10;
 	public static final int Shortrunicblade = WEP_TIER3+11;
 	public static final int Knife           = WEP_TIER3+12;
 	public static final int ZHOUYI          = WEP_TIER3+13;
@@ -353,7 +353,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Daggeraxe,       15, 16);
 		assignItemRect(Knife,           15, 14);
 		assignItemRect(Scythe,          12, 13);
-		assignItemRect(LightFlail,      13, 13);
+		assignItemRect(BLADE_UNREAL,    13, 15);
 		assignItemRect(WINDBLADE,       15, 15);
 		assignItemRect(ZHOUYI,          13, 16);
 	}
@@ -404,7 +404,6 @@ public class ItemSpriteSheet {
 	public static final int WAR_SCYTHE        = WEP_TIER5+7;
 	public static final int Ironbar           = WEP_TIER5+8;
 	public static final int Longassassinsblade= WEP_TIER5+9;
-	public static final int HeavyFlail        = WEP_TIER5+10;
 	public static final int Longrunicblade    = WEP_TIER5+11;
 	public static final int Greatknife        = WEP_TIER5+12;
 	public static final int LONGINUS          = WEP_TIER5+13;
@@ -423,7 +422,6 @@ public class ItemSpriteSheet {
 		assignItemRect(Longrunicblade,    15, 15);
 		assignItemRect(Greatknife,        13, 16);
 		assignItemRect(Miaoblade,         13, 16);
-		assignItemRect(HeavyFlail,        14, 15);
 		assignItemRect(Lightsword,        15, 15);
 		assignItemRect(DMdrill,           16, 16);
 		assignItemRect(LONGINUS,          16, 16);
@@ -440,7 +438,7 @@ public class ItemSpriteSheet {
 	public static final int Rake           = WEP_TIER6+7;
 	public static final int Jingubang      = WEP_TIER6+8;
 	public static final int Darknesssword  = WEP_TIER6+9;
-	public static final int Fetter         = WEP_TIER6+10;
+	public static final int HEAVY_FLAIL    = WEP_TIER6+10;
 	public static final int Greatrunicblade= WEP_TIER6+11;
 	public static final int Ripperclaw     = WEP_TIER6+12;
 	public static final int ZHUGE_CROSSBOW = WEP_TIER6+13;
@@ -459,7 +457,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Dwarvessword,   16, 16);
 		assignItemRect(Erlangknife,    16, 16);
 		assignItemRect(Greatrunicblade,16, 16);
-		assignItemRect(Fetter,         14, 14);
+		assignItemRect(HEAVY_FLAIL,    14, 15);
 		assignItemRect(Stonecudgel,    16, 16);
 		assignItemRect(ZHUGE_CROSSBOW, 15, 15);
 		assignItemRect(CHIXIAO,        16, 16);
@@ -544,16 +542,11 @@ public class ItemSpriteSheet {
 	public static final int HIDDEN_BLADE         = OTHER_WEP +0;
 	public static final int HIDDEN_BLADE_LOCKED  = OTHER_WEP +1;
     public static final int BLADE_OF_MIMIC       = OTHER_WEP +2;
-	public static final int BLADE_OF_REAL        = OTHER_WEP +3;
-	public static final int BLADE_OF_UNREAL      = OTHER_WEP +4;
 	static {
 		assignItemRect(HIDDEN_BLADE,       16, 16);
 		assignItemRect(HIDDEN_BLADE_LOCKED,16, 16);
 
         assignItemRect(BLADE_OF_MIMIC,     15, 15);
-
-		assignItemRect(BLADE_OF_REAL,      15, 16);
-		assignItemRect(BLADE_OF_UNREAL,    15, 16);
 	}
 
 	public static final int DARTS           = xy(17, 4);  //16 slots

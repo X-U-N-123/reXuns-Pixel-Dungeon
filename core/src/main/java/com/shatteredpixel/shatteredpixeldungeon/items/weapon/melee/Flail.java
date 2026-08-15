@@ -53,7 +53,7 @@ public class Flail extends MeleeWeapon {
 				lvl*Math.round(1.6f*(tier+1));  //+8 per level, up from +5
 	}
 
-	private static int spinBoost = 0;
+	public static int spinBoost = 0;
 
 	@Override
 	public int damageRoll(Char owner) {

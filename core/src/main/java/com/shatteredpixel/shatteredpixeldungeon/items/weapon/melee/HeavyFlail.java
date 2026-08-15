@@ -35,39 +35,38 @@ import com.watabou.noosa.audio.Sample;
 public class HeavyFlail extends MeleeWeapon{
 
     {
-        image = ItemSpriteSheet.HeavyFlail;
+        image = ItemSpriteSheet.HEAVY_FLAIL;
         hitSound = Assets.Sounds.HIT_CRUSH;
         hitSoundPitch = 0.8f;
 
-        tier = 5;
-        ACC = 0.76f; //0.76x accuracy
+        tier = 6;
+        ACC = 0.75f; //0.75x accuracy
         //also cannot surprise attack, see Hero.canSurpriseAttack
     }
 
     @Override
     public int max(int lvl) {
-        return  Math.round(7*(tier+1)) +        //42 base, up from 30
-                lvl*Math.round(1.5f*(tier+1));  //+9 per level, up from +6
+        return  7*(tier+1) +        //49 base, up from 35
+                lvl*Math.round(1.42f*(tier+1));  //+10 per level, up from +7
     }
-
-    private static int spinBoost = 0;
 
     @Override
     public int damageRoll(Char owner) {
-        int dmg = super.damageRoll(owner) + spinBoost;
-        if (spinBoost > 0) Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-        spinBoost = 0;
+        int dmg = super.damageRoll(owner) + Flail.spinBoost;
+        if (Flail.spinBoost > 0) Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+        Flail.spinBoost = 0;
         return dmg;
     }
 
     @Override
     public float accuracyFactor(Char owner, Char target) {
         Flail.SpinAbilityTracker spin = owner.buff(Flail.SpinAbilityTracker.class);
-        if (spin != null) {
+        if (spin != null && Flail.spinBoost == 0) {
             Actor.add(new Actor() {
                 { actPriority = VFX_PRIO; }
                 @Override
                 protected boolean act() {
+                    Flail.spinBoost = 0;
                     if (owner instanceof Hero && !target.isAlive()){
                         onAbilityKill((Hero)owner, target);
                     }
@@ -77,12 +76,13 @@ public class HeavyFlail extends MeleeWeapon{
             });
             //we detach and calculate bonus here in case the attack misses (e.g. vs. monks)
             spin.detach();
-            //+(9+2*lvl) damage per spin, roughly +38.3% base damage, +44.4% scaling
-            // so +114.9% base dmg, +133.3% scaling at 3 spins
-            spinBoost = spin.spins * augment.damageFactor(9 + 2*buffedLvl());
+            //+(9+2*lvl) damage per spin, roughly +36.4% base damage, +36.4% scaling
+            // so +109.1% base dmg, +109.1% scaling at 3 spins
+            Flail.spinBoost = spin.spins * augment.damageFactor(10 + 2*buffedLvl());
+            return Float.POSITIVE_INFINITY;
+        } else if (Flail.spinBoost != 0) {
             return Float.POSITIVE_INFINITY;
         } else {
-            spinBoost = 0;
             return super.accuracyFactor(owner, target);
         }
     }
@@ -113,7 +113,7 @@ public class HeavyFlail extends MeleeWeapon{
 
     @Override
     public String abilityInfo() {
-        int dmgBoost = levelKnown ? 9 + 2*buffedLvl() : 9;
+        int dmgBoost = levelKnown ? 10 + 2*buffedLvl() : 10;
         if (levelKnown){
             return Messages.get(this, "ability_desc", augment.damageFactor(dmgBoost));
         } else {
@@ -122,7 +122,7 @@ public class HeavyFlail extends MeleeWeapon{
     }
 
     public String upgradeAbilityStat(int level){
-        return "+" + augment.damageFactor(9 + 2*level);
+        return "+" + augment.damageFactor(10 + 2*level);
     }
 
 }

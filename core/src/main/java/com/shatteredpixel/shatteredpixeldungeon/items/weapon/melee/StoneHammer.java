@@ -40,7 +40,7 @@ public class StoneHammer extends MeleeWeapon{
         hitSoundPitch = 0.9f;
 
         tier = 2;
-        ACC = 0.88f; //0.88x accuracy
+        ACC = 0.85f; //0.85x accuracy
         //also cannot surprise attack, see Hero.canSurpriseAttack
     }
 
@@ -50,24 +50,23 @@ public class StoneHammer extends MeleeWeapon{
                 lvl*Math.round(1.67f*(tier+1));  //+5 per level, up from +3
     }
 
-    private static int spinBoost = 0;
-
     @Override
     public int damageRoll(Char owner) {
-        int dmg = super.damageRoll(owner) + spinBoost;
-        if (spinBoost > 0) Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-        spinBoost = 0;
+        int dmg = super.damageRoll(owner) + Flail.spinBoost;
+        if (Flail.spinBoost > 0) Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+        Flail.spinBoost = 0;
         return dmg;
     }
 
     @Override
     public float accuracyFactor(Char owner, Char target) {
         Flail.SpinAbilityTracker spin = owner.buff(Flail.SpinAbilityTracker.class);
-        if (spin != null) {
+        if (spin != null && Flail.spinBoost == 0) {
             Actor.add(new Actor() {
                 { actPriority = VFX_PRIO; }
                 @Override
                 protected boolean act() {
+                    Flail.spinBoost = 0;
                     if (owner instanceof Hero && !target.isAlive()){
                         onAbilityKill((Hero)owner, target);
                     }
@@ -79,22 +78,14 @@ public class StoneHammer extends MeleeWeapon{
             spin.detach();
             //+(6+2*lvl) damage per spin, roughly +52.2% base damage, +66.7% scaling
             // so +156.5% base dmg, +200% scaling at 3 spins
-            spinBoost = spin.spins * augment.damageFactor(6 + 2*buffedLvl());
+            Flail.spinBoost = spin.spins * augment.damageFactor(6 + 2*buffedLvl());
+            return Float.POSITIVE_INFINITY;
+        } else if (Flail.spinBoost != 0) {
             return Float.POSITIVE_INFINITY;
         } else {
-            spinBoost = 0;
             return super.accuracyFactor(owner, target);
         }
     }
-
-   /*@Override
-    protected int baseChargeUse(Hero hero, Char target){
-        if (Dungeon.hero.buff(Flail.SpinAbilityTracker.class) != null){
-            return 0;
-        } else {
-            return 1;
-        }
-    }*/
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {

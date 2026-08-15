@@ -178,12 +178,10 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLivingEarth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HeavyFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HiddenBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KindOfCrossbow;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LightFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
@@ -621,8 +619,7 @@ public class Hero extends Char {
 					accuracy *= 1f + 0.1f * pointsInTalent(Talent.PRECISE_ASSAULT);
 				}
 
-				if ((wep instanceof Flail || wep instanceof LightFlail
-						|| wep instanceof StoneHammer || wep instanceof HeavyFlail || wep instanceof Fetter)
+				if ((wep instanceof Flail || wep instanceof StoneHammer || wep instanceof HeavyFlail)
 					&& buff(Flail.SpinAbilityTracker.class) != null){
 					//do nothing, this is not a regular attack so don't consume talent fx
 				} else if (wep instanceof KindOfCrossbow && buff(KindOfCrossbow.ChargedShot.class) != null){
@@ -937,10 +934,8 @@ public class Hero extends Char {
 		if (RingOfForce.fightingUnarmed(this))                    return true;
 		if (STR() < ((Weapon)w).STRReq())                              return false;
 		if (w instanceof StoneHammer)                                  return false;
-		if (w instanceof LightFlail)                                   return false;
 		if (w instanceof Flail)                                        return false;
 		if (w instanceof HeavyFlail)                                   return false;
-		if (w instanceof Fetter)                                       return false;
         if (w instanceof BladeOfMimic && !((BladeOfMimic) w).canSneak) return false;
 
 		return super.canSurpriseAttack();

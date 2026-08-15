@@ -164,6 +164,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfWarding;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.AssassinsBlade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BattleAxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Bayonet;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfUnreal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Canopy;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Chainwhip;
@@ -182,7 +183,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Doublesword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Dwarvessword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Erlangknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Etherealsword;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fetter;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Futsunomitama;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
@@ -207,7 +207,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Jingubang;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Katana;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.KiteShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Knife;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.LightFlail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Lightsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longassassinsblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longinus;
@@ -561,7 +560,7 @@ public class Generator {
 					Shortrunicblade.class,
 					Knife.class,
 					Scythe.class,
-					LightFlail.class,
+					BladeOfUnreal.class,
 					Windblade.class,
 					Zhouyi.class,
 					HiddenBlade.class
@@ -603,12 +602,11 @@ public class Generator {
 					Longrunicblade.class,
 					Greatknife.class,
 					Miaoblade.class,
-					HeavyFlail.class,
 					Lightsword.class,
 					DMdrill.class,
 					Longinus.class
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 
 			WEP_T6.classes = new Class<?>[]{//16 Weapons
@@ -624,7 +622,7 @@ public class Generator {
 					Dwarvessword.class,
 					Erlangknife.class,
 					Greatrunicblade.class,
-					Fetter.class,
+					HeavyFlail.class,
 					StoneCudgel.class,
 					ZhugeCrossbow.class,
 					Chixiao.class
