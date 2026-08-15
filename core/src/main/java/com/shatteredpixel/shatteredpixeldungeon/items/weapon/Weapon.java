@@ -229,7 +229,7 @@ abstract public class Weapon extends KindOfWeapon {
 		if (tool != null && tool.modify == Modification.BATTLE_MODULE){
 			defender.damage(Math.round(damage/2f), BattleModule.class);
 		}
-		if ((modify == Modification.LONG_HANDLE && !Dungeon.level.adjacent(attacker.pos, defender.pos))
+		if ((modify == Modification.LONG_HANDLE && Dungeon.level.distance(attacker.pos, defender.pos) >= reachFactor(attacker))
 				|| (modify == Modification.CONDUCTIVE && enchantment != null)
 				|| modify == Modification.BATTLE_MODULE
 				|| modify == Modification.PNEUMATICS)
