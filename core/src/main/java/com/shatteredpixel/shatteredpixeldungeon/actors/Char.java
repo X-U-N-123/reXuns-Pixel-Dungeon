@@ -134,7 +134,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Dewdrop;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -1285,7 +1284,6 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(KindOfWeapon.BattleModule.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(SummoningBeacon.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(DwarvesTile.class);
-		NO_ARMOR_PHYSICAL_SOURCES.add(Item.Leverage.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Landmark.LandMark.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Illusion.TenacityTracker.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(ThrowerSprite.Bone.class);

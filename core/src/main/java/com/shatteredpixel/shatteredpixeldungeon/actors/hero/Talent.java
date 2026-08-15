@@ -847,9 +847,9 @@ public enum Talent {
 	public static void onItemIdentified( Hero hero, Item item ){
 		if (hero.hasTalent(TESTED_REVIVE)){
 			//heal for 2/3 HP
-			hero.HP = Math.min(hero.HP + 1 + hero.pointsInTalent(TESTED_REVIVE), hero.HT);
+			hero.HP = Math.min(hero.HP + 1 + 2 * hero.pointsInTalent(TESTED_REVIVE), hero.HT);
 			if (hero.sprite != null) {
-				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + hero.pointsInTalent(TESTED_REVIVE)), FloatingText.HEALING);
+				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(1 + 2 * hero.pointsInTalent(TESTED_REVIVE)), FloatingText.HEALING);
 			}
 		}
 		if (hero.hasTalent(TESTED_HYPOTHESIS)){
@@ -1200,7 +1200,7 @@ public enum Talent {
 			}
 		}
 		if (hero.hasTalent(IRON_STOMACH) && hero.cooldown() > 0)
-			Buff.affect(hero, WarriorFoodImmunity.class, hero.cooldown() * hero.pointsInTalent(IRON_STOMACH));
+			Buff.affect(hero, WarriorFoodImmunity.class, hero.cooldown() + hero.pointsInTalent(IRON_STOMACH) - 1);
 
 		if (hero.hasTalent(EMPOWERING_MEAL)){
 			//2/3 bonus wand damage for next 3 zaps
@@ -1695,7 +1695,7 @@ public enum Talent {
 		}
 
 		if (hero.hasTalent(GUARD_THE_PASS) && !Dungeon.level.openSpace[hero.pos]){
-			dmg = Math.round(dmg * (1.0f + 0.1f*hero.pointsInTalent(GUARD_THE_PASS)));
+			dmg = Math.round(dmg * (1.0f + 0.08f*hero.pointsInTalent(GUARD_THE_PASS)));
 		}
 
 		Buff buffs = hero.buff(SkilleddualTracker.class);

@@ -58,7 +58,6 @@ import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
 import java.util.ArrayList;
@@ -725,10 +724,6 @@ public class Item implements Bundlable {
 							Buff.affect(enemy, Blindness.class, 1 + 2f * curUser.pointsInTalent(Talent.IMPROVISED_PROJECTILES));
 							Buff.affect(curUser, Talent.ImprovisedProjectileCooldown.class, 40f);
 						}
-						if (curUser.hasTalent(Talent.ITEM_LEVERAGE)){
-							Sample.INSTANCE.play(Assets.Sounds.HIT);
-							enemy.damage(Random.NormalIntRange(1, curUser.pointsInTalent(Talent.ITEM_LEVERAGE)), new Leverage());
-						}
 					}
 
 					if (user.buff(Talent.LethalMomentumTracker.class) != null){
@@ -809,6 +804,4 @@ public class Item implements Bundlable {
 	public float unidWeight(){
 		return weight();
 	}
-
-	public static class Leverage{}
 }

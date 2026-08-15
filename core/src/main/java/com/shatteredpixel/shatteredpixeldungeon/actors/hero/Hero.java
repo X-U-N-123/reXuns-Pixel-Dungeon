@@ -75,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Momentum;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MonkEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.PhysicalEmpower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Preparation;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Recharging;
@@ -1330,6 +1331,9 @@ public class Hero extends Char {
 				Item item = heap.peek();
 				if (item.doPickUp( this )) {
 					heap.pickUp();
+
+					if (hasTalent(Talent.ITEM_LEVERAGE) && !heap.autoExplored)
+						Buff.affect(this, PhysicalEmpower.class).set(Random.IntRange(pointsInTalent(Talent.ITEM_LEVERAGE), 2), 1);
 
 					if (item instanceof Dewdrop
 							|| item instanceof TimekeepersHourglass.sandBag

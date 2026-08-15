@@ -342,13 +342,13 @@ public class BrokenSeal extends Item {
 			if (shielding() > 0){
 				if (Dungeon.hero.visibleEnemies() == 0 && Dungeon.hero.buff(Combo.class) == null){
 					turnsSinceEnemies++;
-					if (turnsSinceEnemies >= 5){
+					if (turnsSinceEnemies >= 10){
 						if (cooldown > 0) {
 							float percentLeft = shielding() / (float)initialShield;
 							//max of 50% cooldown refund
-							cooldown = Math.max(0, (int)(cooldown - cooldownStart() * (percentLeft / 2f)));
+							cooldown = Math.max(0, (int)(cooldown - cooldownStart() * percentLeft));
 						}
-						float percent = Dungeon.hero.pointsInTalent(Talent.KEEP_GUARDING)/4f;
+						float percent = Dungeon.hero.pointsInTalent(Talent.KEEP_GUARDING)/3f;
 						if (percent > 0){
 							int toHeal = Math.min(target.HT - target.HP, Math.round(percent * shielding()));
 							if (toHeal > 0){
