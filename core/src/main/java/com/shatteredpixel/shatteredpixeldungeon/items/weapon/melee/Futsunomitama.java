@@ -37,8 +37,11 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.noosa.particles.Emitter;
+import com.watabou.noosa.particles.PixelParticle;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -54,6 +57,8 @@ public class Futsunomitama extends MeleeWeapon {
 		hitSound = Assets.Sounds.HIT_SLASH;
 		hitSoundPitch = 1.1f;
 
+		defaultAction = AC_DISCHARGE;
+
 		tier = 4;
 	}
 
@@ -67,7 +72,10 @@ public class Futsunomitama extends MeleeWeapon {
 	public int proc(Char attacker, Char defender, int damage) {
 		int chargeBefore = curCharge;
 		curCharge = Math.min(curCharge + 1, maxCharges);
-		if (chargeBefore < maxCharges && curCharge == maxCharges) GLog.p(Messages.get(this, "ready"));
+		if (chargeBefore < maxCharges && curCharge == maxCharges) {
+			GLog.p(Messages.get(this, "ready"));
+			updateQuickslot();
+		}
 		return super.proc(attacker, defender, damage);
 	}
 
@@ -96,6 +104,7 @@ public class Futsunomitama extends MeleeWeapon {
 				hero.sprite.operate(hero.pos);
 				hero.next();
 			}
+			updateQuickslot();
 		}
 	}
 
@@ -135,7 +144,10 @@ public class Futsunomitama extends MeleeWeapon {
 			if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)){
 				int chargeBefore = curCharge;
 				curCharge = Math.min(curCharge + 1, maxCharges);
-				if (chargeBefore < maxCharges && curCharge == maxCharges) GLog.p(Messages.get(Futsunomitama.class, "ready"));
+				if (chargeBefore < maxCharges && curCharge == maxCharges) {
+					GLog.p(Messages.get(Futsunomitama.class, "ready"));
+					updateQuickslot();
+				}
 
 				int electricityDmg = Hero.heroDamageIntRange(2 + buffedLvl(), 9 + 2 * buffedLvl());
 				if (enemy.isAlive()) {
@@ -171,6 +183,88 @@ public class Futsunomitama extends MeleeWeapon {
 		int minDmgBoost = levelKnown ? 2 + level : 2;
 		int maxDmgBoost = levelKnown ? 9 + 2 * level : 9;
 		return minDmgBoost + "-" + maxDmgBoost;
+	}
+
+	@Override
+	public Emitter emitter() {
+		if (curCharge < maxCharges) return null;
+
+		Emitter emitter = new Emitter();
+		emitter.pos(14, 1.5f);
+		emitter.fillTarget = false;
+		emitter.pour(new Emitter.Factory() {
+			@Override
+			//reimplementing this is needed as instance creation of new staff particles must be within this class.
+			public void emit( Emitter emitter, int index, float x, float y ) {
+				StaffParticle c = (StaffParticle)emitter.getFirstAvailable(StaffParticle.class);
+				if (c == null) {
+					c = new StaffParticle();
+					emitter.add(c);
+				}
+				c.reset(x, y);
+			}
+
+			@Override
+			public boolean lightMode() {
+				return true;
+			}
+		}, 0.1f);
+		return emitter;
+	}
+
+	//determines particle effects to use based on wand the staff owns.
+	private static class StaffParticle extends PixelParticle {
+
+		private float minSize;
+		private float maxSize;
+		public float sizeJitter = 0;
+
+		public StaffParticle(){
+			super();
+		}
+
+		public void reset( float x, float y ) {
+			revive();
+
+			speed.set(0);
+
+			this.x = x;
+			this.y = y;
+
+
+			color(0xFFFFFF);
+			am = 0.6f;
+			setLifespan(0.6f);
+			acc.set(0, +10);
+			speed.polar(-Random.Float(3.1415926f), 6f);
+			setSize(0f, 1.5f);
+			sizeJitter = 1f;
+			shuffleXY(1f);
+			float dst = Random.Float(1f);
+			this.x -= dst;
+			this.y += dst;
+
+		}
+
+		public void setSize( float minSize, float maxSize ){
+			this.minSize = minSize;
+			this.maxSize = maxSize;
+		}
+
+		public void setLifespan( float life ){
+			lifespan = left = life;
+		}
+
+		public void shuffleXY(float amt){
+			x += Random.Float(-amt, amt);
+			y += Random.Float(-amt, amt);
+		}
+
+		@Override
+		public void update() {
+			super.update();
+			size(minSize + (left / lifespan)*(maxSize-minSize) + Random.Float(sizeJitter));
+		}
 	}
 
 	private static final String CHARGE = "charge";

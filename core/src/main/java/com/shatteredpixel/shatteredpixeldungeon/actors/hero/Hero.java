@@ -211,7 +211,6 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
-import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.QuickSlotButton;
@@ -402,11 +401,6 @@ public class Hero extends Char {
 		STR = bundle.getInt( STRENGTH );
 
 		belongings.restoreFromBundle( bundle );
-
-		CloakOfShadows.cloakRecharge teleport = buff(CloakOfShadows.cloakRecharge.class);
-		if (subClass == HeroSubClass.NINJA && teleport != null){
-			ActionIndicator.setAction(teleport);
-		}
 	}
 	
 	public static void preview( GamesInProgress.Info info, Bundle bundle ) {
