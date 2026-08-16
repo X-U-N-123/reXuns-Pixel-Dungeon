@@ -474,31 +474,36 @@ public class ItemSpriteSheet {
 	public static final int CLAY            = MISSILE_WEP+4;
     public static final int BONE_FRAGMENT   = MISSILE_WEP+5;
 	public static final int DINNERKNIFE     = MISSILE_WEP+6;
-	public static final int FISHING_SPEAR   = MISSILE_WEP+7;
-	public static final int SHURIKEN        = MISSILE_WEP+8;
-	public static final int THROWING_CLUB   = MISSILE_WEP+9;
-	public static final int LIGHTBOOMERANG  = MISSILE_WEP+10;
-	public static final int MUCUS           = MISSILE_WEP+11;
-	public static final int THROWING_SPEAR  = MISSILE_WEP+12;
-	public static final int BOLAS           = MISSILE_WEP+13;
-	public static final int KUNAI           = MISSILE_WEP+14;
-	public static final int COINDART        = MISSILE_WEP+15;
-	public static final int SMOKEBOMB       = MISSILE_WEP+16;
-	public static final int JAVELIN         = MISSILE_WEP+17;
-	public static final int TOMAHAWK        = MISSILE_WEP+18;
-	public static final int BOOMERANG       = MISSILE_WEP+19;
-	public static final int LANCET          = MISSILE_WEP+20;
-	public static final int FORCE_COBBLE    = MISSILE_WEP+21;
-	public static final int TRIDENT         = MISSILE_WEP+22;
-	public static final int THROWING_HAMMER = MISSILE_WEP+23;
-	public static final int FORCE_CUBE      = MISSILE_WEP+24;
-	public static final int HEADDART        = MISSILE_WEP+25;
-	public static final int FLYING_CYMBALS  = MISSILE_WEP+26;
-	public static final int IRON_THORN      = MISSILE_WEP+27;
-	public static final int IRONBALL        = MISSILE_WEP+28;
-	public static final int ANTIMATTER      = MISSILE_WEP+29;
-	public static final int HEAVYBOOMERANG  = MISSILE_WEP+30;
-	public static final int SCORPIOSPIKE    = MISSILE_WEP+31;
+
+	public static final int FISHING_SPEAR   = MISSILE_WEP+8;
+	public static final int SHURIKEN        = MISSILE_WEP+9;
+	public static final int THROWING_CLUB   = MISSILE_WEP+10;
+	public static final int LIGHTBOOMERANG  = MISSILE_WEP+11;
+	public static final int MUCUS           = MISSILE_WEP+12;
+	public static final int OOZE            = MISSILE_WEP+13;
+	public static final int THROWING_SPEAR  = MISSILE_WEP+14;
+	public static final int BOLAS           = MISSILE_WEP+15;
+	public static final int KUNAI           = MISSILE_WEP+16;
+	public static final int COINDART        = MISSILE_WEP+17;
+	public static final int SMOKEBOMB       = MISSILE_WEP+18;
+	public static final int SPINNER_TOOTH   = MISSILE_WEP+19;
+	public static final int JAVELIN         = MISSILE_WEP+20;
+	public static final int TOMAHAWK        = MISSILE_WEP+21;
+	public static final int BOOMERANG       = MISSILE_WEP+22;
+	public static final int LANCET          = MISSILE_WEP+23;
+	public static final int FORCE_COBBLE    = MISSILE_WEP+24;
+	public static final int BRICK           = MISSILE_WEP+25;
+	public static final int TRIDENT         = MISSILE_WEP+26;
+	public static final int THROWING_HAMMER = MISSILE_WEP+27;
+	public static final int FORCE_CUBE      = MISSILE_WEP+28;
+	public static final int HEADDART        = MISSILE_WEP+29;
+	public static final int FLYING_CYMBALS  = MISSILE_WEP+30;
+	public static final int WORM_HOLE       = MISSILE_WEP+31;
+	public static final int IRON_THORN      = MISSILE_WEP+32;
+	public static final int IRONBALL        = MISSILE_WEP+33;
+	public static final int ANTIMATTER      = MISSILE_WEP+34;
+	public static final int HEAVYBOOMERANG  = MISSILE_WEP+35;
+	public static final int SCORPIOSPIKE    = MISSILE_WEP+36;
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
 		
@@ -514,25 +519,25 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_CLUB,   12, 12);
 		assignItemRect(LIGHTBOOMERANG,  13, 13);
 		assignItemRect(MUCUS,           12, 12);
-
+		assignItemRect(OOZE,            12, 12);
 		assignItemRect(THROWING_SPEAR,  13, 13);
 		assignItemRect(BOLAS,           15, 14);
 		assignItemRect(KUNAI,           15, 15);
 		assignItemRect(COINDART,        12, 12);
 		assignItemRect(SMOKEBOMB,       10, 10);
-
+		assignItemRect(SPINNER_TOOTH,   8,  15);
 		assignItemRect(JAVELIN,         16, 16);
 		assignItemRect(TOMAHAWK,        13, 13);
 		assignItemRect(BOOMERANG,       14, 14);
 		assignItemRect(LANCET,          15, 16);
 		assignItemRect(FORCE_COBBLE,    12, 10);
-
+		assignItemRect(BRICK,           16, 12);
 		assignItemRect(TRIDENT,         16, 16);
 		assignItemRect(THROWING_HAMMER, 12, 12);
 		assignItemRect(FORCE_CUBE,      11, 12);
 		assignItemRect(HEADDART,        14, 14);
 		assignItemRect(FLYING_CYMBALS,  14, 14);
-
+		assignItemRect(WORM_HOLE,       15, 15);
 		assignItemRect(IRON_THORN,      16, 16);
 		assignItemRect(IRONBALL,        12, 12);
 		assignItemRect(ANTIMATTER,      12, 11);
@@ -540,7 +545,7 @@ public class ItemSpriteSheet {
 		assignItemRect(SCORPIOSPIKE,    16, 16);
 	}
 
-	public static final int OTHER_WEP = xy(1, 9); //8 slots
+	public static final int OTHER_WEP = xy(9, 9); //4 slots
 	public static final int HIDDEN_BLADE         = OTHER_WEP +0;
 	public static final int HIDDEN_BLADE_LOCKED  = OTHER_WEP +1;
     public static final int BLADE_OF_MIMIC       = OTHER_WEP +2;
@@ -570,7 +575,7 @@ public class ItemSpriteSheet {
 			assignItemRect(i, 15, 15);
 	}
 	
-	private static final int ARMOR          = xy(9, 9);  //24 slots
+	private static final int ARMOR          = xy(13, 9);  //20 slots
 	public static final int ARMOR_CLOTH     = ARMOR+0;
 	public static final int ARMOR_LEATHER   = ARMOR+1;
 	public static final int ARMOR_MAIL      = ARMOR+2;
@@ -586,6 +591,7 @@ public class ItemSpriteSheet {
     public static final int ARMOR_EXPLORER  = ARMOR+12;
 	public static final int ARMOR_WRAITH    = ARMOR+13;
 	public static final int ARMOR_ENGINEER  = ARMOR+14;
+	public static final int ARMOR_PILLAGER  = ARMOR+15;
 	static{
 		assignItemRect(ARMOR_CLOTH,     15, 12);
 		assignItemRect(ARMOR_LEATHER,   14, 13);
@@ -602,6 +608,7 @@ public class ItemSpriteSheet {
         assignItemRect(ARMOR_EXPLORER,  15, 14);
 		assignItemRect(ARMOR_WRAITH,    15, 16);
 		assignItemRect(ARMOR_ENGINEER,  14, 12);
+		assignItemRect(ARMOR_PILLAGER,  12, 12);
 	}
 
 	private static final int WANDS              = xy(1, 10);  //16 slots

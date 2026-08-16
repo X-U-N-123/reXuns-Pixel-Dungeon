@@ -25,6 +25,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
 public class PillagerArmor extends ClassArmor{
 	{
-		image = ItemSpriteSheet.ARMOR_HOLDER;
+		image = ItemSpriteSheet.ARMOR_PILLAGER;
 	}
 }
