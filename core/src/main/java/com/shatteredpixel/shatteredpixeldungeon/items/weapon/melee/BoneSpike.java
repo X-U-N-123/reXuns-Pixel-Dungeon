@@ -63,6 +63,7 @@ public class BoneSpike extends MeleeWeapon {
 
         unique = true;
         bones = false;
+        defaultAction = AC_PRICK;
     }
 
     @Override
@@ -76,11 +77,6 @@ public class BoneSpike extends MeleeWeapon {
         ArrayList<String> actions = super.actions( hero );
         if (hero.buff(PrickCooldown.class) == null) actions.add(AC_PRICK);
         return actions;
-    }
-
-    @Override
-    public String defaultAction() {
-        return Dungeon.hero.buff(PrickCooldown.class) == null ? AC_PRICK : super.defaultAction();
     }
 
     @Override
@@ -113,7 +109,7 @@ public class BoneSpike extends MeleeWeapon {
                 hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
             }
 
-            Buff.affect(hero, PrickCooldown.class, 14);
+            Buff.affect(hero, PrickCooldown.class, 19);
 
             hero.sprite.operate( hero.pos );
             Sample.INSTANCE.play(Assets.Sounds.CURSED);

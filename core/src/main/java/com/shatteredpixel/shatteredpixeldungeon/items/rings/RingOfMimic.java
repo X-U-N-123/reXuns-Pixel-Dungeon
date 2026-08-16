@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 
@@ -82,6 +81,7 @@ public class RingOfMimic extends Ring {
 	public void extend(int amount){
 		if (time > 0) time += amount;
 		else time = Math.min(time + amount, 0);
+		updateQuickslot();
 	}
 
 	@Override
@@ -135,6 +135,7 @@ public class RingOfMimic extends Ring {
 
 				time = -effectCooldown();
 				BuffIndicator.refreshHero();
+				updateQuickslot();
 
 				Ring Ring2 = ring2;
 				Ring Ring3 = ring3;
@@ -231,6 +232,14 @@ public class RingOfMimic extends Ring {
 		return new Mimic();
 	}
 
+	@Override
+	public String status() {
+		if (buff != null && time != 0){
+			return Integer.toString(Math.abs(time));
+		}
+		return super.status();
+	}
+
 	public class Mimic extends RingBuff{
 		@Override
 		public boolean act() {
@@ -239,7 +248,6 @@ public class RingOfMimic extends Ring {
 				if (RingOfMimic.this.time <= 0){
 					mimicRing.buff.detach();
 					mimicRing = null;
-					updateQuickslot();
 
 					RingOfMimic.this.time = START_TIME - effectCooldown();
 				}
@@ -248,41 +256,9 @@ public class RingOfMimic extends Ring {
 				if (RingOfMimic.this.time >= 0)
 					GLog.h(Messages.get(RingOfMimic.class, "ready"));
 			}
+			updateQuickslot();
 
 			return super.act();
-		}
-
-		@Override
-		public int icon() {
-			if (RingOfMimic.this.time == 0) return BuffIndicator.NONE;
-			return BuffIndicator.RING;
-		}
-
-		@Override
-		public void tintIcon(Image icon) {
-			if (time > 0) icon.hardlight(1f, 0.5f, 0);
-			else if (time < 0) icon.hardlight(0.7f, 0.7f, 0.7f);
-			else icon.resetColor();
-		}
-
-		@Override
-		public String name() {
-			if (time < 0) return Messages.get(RingOfMimic.class, "buff_name_cd");
-			return Messages.get(RingOfMimic.class, "buff_name");
-		}
-
-		@Override
-		public String desc() {
-			String desc = "";
-			if (time > 0) desc += Messages.get(RingOfMimic.class, "desc_effect", mimicRing.trueName()) + mimicRing.statsInfo();
-			else if (time < 0)	desc += Messages.get(RingOfMimic.class, "desc_cd");
-			else				desc += Messages.get(RingOfMimic.class, "desc_ready");
-			return desc + "\n\n" + Messages.get(RingOfMimic.class, "buff_time", Math.abs(RingOfMimic.this.time));
-		}
-
-		@Override
-		public String iconTextDisplay() {
-			return Integer.toString(Math.abs(RingOfMimic.this.time));
 		}
 
 		public void onLevelUp(){
