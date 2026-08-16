@@ -404,6 +404,7 @@ public class ItemSpriteSheet {
 	public static final int WAR_SCYTHE        = WEP_TIER5+7;
 	public static final int Ironbar           = WEP_TIER5+8;
 	public static final int Longassassinsblade= WEP_TIER5+9;
+	public static final int POISON_SCYTHE     = WEP_TIER5+10;
 	public static final int Longrunicblade    = WEP_TIER5+11;
 	public static final int Greatknife        = WEP_TIER5+12;
 	public static final int LONGINUS          = WEP_TIER5+13;
@@ -425,6 +426,7 @@ public class ItemSpriteSheet {
 		assignItemRect(Lightsword,        15, 15);
 		assignItemRect(DMdrill,           16, 16);
 		assignItemRect(LONGINUS,          16, 16);
+		assignItemRect(POISON_SCYTHE,     16, 16);
 	}
 
 	private static final int WEP_TIER6 = xy(17,  7);   //16 slots

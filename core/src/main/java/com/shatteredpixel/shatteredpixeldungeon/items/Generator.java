@@ -218,6 +218,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Miaoblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Nunchaku;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.PoisonScythe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Quarterstaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rake;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Rapier;
@@ -602,11 +603,12 @@ public class Generator {
 					Longrunicblade.class,
 					Greatknife.class,
 					Miaoblade.class,
+					PoisonScythe.class,
 					Lightsword.class,
 					DMdrill.class,
 					Longinus.class
 			};
-			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
+			WEP_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2};
 			WEP_T5.probs = WEP_T5.defaultProbs.clone();
 
 			WEP_T6.classes = new Class<?>[]{//16 Weapons
