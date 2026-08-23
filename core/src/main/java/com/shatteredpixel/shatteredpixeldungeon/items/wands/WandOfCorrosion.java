@@ -56,7 +56,7 @@ public class WandOfCorrosion extends Wand {
 
 	@Override
 	public void onZap(Ballistica bolt) {
-		CorrosiveGas gas = Blob.seed(bolt.collisionPos, 50 + 10 * buffedLvl(), CorrosiveGas.class);
+		CorrosiveGas gas = Blob.seed(bolt.collisionPos, (int)(50 * Math.pow(buffedLvl() + 1, 0.3)), CorrosiveGas.class);
 		CellEmitter.get(bolt.collisionPos).burst(Speck.factory(Speck.CORROSION), 10 );
 		int gasQuantity = 2 + buffedLvl();
 		gas.setStrength(gasQuantity, getClass());
@@ -133,6 +133,6 @@ public class WandOfCorrosion extends Wand {
 
 	@Override
 	public String upgradeStat2(int level) {
-		return Messages.decimalFormat("#.##x", 1+.2f*level);
+		return Messages.decimalFormat("#.##x", Math.pow(level + 1, 0.3));
 	}
 }

@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfEnergy;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.ChaoticCenser;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.SaltCube;
+import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.watabou.utils.Bundle;
@@ -91,7 +92,7 @@ public class Regeneration extends Buff {
 		if (lock != null && !lock.regenOn()){
 			return false;
 		}
-		if (Dungeon.level instanceof VaultLevel){
+		if (Dungeon.level instanceof VaultLevel || Dungeon.level instanceof LastLevel){
 			return false;
 		}
 		return true;

@@ -102,7 +102,7 @@ public class StatusPane extends Component {
 		else        bg = new NinePatch( asset, 0,  0, 82, 38, 32, 0, 8, 0 );
 		add( bg );
 
-		heroPaneCutout = new NinePatch(asset, 0, 0, 5, 36, 4, 0, 0, 0);
+		heroPaneCutout = new NinePatch(asset, 0, 0, 5, 37, 4, 0, 0, 0);
 		heroPaneCutout.visible = false;
 		add(heroPaneCutout);
 

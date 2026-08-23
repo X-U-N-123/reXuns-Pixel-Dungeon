@@ -53,25 +53,25 @@ public class TowerRoom extends SpecialRoom {
 			cx = right - 1;
 			Painter.set( level, new Point( right-1, top+1 ), Terrain.STATUE );
 			Painter.set( level, new Point( right-1, bottom-1 ), Terrain.STATUE );
-			Painter.set(level, door.y * level.width() + door.x + 1, Terrain.STATUE );
+			//Painter.set(level, door.y * level.width() + door.x + 1, Terrain.STATUE );
 
 		} else if (door.x == right) {
 			cx = left + 1;
 			Painter.set( level, new Point( left+1, top+1 ), Terrain.STATUE );
 			Painter.set( level, new Point( left+1, bottom-1 ), Terrain.STATUE );
-			Painter.set(level, door.y * level.width() + door.x - 1, Terrain.STATUE );
+			//Painter.set(level, door.y * level.width() + door.x - 1, Terrain.STATUE );
 
 		} else if (door.y == top) {
 			cy = bottom - 1;
 			Painter.set( level, new Point( left+1, bottom-1 ), Terrain.STATUE );
 			Painter.set( level, new Point( right-1, bottom-1 ), Terrain.STATUE );
-			Painter.set(level, (door.y + 1) * level.width() + door.x, Terrain.STATUE );
+			//Painter.set(level, (door.y + 1) * level.width() + door.x, Terrain.STATUE );
 
 		} else if (door.y == bottom) {
 			cy = top + 1;
 			Painter.set( level, new Point( left+1, top+1 ), Terrain.STATUE );
 			Painter.set( level, new Point( right-1, top+1 ), Terrain.STATUE );
-			Painter.set(level, (door.y - 1) * level.width() + door.x, Terrain.STATUE );
+			//Painter.set(level, (door.y - 1) * level.width() + door.x, Terrain.STATUE );
 
 		}
 		MissileTower tower = new MissileTower();
