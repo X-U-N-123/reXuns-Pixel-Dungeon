@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ArtifactRecharge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Barrier;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bless;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Blindness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
@@ -865,8 +866,8 @@ public enum Talent {
 			recharge.ignoreHolyTome = false;
 		}
 		if (hero.hasTalent(TESTED_SWIFTNESS)){
-			//effectively 2/3 turns of haste
-			Buff.affect(hero, Haste.class, 1.67f + hero.pointsInTalent(TESTED_SWIFTNESS));
+			//effectively 1/2 turns of haste
+			Buff.affect(hero, Haste.class, 0.67f + hero.pointsInTalent(TESTED_SWIFTNESS));
 		}
 		if (hero.hasTalent(TESTED_CHARGE)){
 			if (hero.heroClass == (HeroClass.DUELIST)){
@@ -879,26 +880,8 @@ public enum Talent {
 			}
 		}
 		if (hero.hasTalent(TESTED_HOLINESS)){
-			if (hero.heroClass == HeroClass.CLERIC) {
-				//0.4/0.6 point of tome charge
-				HolyTome tome = hero.belongings.getItem(HolyTome.class);
-				if (tome != null) {
-					tome.directCharge( 0.2f + 0.2f*(hero.pointsInTalent(TESTED_HOLINESS)));
-					ScrollOfRecharging.charge(hero);
-				}
-			} else {
-				//1/2 turns of recharging
-				ArtifactRecharge buff = Buff.affect( hero, ArtifactRecharge.class);
-				if (buff.left() < 1 + (hero.pointsInTalent(TESTED_HOLINESS))){
-					ArtifactRecharge recharge = Buff.affect(hero, ArtifactRecharge.class)
-					.set(hero.pointsInTalent(TESTED_HOLINESS));
-					recharge.ignoreHornOfPlenty = false;
-					recharge.ignoreHolyTome = false;
-				}
-				Buff.prolong( hero, Recharging.class, hero.pointsInTalent(ENLIGHTENING_MEAL));
-				ScrollOfRecharging.charge( hero );
-				SpellSprite.show(hero, SpellSprite.CHARGE);
-			}
+			//3/5 turns of bless
+			Buff.affect(hero, Bless.class, 1 + 2 * hero.pointsInTalent(Talent.TESTED_HOLINESS));
 		}
 		if (hero.hasTalent(TESTED_AWARENESS)){
 			Buff.affect(hero, MagicalSight.class, 1 + hero.pointsInTalent(TESTED_AWARENESS));
