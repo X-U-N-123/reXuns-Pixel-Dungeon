@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindofMisc;
+import com.shatteredpixel.shatteredpixeldungeon.items.Satchel;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
@@ -254,13 +255,15 @@ public class Belongings implements Iterable<Item> {
 	public<T extends Item> T getItem( Class<T> itemClass ) {
 
 		boolean lostInvent = lostInventory();
+		Satchel satchel = null;
 
 		for (Item item : this) {
-			if (itemClass.isInstance( item )) {
-				if (!lostInvent || item.keptThroughLostInventory()) {
-					return (T) item;
-				}
-			}
+			if (itemClass.isInstance( item ) && (!lostInvent || item.keptThroughLostInventory())) return (T) item;
+			if (item instanceof Satchel && (!lostInvent || item.keptThroughLostInventory())) satchel = (Satchel) item;
+		}
+		if (satchel != null) {
+			for (Item item : satchel.items())
+				if (itemClass.isInstance( item ) && (!lostInvent || item.keptThroughLostInventory())) return (T) item;
 		}
 		
 		return null;
@@ -270,13 +273,15 @@ public class Belongings implements Iterable<Item> {
 		ArrayList<T> result = new ArrayList<>();
 
 		boolean lostInvent = lostInventory();
+		Satchel satchel = null;
 
 		for (Item item : this) {
-			if (itemClass.isInstance( item )) {
-				if (!lostInvent || item.keptThroughLostInventory()) {
-					result.add((T) item);
-				}
-			}
+			if (itemClass.isInstance( item ) && (!lostInvent || item.keptThroughLostInventory())) result.add((T) item);
+			if (item instanceof Satchel && (!lostInvent || item.keptThroughLostInventory())) satchel = (Satchel) item;
+		}
+		if (satchel != null) {
+			for (Item item : satchel.items())
+				if (itemClass.isInstance( item ) && (!lostInvent || item.keptThroughLostInventory())) result.add((T) item);
 		}
 
 		return result;
@@ -285,14 +290,13 @@ public class Belongings implements Iterable<Item> {
 	public boolean contains( Item contains ){
 
 		boolean lostInvent = lostInventory();
+		Satchel satchel = null;
 		
 		for (Item item : this) {
-			if (contains == item) {
-				if (!lostInvent || item.keptThroughLostInventory()) {
-					return true;
-				}
-			}
+			if (contains == item && (!lostInvent || item.keptThroughLostInventory())) return true;
+			if (item instanceof Satchel && (!lostInvent || item.keptThroughLostInventory())) satchel = (Satchel) item;
 		}
+		if (satchel != null && satchel.items().contains(contains)) return true;
 		
 		return false;
 	}
@@ -300,13 +304,15 @@ public class Belongings implements Iterable<Item> {
 	public Item getSimilar( Item similar ){
 
 		boolean lostInvent = lostInventory();
+		Satchel satchel = null;
 		
 		for (Item item : this) {
-			if (similar != item && similar.isSimilar(item)) {
-				if (!lostInvent || item.keptThroughLostInventory()) {
-					return item;
-				}
-			}
+			if (similar != item && similar.isSimilar(item) && (!lostInvent || item.keptThroughLostInventory())) return item;
+			if (item instanceof Satchel && (!lostInvent || item.keptThroughLostInventory())) satchel = (Satchel) item;
+		}
+		if (satchel != null) {
+			for (Item item : satchel.items())
+				if (similar != item && similar.isSimilar(item) && (!lostInvent || item.keptThroughLostInventory())) return item;
 		}
 		
 		return null;
@@ -316,13 +322,15 @@ public class Belongings implements Iterable<Item> {
 		ArrayList<Item> result = new ArrayList<>();
 
 		boolean lostInvent = lostInventory();
+		Satchel satchel = null;
 		
 		for (Item item : this) {
-			if (item != similar && similar.isSimilar(item)) {
-				if (!lostInvent || item.keptThroughLostInventory()) {
-					result.add(item);
-				}
-			}
+			if (item != similar && similar.isSimilar(item) && (!lostInvent || item.keptThroughLostInventory())) result.add(item);
+			if (item instanceof Satchel && (!lostInvent || item.keptThroughLostInventory())) satchel = (Satchel) item;
+		}
+		if (satchel != null) {
+			for (Item item : satchel.items())
+				if (item != similar && similar.isSimilar(item) && (!lostInvent || item.keptThroughLostInventory())) result.add(item);
 		}
 		
 		return result;

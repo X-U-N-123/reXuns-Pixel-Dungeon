@@ -380,6 +380,7 @@ public class Item implements Bundlable {
 	
 	public final Item detachAll( Bag container ) {
 		Dungeon.quickslot.clearItem( this );
+		Satchel satchel = null;
 
 		for (Item item : container.items) {
 			if (item == this) {
@@ -399,8 +400,11 @@ public class Item implements Bundlable {
 				if (bag.contains( this )) {
 					return detachAll( bag );
 				}
+			} else if (item instanceof Satchel) {
+				satchel = (Satchel) item;
 			}
 		}
+		if (satchel != null) satchel.items().remove(this);
 
 		updateQuickslot();
 		return this;
