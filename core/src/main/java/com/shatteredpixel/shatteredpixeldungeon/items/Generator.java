@@ -1006,7 +1006,7 @@ public class Generator {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
-		int tierDec = Dungeon.isChallenged(Challenges.BLUNTED_BLADE) && Random.Int(3) == 0 ? 1 : 0;
+		int tierDec = Dungeon.isChallenged(Challenges.BLUNTED_BLADE) && Random.Int(2) == 0 ? 1 : 0;
 
 		MeleeWeapon w;
 		if (useDefaults){
@@ -1042,7 +1042,7 @@ public class Generator {
 		
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
-		int tierDec = Dungeon.isChallenged(Challenges.BLUNTED_BLADE) && Random.Int(3) == 0 ? 1 : 0;
+		int tierDec = Dungeon.isChallenged(Challenges.BLUNTED_BLADE) && Random.Int(2) == 0 ? 1 : 0;
 
 		MissileWeapon w;
 		if (useDefaults){

@@ -22,6 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -262,7 +263,7 @@ public class AscensionChallenge extends Buff {
 				Dungeon.hero.buff(Hunger.class).satisfy(Hunger.STARVING);
 				Buff.affect(Dungeon.hero, Healing.class).setHeal(Dungeon.hero.HT, 0, 20);
 			} else {
-				stacks += 2f;
+				stacks += Dungeon.isChallenged(Challenges.NO_RETURN) ? 6 : 2;
 
 				//doors locked by the hero and mine boulders are reset, to prevent blocking out enemies
 				for (int i = 0; i < Dungeon.level.length(); i++){

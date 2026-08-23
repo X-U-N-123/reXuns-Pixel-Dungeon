@@ -387,7 +387,8 @@ public class CloakOfShadows extends Artifact {
 		@Override
 		public boolean attachTo(Char target) {
 			if (super.attachTo(target)){
-				if (Dungeon.hero.subClass == HeroSubClass.NINJA) ActionIndicator.setAction(this);
+				if (target instanceof Hero && ((Hero) target).subClass == HeroSubClass.NINJA)
+					ActionIndicator.setAction(this);
 				return true;
 
 			} else return false;

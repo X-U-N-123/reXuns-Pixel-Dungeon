@@ -256,8 +256,8 @@ public enum Catalog {
 
 		WANDS.addItems(Generator.Category.WAND.classes);
 
-		RINGS.addItems(RingOfMimic.class);
 		RINGS.addItems(Generator.Category.RING.classes);
+		RINGS.addItems(RingOfMimic.class);
 
 		ARTIFACTS.addItems(Generator.Category.ARTIFACT.classes);
 

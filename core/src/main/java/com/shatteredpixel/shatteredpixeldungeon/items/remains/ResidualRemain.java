@@ -28,6 +28,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
 
@@ -55,8 +56,11 @@ public class ResidualRemain extends RemainsItem {
         Char c = Actor.findChar(cell);
         if (c != null && c.alignment != Char.Alignment.ALLY){
             Buff.affect(c, Terror.class, 8f);
+
             new Flare( 5, 32 ).color( 0xFF0000, true ).show( c.sprite, 2f );
             Sample.INSTANCE.play( Assets.Sounds.BADGE );
+
+            Catalog.countUse(ResidualRemain.class);
         } else super.onThrow(cell);
     }
 
