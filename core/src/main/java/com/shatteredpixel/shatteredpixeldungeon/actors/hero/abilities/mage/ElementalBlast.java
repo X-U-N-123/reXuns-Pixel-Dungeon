@@ -48,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -185,22 +184,13 @@ public class ElementalBlast extends ArmorAbility {
 
 		ConeAOE aoe = new ConeAOE(aim, aoeSize, 360, projectileProps);
 
-
-
-		if (wandCls == WandOfAvalanche.class) {
-			for (int cell : aoe.cells){
-				CellEmitter.get( cell - Dungeon.level.width() ).start(Speck.factory(Speck.ROCK), 0.07f, 5);
-			}
-			Sample.INSTANCE.play( Assets.Sounds.ROCKS);
-		} else {
-			for (Ballistica ray : aoe.outerRays){
+		for (Ballistica ray : aoe.outerRays){
 			((MagicMissile)hero.sprite.parent.recycle( MagicMissile.class )).reset(
 			effectTypes.get(wandCls),
 			hero.sprite,
 			ray.path.get(ray.dist),
 			null
 			);
-		}
 		}
 
 		final float effectMulti = 1f + 0.25f*hero.pointsInTalent(Talent.ELEMENTAL_POWER);

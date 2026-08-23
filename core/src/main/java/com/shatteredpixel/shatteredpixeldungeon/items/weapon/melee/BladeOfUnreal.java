@@ -98,7 +98,7 @@ public class BladeOfUnreal extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
-		hits = (int)(1.5f * augment.delayFactor(3 + buffedLvl()));
+		hits = Math.round(augment.delayFactor(3 + buffedLvl())) + 2;
 		beforeAbilityUsed(curUser, enemy);
 		AttackIndicator.target(enemy);
 
@@ -139,7 +139,7 @@ public class BladeOfUnreal extends MeleeWeapon {
 
 	@Override
 	public String abilityInfo() {
-		int dmgBoost = levelKnown ? (int)(1.5f * (3 + buffedLvl())) + 1 : 5;
+		int dmgBoost = levelKnown ? Math.round(augment.delayFactor(3 + buffedLvl())) + 2 : 5;
 		if (levelKnown){
 			return Messages.get(this, "ability_desc", (int)augment.delayFactor(dmgBoost));
 		} else {
@@ -148,7 +148,7 @@ public class BladeOfUnreal extends MeleeWeapon {
 	}
 
 	public String upgradeAbilityStat(int level){
-		return Integer.toString((int)(1.5f * augment.delayFactor(3 + level)) + 1);
+		return Integer.toString(Math.round(augment.delayFactor(3 + buffedLvl())) + 2);
 	}
 
 	@Override
