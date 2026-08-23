@@ -85,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
+import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.curses.Warp;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
@@ -1186,6 +1187,13 @@ public abstract class Mob extends Char {
             Dungeon.level.drop(new ThrowingStone(), pos).sprite.drop();
 			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 2);
         }
+
+		//metal part logic
+		if (hero.heroClass == HeroClass.ENGINEER && Regeneration.regenOn() && hasProp(this, Property.MECHANICAL)
+				&& (hero.buff(Talent.RejuvenatingStepsFurrow.class) == null || hero.buff(Talent.RejuvenatingStepsFurrow.class).count() < 200)){
+			Dungeon.level.drop(new MetalPart(), pos).sprite.drop();
+			Buff.count(hero, Talent.RejuvenatingStepsFurrow.class, 3);
+		}
 
 		//bottled dynamite logic
 		if (Random.Float() <= BottledDynamite.dropBombChance() && Regeneration.regenOn()

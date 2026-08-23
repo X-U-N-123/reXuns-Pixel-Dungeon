@@ -235,8 +235,8 @@ public class WndHeroInfo extends WndTabbed {
                     break;
 				case ENGINEER:
 					icons = new Image[]{ new ItemSprite(ItemSpriteSheet.TOOL),
-							new ItemSprite(ItemSpriteSheet.PULSE),
 							new ItemSprite(ItemSpriteSheet.PART),
+							new ItemSprite(ItemSpriteSheet.POUCH),
 							new ItemSprite(ItemSpriteSheet.SCROLL_ISAZ)};
 					break;
 				case PILLAGER:

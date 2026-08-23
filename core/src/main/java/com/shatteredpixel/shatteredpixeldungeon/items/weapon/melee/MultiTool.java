@@ -35,10 +35,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.engineer.ForceField;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Transmuting;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
@@ -48,12 +46,10 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.CustomTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndBag;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Point;
+import com.watabou.utils.PathFinder;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -128,28 +124,26 @@ public class MultiTool extends MeleeWeapon {
     public void execute(Hero hero, String action) {
         super.execute(hero, action);
         if (action.equals(AC_DISARM)){
-            if (Dungeon.level.map[hero.pos] == Terrain.INACTIVE_TRAP ||
-                    (Dungeon.level.map[hero.pos] == Terrain.PEDESTAL && hero.hasTalent(Talent.APART_ANYTHING))){
+            if ((Dungeon.level.map[hero.pos] == Terrain.INACTIVE_TRAP ||
+                    (Dungeon.level.map[hero.pos] == Terrain.PEDESTAL && hero.hasTalent(Talent.APART_ANYTHING))
+                    && Dungeon.depth != 15)){
 
-                //if a custom tilemap is over that cell, then no trap here (mostly in DM-300 level)
-                for (CustomTilemap cust : Dungeon.level.customTiles){
-                    Point custPoint = new Point(Dungeon.level.cellToPoint(hero.pos));
-                    custPoint.x -= cust.tileX;
-                    custPoint.y -= cust.tileY;
-                    if (custPoint.x >= 0 && custPoint.y >= 0
-                            && custPoint.x < cust.tileW && custPoint.y < cust.tileH){
-                        if (cust.image(custPoint.x, custPoint.y) != null){
-                            GLog.w(Messages.get(this, "no_trap"));
-                            return;
-                        }
-                    }
-                }
                 Level.set(hero.pos, Terrain.EMPTY);
                 Dungeon.level.traps.remove( hero.pos );
+                int quantity = 1;
+
+                for (int i : PathFinder.NEIGHBOURS4) {
+                    if (Dungeon.level.map[hero.pos + i] == Terrain.INACTIVE_TRAP){
+                        Level.set(hero.pos + i, Terrain.EMPTY);
+                        Dungeon.level.traps.remove( hero.pos + i );
+                        quantity ++;
+                    }
+                }
                 GameScene.updateMap( hero.pos );
 
+                if (hero.subClass != HeroSubClass.CRAFTSMAN) quantity = Math.min(quantity, 2);
                 MetalPart part = new MetalPart();
-                if (hero.subClass == HeroSubClass.CRAFTSMAN) part.quantity(part.quantity() + 1);
+                part.quantity(quantity);
 
                 if (!part.collect()) Dungeon.level.drop(part, hero.pos).sprite.drop();
 
