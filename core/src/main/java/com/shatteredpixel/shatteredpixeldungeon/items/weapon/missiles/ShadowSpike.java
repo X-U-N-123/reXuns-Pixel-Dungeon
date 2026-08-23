@@ -27,21 +27,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Kunai extends MissileWeapon {
+public class ShadowSpike extends MissileWeapon {
 	
 	{
-		image = ItemSpriteSheet.KUNAI;
+		image = ItemSpriteSheet.SHADOWSPIKE;
 		hitSound = Assets.Sounds.HIT_STAB;
-		hitSoundPitch = 1.1f;
+		hitSoundPitch = 0.9f;
 		
-		tier = 3;
-		baseUses = 8;
-	}
-
-	@Override
-	public int max(int lvl) {
-		return  4 * tier +                      //12 base, down from 15
-				tier*lvl;                       //scaling unchanged
+		tier = 6;
+		baseUses = 5;
 	}
 	
 	@Override
@@ -50,10 +44,10 @@ public class Kunai extends MissileWeapon {
 			Hero hero = (Hero)owner;
 			Char enemy = hero.attackTarget();
 			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
-				//deals 75% toward max to max on surprise, instead of min to max.
+				//deals 45% toward max to max on surprise, instead of min to max.
 				int diff = max() - min();
 				int damage = augment.damageFactor(Hero.heroDamageIntRange(
-						min() + Math.round(diff*0.75f),
+						min() + Math.round(diff*0.45f),
 						max()));
 				int exStr = hero.STR() - STRReq();
 				if (exStr > 0) {
@@ -64,5 +58,4 @@ public class Kunai extends MissileWeapon {
 		}
 		return super.damageRoll(owner);
 	}
-	
 }

@@ -480,7 +480,7 @@ public class ItemSpriteSheet {
 	public static final int THROWING_CLUB   = MISSILE_WEP+10;
 	public static final int LIGHTBOOMERANG  = MISSILE_WEP+11;
 	public static final int MUCUS           = MISSILE_WEP+12;
-	public static final int OOZE            = MISSILE_WEP+13;
+	public static final int POKER           = MISSILE_WEP+13;
 	public static final int THROWING_SPEAR  = MISSILE_WEP+14;
 	public static final int BOLAS           = MISSILE_WEP+15;
 	public static final int KUNAI           = MISSILE_WEP+16;
@@ -504,6 +504,7 @@ public class ItemSpriteSheet {
 	public static final int ANTIMATTER      = MISSILE_WEP+34;
 	public static final int HEAVYBOOMERANG  = MISSILE_WEP+35;
 	public static final int SCORPIOSPIKE    = MISSILE_WEP+36;
+	public static final int SHADOWSPIKE     = MISSILE_WEP+37;
 	static{
 		assignItemRect(SPIRIT_BOW,      16, 16);
 		
@@ -519,7 +520,7 @@ public class ItemSpriteSheet {
 		assignItemRect(THROWING_CLUB,   12, 12);
 		assignItemRect(LIGHTBOOMERANG,  13, 13);
 		assignItemRect(MUCUS,           12, 12);
-		assignItemRect(OOZE,            12, 12);
+		assignItemRect(POKER,           11, 14);
 		assignItemRect(THROWING_SPEAR,  13, 13);
 		assignItemRect(BOLAS,           15, 14);
 		assignItemRect(KUNAI,           15, 15);
@@ -542,7 +543,8 @@ public class ItemSpriteSheet {
 		assignItemRect(IRONBALL,        12, 12);
 		assignItemRect(ANTIMATTER,      12, 11);
 		assignItemRect(HEAVYBOOMERANG,  15, 15);
-		assignItemRect(SCORPIOSPIKE,    16, 16);
+		assignItemRect(SCORPIOSPIKE,    15, 15);
+		assignItemRect(SHADOWSPIKE,     16, 16);
 	}
 
 	public static final int OTHER_WEP = xy(9, 9); //4 slots
