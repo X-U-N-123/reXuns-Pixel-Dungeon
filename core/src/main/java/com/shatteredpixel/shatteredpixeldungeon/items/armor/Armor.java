@@ -251,9 +251,8 @@ public class Armor extends EquipableItem {
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
 		if (seal != null) actions.add(AC_DETACH);
-		else if (hero.hasTalent(Talent.APART_ANYTHING) && hero.heroClass != HeroClass.ENGINEER
-				&& !(this instanceof ClassArmor)
-				&& !isEquipped(hero) && cursedKnown && !cursed && !hasCurseGlyph())
+		else if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2
+				&& !(this instanceof ClassArmor) && !isEquipped(hero) && cursedKnown && !cursed)
 			actions.add(AC_SMELT);
 		return actions;
 	}
@@ -272,14 +271,21 @@ public class Armor extends EquipableItem {
 			}
 			updateQuickslot();
 		}
-		if (action.equals(AC_SMELT)){
-			LiquidMetal metal = new LiquidMetal();
-			int quantity = (int)Math.pow(2, level()) * (tier + 1) * 3;
-			if (glyph != null) quantity = Math.round(quantity * 1.5f);
-			if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2) quantity = Math.round(quantity * 1.67f);
+		if (action.equals(AC_SMELT) && hero.pointsInTalent(Talent.APART_ANYTHING) >= 2
+				&& !isEquipped(hero) && cursedKnown && !cursed){
+			if (hero.heroClass == HeroClass.ENGINEER) {
+				MetalPart metal = new MetalPart();
+				metal.quantity(level() + 1);
+				if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
 
-			metal.quantity(quantity);
-			if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
+			} else {
+				LiquidMetal metal = new LiquidMetal();
+				int quantity = (int) Math.pow(2, level()) * (tier + 1) * 3;
+				if (glyph != null) quantity = Math.round(quantity * 1.5f);
+
+				metal.quantity(quantity);
+				if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
+			}
 
 			detach(hero.belongings.backpack);
 			hero.sprite.operate(hero.pos);

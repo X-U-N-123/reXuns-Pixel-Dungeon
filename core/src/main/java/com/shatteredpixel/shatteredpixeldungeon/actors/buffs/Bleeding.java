@@ -122,7 +122,7 @@ public class Bleeding extends Buff {
 	@Override
 	public boolean act() {
 		if (target.isAlive() && !target.isImmune(Bleeding.class)) {
-			float min = 1 / 2f + Dungeon.hero.pointsInTalent(Talent.ANTITHROMBIN) / 12f;
+			float min = (1 / 2f) + Dungeon.hero.pointsInTalent(Talent.ANTITHROMBIN) / 12f;
 			if (Dungeon.hero.subClass == HeroSubClass.POACHER && target.alignment == Char.Alignment.ALLY){
 				min = 0;
 			}

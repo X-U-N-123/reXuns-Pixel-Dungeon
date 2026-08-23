@@ -35,6 +35,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Degrade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -46,6 +47,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.TippedDart;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
@@ -195,6 +198,19 @@ public class Item implements Bundlable {
 	
 	protected void onThrow( int cell ) {
 		Heap heap = Dungeon.level.drop( this, cell );
+
+		if (Dungeon.level.map[cell] == Terrain.PEDESTAL && hero.hasTalent(Talent.APART_ANYTHING) && hero.heroClass != HeroClass.ENGINEER){
+			Level.set(cell, Terrain.EMPTY);
+			GameScene.updateMap(cell);
+
+			LiquidMetal metal = new LiquidMetal();
+			metal.quantity(5 + Dungeon.depth / 5);
+			Dungeon.level.drop( metal, cell );
+			if (!heap.isEmpty()) {
+				heap.sprite.drop( cell );
+			}
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
+		}
 		if (!heap.isEmpty()) {
 			heap.sprite.drop( cell );
 		}

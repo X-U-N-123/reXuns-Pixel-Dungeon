@@ -61,7 +61,6 @@ import java.util.ArrayList;
 public class MultiTool extends MeleeWeapon {
 
     public static final String AC_DISARM = "disarm";
-    public static final String AC_SMELTT =  "smeltt";
 
     public Armor.Modification armorModify = null;
     private int armorModDura = 0;
@@ -117,7 +116,6 @@ public class MultiTool extends MeleeWeapon {
     public ArrayList<String> actions(Hero hero) {
         ArrayList<String> actions = super.actions( hero );
         actions.add(AC_DISARM);
-        if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2) actions.add(AC_SMELTT);
         return actions;
     }
 
@@ -163,34 +161,6 @@ public class MultiTool extends MeleeWeapon {
                     Buff.affect(hero, PhysicalEmpower.class).set(1 + hero.pointsInTalent(Talent.GENERAL_DISARM), 3);
 
             } else GLog.w(Messages.get(this, "no_trap"));
-        }
-        if (action.equals(AC_SMELTT)){
-            GameScene.selectItem(new WndBag.ItemSelector() {
-
-                @Override
-                public String textPrompt() {
-                    return Messages.get(this, "tosmelt");
-                }
-
-                @Override
-                public boolean itemSelectable(Item item) {
-                    return (item instanceof MeleeWeapon || (item instanceof Armor))
-                            && !item.unique && !item.cursed && item.cursedKnown && !(item instanceof ClassArmor)
-                            && !item.isEquipped(hero);
-                }
-
-                @Override
-                public void onSelect( Item item ) {
-                    if (item == null) return;
-
-                    item.detach(hero.belongings.backpack);
-                    hero.sprite.operate(hero.pos);
-                    MetalPart part = new MetalPart();
-                    part.quantity(item.level() + 1);
-                    if (!part.collect()) Dungeon.level.drop(part, hero.pos).sprite.drop();
-                    Sample.INSTANCE.play(Assets.Sounds.EVOKE);
-                }
-            });
         }
     }
 

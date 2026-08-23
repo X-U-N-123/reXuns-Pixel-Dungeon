@@ -47,6 +47,7 @@ public class Statistics {
 	public static boolean deviceGot;
 	public static int wellWaterDug;
 	public static int intuitionIdentify;
+	public static int counterfeit;
 
 	//tracks every item type 'seen' this run (i.e. would be added to catalogs)
 	//tracks every item type copied by Replication
@@ -107,6 +108,7 @@ public class Statistics {
 		conRechargeUsed = 0;
 		conEnergyUsed   = 0;
 		intuitionIdentify = 0;
+		counterfeit = 0;
 
 		itemTypesDiscovered.clear();
 		itemTypesCopied.clear();
@@ -160,6 +162,7 @@ public class Statistics {
 	private static final String DEVICEGOT   = "deviceGot";
 	private static final String WELLDUG     = "wellWaterDug";
 	private static final String INTUITON    = "intuition";
+	private static final String COUNTERFEIT = "counterfeit";
 
 	private static final String PROG_SCORE	    = "prog_score";
 	private static final String ITEM_VAL	    = "item_val";
@@ -213,6 +216,7 @@ public class Statistics {
 		bundle.put( DEVICEGOT, deviceGot);
 		bundle.put( WELLDUG, wellWaterDug);
 		bundle.put( INTUITON, intuitionIdentify);
+		bundle.put( COUNTERFEIT, counterfeit);
 
 		bundle.put( ITEM_TYPES_DISCOVERED, itemTypesDiscovered.toArray(new Class<?>[0]) );
 		bundle.put( ITEM_TYPES_COPIED, itemTypesCopied.toArray(new Class<?>[0]) );
@@ -271,6 +275,7 @@ public class Statistics {
 		deviceGot   = bundle.getBoolean( DEVICEGOT );
 		wellWaterDug    = bundle.getInt(WELLDUG);
 		intuitionIdentify = bundle.getInt(INTUITON);
+		counterfeit = bundle.getInt(COUNTERFEIT);
 
 		if (bundle.contains( ITEM_TYPES_DISCOVERED )) {
 			itemTypesDiscovered = new HashSet<>(Arrays.asList(bundle.getClassArray(ITEM_TYPES_DISCOVERED)));

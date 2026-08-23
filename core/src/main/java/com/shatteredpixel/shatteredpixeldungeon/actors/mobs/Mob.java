@@ -1063,9 +1063,10 @@ public abstract class Mob extends Char {
 
 		if (buff(Bleeding.class) != null && hero.hasTalent(Talent.GLORIOUS_BAG)){
 			int shield = Math.round(buff(Bleeding.class).level() * hero.pointsInTalent(Talent.GLORIOUS_BAG) / 2);
-			if (shield > 0){
+			shield = Math.min(shield, hero.HT / 2 - hero.shielding());
+			if (shield >= 0){
 				Buff.affect(hero, Barrier.class).incShield(shield);
-				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
+				if (shield > 0) hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shield), FloatingText.SHIELDING);
 			}
 		}
 

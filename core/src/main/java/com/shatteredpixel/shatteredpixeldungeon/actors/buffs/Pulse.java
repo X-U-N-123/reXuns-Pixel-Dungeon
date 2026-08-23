@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.PulseEffect;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
-import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfSirensSong;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
@@ -216,35 +215,33 @@ public class Pulse extends Buff implements ActionIndicator.Action {
                     float random = Random.Float();
                     if (((Hero)target).hasTalent(Talent.CHARISMA)) random /= 1.6f;
 
-                    if (random < 0.15f && ((Hero)target).subClass == HeroSubClass.HACKER
-                            && Char.hasProp(ch, Char.Property.INORGANIC)){
-                        for (Buff buff : ch.buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
-                        AllyBuff.affectAndLoot((Mob)ch, (Hero)target, ScrollOfSirensSong.Enthralled.class);
-
-                    } else if (random < ((Hero)target).pointsInTalent(Talent.DARK_MAGIC) / 15f
-                            && (Char.hasProp(ch, Char.Property.UNDEAD) || Char.hasProp(ch, Char.Property.DEMONIC))) {
+                    if ((random < 0.15f && ((Hero)target).subClass == HeroSubClass.HACKER
+                            && Char.hasProp(ch, Char.Property.INORGANIC))
+                            || (random < ((Hero)target).pointsInTalent(Talent.DARK_MAGIC) / 15f
+                            && (Char.hasProp(ch, Char.Property.UNDEAD) || Char.hasProp(ch, Char.Property.DEMONIC)))){
                         for (Buff buff : ch.buffs()) if (buff.type == Buff.buffType.NEGATIVE) buff.detach();
                         AllyBuff.affectAndLoot((Mob)ch, (Hero)target, ScrollOfSirensSong.Enthralled.class);
 
                     } else {
                         ch.damage(Math.round(damage), Pulse.this);
 
-                        if (((Hero) target).hasTalent(Talent.IONIZING_RADIATION)) {
-                            Viscosity.DeferedDamage deferred = Buff.affect(ch, Viscosity.DeferedDamage.class);
-                            deferred.extend(damage * ((Hero) target).pointsInTalent(Talent.IONIZING_RADIATION) / 2f);
-                        }
+                        if (ch.isAlive()){
+                            if (((Hero) target).hasTalent(Talent.IONIZING_RADIATION)) {
+                                Viscosity.DeferedDamage deferred = Buff.affect(ch, Viscosity.DeferedDamage.class);
+                                deferred.extend(damage * ((Hero) target).pointsInTalent(Talent.IONIZING_RADIATION) / 2f);
+                            }
 
-                        if (((Hero) target).subClass == HeroSubClass.HACKER)Buff.prolong(ch, Hex.class, debuffTurn());
-					    if (Char.hasProp(ch, Char.Property.MECHANICAL))     Buff.prolong(ch, Amok.class, debuffTurn());
-					    else if (Char.hasProp(ch, Char.Property.INORGANIC)) Buff.prolong(ch, Vertigo.class, debuffTurn());
-					    else                                                Buff.prolong(ch, Paralysis.class, debuffTurn());
+                            if (((Hero) target).subClass == HeroSubClass.HACKER)Buff.prolong(ch, Hex.class, debuffTurn());
+                            if (Char.hasProp(ch, Char.Property.MECHANICAL))     Buff.prolong(ch, Amok.class, debuffTurn());
+                            else if (Char.hasProp(ch, Char.Property.INORGANIC)) Buff.prolong(ch, Vertigo.class, debuffTurn());
+                            else                                                Buff.prolong(ch, Paralysis.class, debuffTurn());
+
+                        } else if (((Hero) target).hasTalent(Talent.RESONANT_SENSING)){
+                            Buff.prolong(target, Recharging.class, 1 + 2 * ((Hero) target).pointsInTalent(Talent.RESONANT_SENSING));
+                        }
                     }
                     if (((Hero)target).hasTalent(Talent.BACKFIRE))
                         CD = Math.max(CD - (1 + 2 * ((Hero)target).pointsInTalent(Talent.BACKFIRE)), 0);
-
-                    if (((Hero) target).hasTalent(Talent.RESONANT_SENSING))
-                        Buff.append(target, TalismanOfForesight.CharAwareness.class,
-                            6 + 6 * ((Hero) target).pointsInTalent(Talent.RESONANT_SENSING)).charID = ch.id();
 				}
                 if (Actor.findChar(bolt.collisionPos) == null){
 					Dungeon.level.pressCell(bolt.collisionPos);

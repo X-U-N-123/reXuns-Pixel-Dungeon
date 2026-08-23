@@ -339,9 +339,6 @@ public abstract class Wand extends Item {
 				Buff.prolong(target, Blindness.class, 4f);
 			}
 		}
-		if (Random.Int(3) < Dungeon.hero.pointsInTalent(Talent.RESONANT_SENSING)
-				&& Dungeon.hero.heroClass != HeroClass.ENGINEER)
-			Buff.prolong(Dungeon.hero, MindVision.class, 1f);
 
 		if (Dungeon.hero.hasTalent(Talent.IONIZING_RADIATION) && Dungeon.hero.heroClass != HeroClass.ENGINEER) {
 			Viscosity.DeferedDamage deferred = Buff.affect(target, Viscosity.DeferedDamage.class);
@@ -648,6 +645,9 @@ public abstract class Wand extends Item {
 				Dungeon.hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(shieldToGive), FloatingText.SHIELDING);
 			}
 		}
+		if (Random.Int(2) < Dungeon.hero.pointsInTalent(Talent.RESONANT_SENSING)
+				&& Dungeon.hero.heroClass != HeroClass.ENGINEER)
+			Buff.prolong(Dungeon.hero, MindVision.class, 1f);
 
 		if (Dungeon.isChallenged(Challenges.MANA_EXHAUSTION))
 			for (int i = 0; i < (cursed ? 1 : chargesPerCast()); i++) Exhaustion.stack(curUser);

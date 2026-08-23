@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.items;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -60,7 +61,7 @@ public class ArcaneResin extends Item {
 	public ArrayList<String> actions(Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
 		actions.add( AC_APPLY );
-		if (Dungeon.hero.pointsInTalent(Talent.COUNTERFEIT) >= 2) actions.add(AC_CRAFT);
+		if (Dungeon.hero.pointsInTalent(Talent.COUNTERFEIT) * 2 > Statistics.counterfeit) actions.add(AC_CRAFT);
 		return actions;
 	}
 
@@ -74,7 +75,7 @@ public class ArcaneResin extends Item {
 			curUser = hero;
 			GameScene.selectItem( itemSelector );
 
-		} else if (action.equals(AC_CRAFT)){
+		} else if (action.equals(AC_CRAFT) && Dungeon.hero.pointsInTalent(Talent.COUNTERFEIT) * 2 > Statistics.counterfeit){
 
 			int resinToUse = 2;
 			if (hero.heroClass != HeroClass.MAGE) resinToUse += hero.pointsInTalent(Talent.WAND_PRESERVATION);
@@ -96,6 +97,8 @@ public class ArcaneResin extends Item {
 				hero.sprite.emitter().burst( Speck.factory( Speck.EVOKE ), 5 );
 				GLog.p(Messages.get(this, "crafted", crafted.name()));
 				hero.spendAndNext(Actor.TICK);
+
+				Statistics.counterfeit ++;
 
 			} else GLog.w(Messages.get(this, "not_enough"));
 		}
