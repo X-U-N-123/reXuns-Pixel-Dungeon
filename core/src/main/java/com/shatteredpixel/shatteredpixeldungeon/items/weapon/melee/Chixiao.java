@@ -25,46 +25,140 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class Chixiao extends MeleeWeapon {
 
-	private boolean slow = false;
-	private static final float fastDly = 0.5f;
-	private static final float slowDly = 1.5f;
+	private Type type = Type.SWORD;
+
+	public void changeType(Type type){
+		this.type = type;
+		ACC = 1;
+		RCH = 1;
+		DLY = 1;
+		switch (type){
+			case AXE: ACC = 1.3f; break;
+			case SCYTHE: ACC = 0.64f; break;
+
+			case WHIP: RCH = 3; break;
+			case SPEAR: RCH = 2;
+
+			DLY = 1.5f; break;
+			case SCIMITAR: DLY = 0.8f; break;
+			case SAI: DLY = 0.5f; break;
+		}
+	}
 
 	{
 		image = ItemSpriteSheet.CHIXIAO;
-		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSound = Assets.Sounds.HIT;
 		hitSoundPitch = 0.9f;
-		DLY = 1.75f;
 
 		tier = 6;
 	}
 
 	@Override
-	public int damageRoll( Char owner ) {
-		return Math.round(super.damageRoll( owner ) * (slow ? 1.75f : 0.25f));
+	public int min(int lvl) {
+		int min = super.min(lvl);
+		if (type == Type.SWORD) min += tier + 1;
+		return min;
+	}
+
+	@Override
+	public int max(int lvl) {
+		int max = super.max(lvl);
+		switch (type){
+			case SCIMITAR:
+			case DAGGER:
+			case SWORD:
+			case AXE: max -= tier + 1; break;
+			case SPEAR: max = Math.round(max * 1.5f) - tier; break;
+			case KNIFE:
+			case SAI: max = Math.round(max * 0.5f); break;
+			case WHIP: max -= tier * 2 - 1; break;
+			case RUNIC: max += lvl - tier - 1; break;
+			case STAFF: max -= Math.round(tier * 1.5f); break;
+			case SHIELD: max -= Math.round((tier + 1) * 0.4f) * lvl + 2 * (tier + 1); break;
+			case SCYTHE: max = Math.round(max * 1.33f); break;
+			default: break;
+		}
+		return max;
 	}
 
 	@Override
 	public int proc(Char attacker, Char defender, int damage) {
-		DLY = slow ? slowDly : fastDly;
-		slow = !slow;
+		if (defender.buff(Knife.Cutabilitytracker.class) == null && type == Type.KNIFE)
+			Buff.affect(defender, Bleeding.class).set( augment.damageFactor((min() + 1) * Random.NormalFloat(1, 1.5f)), attacker.getClass());
+
+		Buff.affect(attacker, Transformer.class).wep = this;
 		return super.proc( attacker, defender, damage );
 	}
 
+	@Override
+	public float accuracyFactor(Char owner, Char target) {
+		switch (type){
+			case AXE: return super.accuracyFactor(owner, target) * 1.3f;
+			case SCYTHE: return super.accuracyFactor(owner, target) * 0.64f;
+			default: return super.accuracyFactor(owner, target);
+		}
+	}
+
+	@Override
+	public int defenseFactor(Char owner) {
+		switch (type){
+			case STAFF: return tier;
+			case SHIELD: return tier + 1 + Math.round((tier + 1) * 0.4f) * buffedLvl();
+			default: return super.defenseFactor(owner);
+		}
+	}
+
+	@Override
+	public int damageRoll(Char owner) {
+		if (type == Type.DAGGER && owner instanceof Hero) {
+			Hero hero = (Hero)owner;
+			Char enemy = hero.attackTarget();
+			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)) {
+				//deals 45% toward max to max on surprise, instead of min to max.
+				int diff = max() - min();
+				int damage = augment.damageFactor(Hero.heroDamageIntRange(
+						min() + Math.round(diff*0.45f),
+						max()));
+				int exStr = hero.STR() - STRReq();
+				if (exStr > 0) {
+					damage += Hero.heroDamageIntRange(0, exStr);
+				}
+				return damage;
+			}
+		}
+		return super.damageRoll(owner);
+	}
+
+	@Override
 	public String statsInfo(){
-		String stats = Messages.get(this, "stats_desc");
-		if (slow) stats += Messages.get(this, "stats_slow");
-		else      stats += Messages.get(this, "stats_fast");
+		String stats = Messages.get(this, "stats_desc") + "\n";
+		switch (type){
+			case STAFF: stats += Messages.get(this, "stats_staff", tier);
+				break;
+			case SHIELD: stats += Messages.get(this, "stats_shield", tier + 1 + Math.round((tier + 1) * 0.4f) * buffedLvl());
+				break;
+			case KNIFE: stats += Messages.get(this, "stats_knife", tier,
+					Math.round(augment.damageFactor(min() + 1)),
+					Math.round(augment.damageFactor((min() + 1) * 1.5f)));
+				break;
+			default: stats += Messages.get(this, "stats_" + type.name());
+				break;
+		}
 		return stats;
 	}
 
@@ -114,23 +208,44 @@ public class Chixiao extends MeleeWeapon {
 		});
 	}
 
-	@Override
-	public void hitSound( float pitch ){
-		Sample.INSTANCE.play(hitSound, 1, pitch * hitSoundPitch * (slow ? 1.1f : 0.9f));
-	}
-
-	private static final String SLOW = "is_slow";
+	private static final String TYPE = "type";
 
 	@Override
 	public void storeInBundle( Bundle bundle ) {
 		super.storeInBundle( bundle );
-		bundle.put(SLOW, slow);
+		bundle.put(TYPE, type);
 	}
 
 	@Override
 	public void restoreFromBundle( Bundle bundle ) {
 		super.restoreFromBundle( bundle );
-		slow = bundle.getBoolean(SLOW);
-		DLY = slow ? fastDly : slowDly;
+		changeType(bundle.getEnum(TYPE, Type.class));
+	}
+
+	public static class Transformer extends Buff {
+
+		{
+			actPriority = HERO_PRIO - 1;
+		}
+		public Chixiao wep = null;
+
+		@Override
+		public boolean act() {
+			Type type;
+			do {
+				type = (Random.oneOf(Type.values()));
+			} while (type == Type.OTHER || type == Type.FLAIL || type == Type.XBOW);
+			wep.changeType(type);
+			detach();
+			return true;
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (super.attachTo(target)){
+				actPriority = target.actPriority() - 1;
+				return true;
+			} else return false;
+		}
 	}
 }

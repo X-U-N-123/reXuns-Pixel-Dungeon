@@ -39,6 +39,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.HolyWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
+import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -61,7 +63,12 @@ import java.util.ArrayList;
 
 public class MeleeWeapon extends Weapon {
 
+	public enum Type{
+		SWORD, AXE, SPEAR, SCIMITAR, SHIELD, SAI, WHIP, SCYTHE, STAFF, DAGGER, FLAIL, RUNIC, KNIFE, XBOW, OTHER
+	}
+
 	public static String AC_ABILITY = "ABILITY";
+	private static final String AC_SMELT = "smelt";
 
 	@Override
 	public void activate(Char ch) {
@@ -84,9 +91,13 @@ public class MeleeWeapon extends Weapon {
 	@Override
 	public ArrayList<String> actions(Hero hero) {
 		ArrayList<String> actions = super.actions(hero);
-		if (isEquipped(hero) && hero.heroClass == HeroClass.DUELIST){
+		if (isEquipped(hero) && hero.heroClass == HeroClass.DUELIST)
 			actions.add(AC_ABILITY);
-		}
+
+		if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2
+				&& !this.unique && !isEquipped(hero) && cursedKnown && !cursed)
+			actions.add(AC_SMELT);
+
 		return actions;
 	}
 
@@ -145,6 +156,26 @@ public class MeleeWeapon extends Weapon {
 					});
 				}
 			}
+		}
+		if (action.equals(AC_SMELT) && hero.pointsInTalent(Talent.APART_ANYTHING) >= 2
+				&& !isEquipped(hero) && cursedKnown && !cursed){
+			if (hero.heroClass == HeroClass.ENGINEER) {
+				MetalPart metal = new MetalPart();
+				metal.quantity(level() + 1);
+				if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
+
+			} else {
+				LiquidMetal metal = new LiquidMetal();
+				int quantity = (int) Math.pow(2, level()) * (tier + 1) * 3;
+				if (enchantment != null) quantity = Math.round(quantity * 1.5f);
+
+				metal.quantity(quantity);
+				if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
+			}
+
+			detach(hero.belongings.backpack);
+			hero.sprite.operate(hero.pos);
+			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 		}
 	}
 

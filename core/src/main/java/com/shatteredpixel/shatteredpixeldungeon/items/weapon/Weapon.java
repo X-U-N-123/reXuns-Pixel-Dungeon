@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon;
 
-import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
@@ -31,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Berserk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Combo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.AscendedForm;
@@ -43,8 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Smite;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.LiquidMetal;
-import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.Bag;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfArcana;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
@@ -88,7 +84,6 @@ import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
-import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundlable;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
@@ -304,40 +299,6 @@ abstract public class Weapon extends KindOfWeapon {
 			return true;
 		} else {
 			return false;
-		}
-	}
-
-	@Override
-	public ArrayList<String> actions(Hero hero) {
-		ArrayList<String> actions = super.actions(hero);
-		if (hero.pointsInTalent(Talent.APART_ANYTHING) >= 2
-				&& !this.unique && !isEquipped(hero) && cursedKnown && !cursed)
-			actions.add(AC_SMELT);
-		return actions;
-	}
-
-	@Override
-	public void execute(Hero hero, String action) {
-		super.execute(hero, action);
-		if (action.equals(AC_SMELT) && hero.pointsInTalent(Talent.APART_ANYTHING) >= 2
-				&& !isEquipped(hero) && cursedKnown && !cursed){
-			if (hero.heroClass == HeroClass.ENGINEER) {
-				MetalPart metal = new MetalPart();
-				metal.quantity(level() + 1);
-				if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
-
-			} else {
-				LiquidMetal metal = new LiquidMetal();
-				int quantity = (int) Math.pow(2, level()) * (tier + 1) * 3;
-				if (enchantment != null) quantity = Math.round(quantity * 1.5f);
-
-				metal.quantity(quantity);
-				if (!metal.collect()) Dungeon.level.drop(metal, hero.pos).sprite.drop();
-			}
-
-			detach(hero.belongings.backpack);
-			hero.sprite.operate(hero.pos);
-			Sample.INSTANCE.play(Assets.Sounds.EVOKE);
 		}
 	}
 

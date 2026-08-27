@@ -280,6 +280,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Scorpiospi
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ShadowSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Shuriken;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.SmokeBombWep;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.SpinnerTooth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingClub;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingHammer;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKnife;
@@ -689,9 +690,10 @@ public class Generator {
 					Kunai.class,
 					Bolas.class,
 					CoinDart.class,
-					SmokeBombWep.class
+					SmokeBombWep.class,
+					SpinnerTooth.class
 			};
-			MIS_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2 };
+			MIS_T3.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2 };
 			MIS_T3.probs = MIS_T3.defaultProbs.clone();
 			
 			MIS_T4.classes = new Class<?>[]{
