@@ -246,7 +246,6 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
                 }
             });
         } else {
-            GLog.h(Messages.get(this, "will_release") + potion.trueName());
             GameScene.selectCell(cellSelector);
         }
 
@@ -493,7 +492,7 @@ public class ElementalMask extends Artifact {//will replace Ring of Elements
 
         @Override
         public String prompt() {
-            return Messages.get(SandalsOfNature.class, "prompt_target");
+            return Messages.get(ElementalMask.class, "to_release", fpotion.trueName());
         }
     };
 

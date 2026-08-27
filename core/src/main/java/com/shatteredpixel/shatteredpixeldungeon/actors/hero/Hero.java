@@ -140,6 +140,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HornOfPlenty;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UDisk;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.WornKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.MagicalHolster;
 import com.shatteredpixel.shatteredpixeldungeon.items.food.Food;
@@ -1832,9 +1833,9 @@ public class Hero extends Char {
 					protected boolean act() {
 						if (enemy.isAlive()) {
 							if (hasTalent(Talent.SHARED_UPGRADES)){
-								int level = Math.min( 4*pointsInTalent(Talent.SHARED_UPGRADES), wep.buffedLvl() );
 								// bonus dmg is 2.5% x talent lvl x weapon level (4/8/12 max) x weapon tier
-								float bonusDmg = level * ((MissileWeapon) wep).tier * pointsInTalent(Talent.SHARED_UPGRADES) * 0.025f;
+								float bonusDmg = Math.min( 4*pointsInTalent(Talent.SHARED_UPGRADES), wep.buffedLvl() )
+									* ((MissileWeapon) wep).tier * pointsInTalent(Talent.SHARED_UPGRADES) * 0.025f;
 								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION + wep.buffedLvl()).set(enemy.id(), bonusDmg);
 							} else {
 								Buff.prolong(Hero.this, SnipersMark.class, SnipersMark.DURATION).set(enemy.id(), 0);
