@@ -66,7 +66,7 @@ import java.util.Locale;
 public class WndRanking extends WndTabbed {
 	
 	private static final int WIDTH			= 120;
-	private static final int HEIGHT			= 144;
+	private static final int HEIGHT			= 151;
 	
 	private static WndRanking INSTANCE;
 	
@@ -396,7 +396,7 @@ public class WndRanking extends WndTabbed {
 				if (item != null){
 					QuickSlotButton slot = new QuickSlotButton(item);
 
-					slot.setRect( pos, 120, slotWidth, 23 );
+					slot.setRect( pos, 127, slotWidth, 23 );
 					PixelScene.align(slot);
 
 					add(slot);
@@ -446,14 +446,14 @@ public class WndRanking extends WndTabbed {
 				final String challenge = Challenges.NAME_IDS[i];
 
 				Image icon = Icons.getChalIcon(i);
-				icon.x = (i % 2) * 61 + 1;
-				icon.y = (i / 2) * 18 + 1;
+				icon.x = (i % 2) * 61 + 2;
+				icon.y = (i / 2) * 19 + 1;
 
 				CheckBox cb = new CheckBox("");
 				cb.checked( (Dungeon.challenges & Challenges.MASKS[i]) != 0 );
 				cb.active = false;
 
-				cb.setRect( icon.x, icon.y, 57, 16 );
+				cb.setRect( icon.x - 1, icon.y - 1, 40, 18 );
 
 				add( cb );
 				add( icon );
@@ -475,7 +475,7 @@ public class WndRanking extends WndTabbed {
 						return Messages.titleCase(Messages.get(Challenges.class, challenge));
 					}
 				};
-				info.setRect(icon.x + 16, icon.y, 22, 16);
+				info.setRect(cb.right(), cb.top(), 18, 18);
 				add(info);
 			}
 		}
@@ -484,7 +484,7 @@ public class WndRanking extends WndTabbed {
 
 	private static class ItemButton extends Button {
 		
-		public static final int HEIGHT	= 23;
+		public static final int HEIGHT	= 24;
 		
 		private Item item;
 		

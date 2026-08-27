@@ -37,9 +37,9 @@ import java.util.ArrayList;
 
 public class WndChallenges extends Window {
 
-	private static final int WIDTH        = 100;
+	private static final int WIDTH        = 103;
 	private static final int TTL_HEIGHT   = 16;
-	private static final int BTN_SIZE     = 16;
+	private static final int BTN_SIZE     = 18;
 	private static final int GAP          = 2;
 
 	private final boolean editable;
@@ -65,8 +65,8 @@ public class WndChallenges extends Window {
 			final String challenge = Challenges.NAME_IDS[i];
 
 			Image icon = Icons.getChalIcon(i);
-			icon.x = (i % 2) * 50 + 1;
-			icon.y = (i / 2) * (BTN_SIZE + GAP) + title.bottom() + 3;
+			icon.x = (i % 2) * 53 + 1;
+			icon.y = (i / 2) * (BTN_SIZE + GAP) + title.bottom() + 4;
 
 			CheckBox cb = new CheckBox(""){
 				@Override
@@ -77,7 +77,7 @@ public class WndChallenges extends Window {
 			cb.checked( (checked & Challenges.MASKS[i]) != 0 );
 			cb.active = editable;
 
-			cb.setRect(icon.x, icon.y, 48, BTN_SIZE);
+			cb.setRect(icon.x - 1, icon.y - 1, 34, BTN_SIZE);
 
 			add( cb );
 			boxes.add( cb );
@@ -100,12 +100,12 @@ public class WndChallenges extends Window {
 					return Messages.titleCase(Messages.get(Challenges.class, challenge));
 				}
 			};
-			info.setRect(icon.x + 17, cb.top(), BTN_SIZE, BTN_SIZE);
+			info.setRect(cb.right(), cb.top(), 16, BTN_SIZE);
 			add(info);
 			
 			posY = cb.bottom();
 		}
-		resize( WIDTH, (int)posY + GAP );
+		resize( WIDTH, (int)posY + 1 );
 	}
 
 	@Override
