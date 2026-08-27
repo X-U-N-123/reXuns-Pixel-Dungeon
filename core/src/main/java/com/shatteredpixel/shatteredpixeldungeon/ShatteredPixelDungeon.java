@@ -35,10 +35,14 @@ public class ShatteredPixelDungeon extends Game {
 	public static final int v1_2_3 = 628;
 
 	//savegames from versions older than v1.0.0 are no longer supported, and data from them is ignored
-    public static final int xun1_0_0 = 868;
+    public static final int xun3_0_0 = 881;
 	
 	public ShatteredPixelDungeon( PlatformSupport platform ) {
 		super( sceneClass == null ? WelcomeScene.class : sceneClass, platform );
+
+		com.watabou.utils.Bundle.addAlias(
+				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WoodSword.class,
+				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves.class" );
 
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.food.ChargrilledMeat.class,
@@ -47,22 +51,6 @@ public class ShatteredPixelDungeon extends Game {
 		com.watabou.utils.Bundle.addAlias(
 				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.HuntKnife.class,
 				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Fork.class" );
-
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Woodsword.class" );
-
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.items.bombs.StenchBomb.class,
-				"com.shatteredpixel.shatteredpixeldungeon.items.bombs.SmokeBomb.class" );
-
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion.class,
-				"com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan.class" );
-		com.watabou.utils.Bundle.addAlias(
-				com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Transfusion.TransfusionTracker.class,
-				"com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.wraith.Lifeloan.LifeloanTracker.class" );
-
 	}
 	
 	@Override
