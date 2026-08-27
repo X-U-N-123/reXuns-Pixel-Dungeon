@@ -2913,7 +2913,7 @@ public class Hero extends Char {
 		boolean smthFound = false;
 
 		boolean circular = EmptyMagnifier.isRound();
-		int distance = heroClass == HeroClass.ROGUE ? 2 : 1 + EmptyMagnifier.searchRadiusInc();
+		int distance = (heroClass == HeroClass.ROGUE ? 2 : 1) + EmptyMagnifier.searchRadiusInc();
 		
 		boolean foresight = buff(Foresight.class) != null;
 		boolean foresightScan = foresight && !Dungeon.level.mapped[pos];

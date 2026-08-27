@@ -38,11 +38,11 @@ public class EmptyMagnifier extends Trinket {
 
 	@Override
 	public String statsDesc() {
-		String roundDesc = Messages.get(this, isRound() ? "round" : "square");
 		if (isIdentified()){
+			String roundDesc = Messages.get(this, isRound(buffedLvl()) ? "round" : "square");
 			return Messages.get(this, "stats_desc", searchRadiusInc(buffedLvl()), roundDesc, extraHunger(buffedLvl()));
 		} else {
-			return Messages.get(this, "typical_stats_desc", searchRadiusInc(0), roundDesc, extraHunger(0));
+			return Messages.get(this, "typical_stats_desc", searchRadiusInc(0), Messages.get(this, "round"), extraHunger(0));
 		}
 	}
 
@@ -74,5 +74,4 @@ public class EmptyMagnifier extends Trinket {
 	public static int extraHunger(int level){
 		return Math.max(0, level + 1);
 	}
-
 }
