@@ -468,13 +468,15 @@ public class Hero extends Char {
 				|| (tier == 4 && armorAbility == null)) {
 			return 0;
 		}
-		int Bonus = Statistics.enlighteningDrunk;
+		int bonus = Statistics.enlighteningDrunk;
+		if (bonus > 3 && tier == 1) bonus = 3;
+		if (bonus > 3 && tier == 4) bonus ++;
 		if (buff(PotionOfDivineInspiration.DivineInspirationTracker.class) != null
 				&& buff(PotionOfDivineInspiration.DivineInspirationTracker.class).isBoosted(tier)) {
-			Bonus += 2;
+			bonus += 2;
 		}
-		if (corroLostTalent != null && tier == 3) Bonus += 3;
-		return Bonus;
+		if (corroLostTalent != null && tier == 3) bonus += 3;
+		return bonus;
 	}
 	
 	public String className() {

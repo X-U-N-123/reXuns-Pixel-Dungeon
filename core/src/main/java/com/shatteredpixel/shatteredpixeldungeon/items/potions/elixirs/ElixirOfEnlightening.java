@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.exotic.PotionOfDivineInspiration;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -49,11 +50,11 @@ public class ElixirOfEnlightening extends Elixir {
 
     @Override
     public void apply(Hero hero) {
-        if (Statistics.enlighteningDrunk >= 3){
+        if (Statistics.enlighteningDrunk >= 4){
             hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(hero.maxExp()), FloatingText.EXPERIENCE);
-            hero.earnExp( hero.maxExp(), getClass() );
+            hero.earnExp( hero.maxExp(), PotionOfExperience.class );
             new Flare( 6, 32 ).color(0xFFFF00, true).show( curUser.sprite, 2f );
-            Buff.affect(hero, Bless.class, 200f);
+            Buff.affect(hero, Bless.class, 200);
             GLog.w(Messages.get(this, "no_more_points"));
         } else {
             Statistics.enlighteningDrunk ++;
