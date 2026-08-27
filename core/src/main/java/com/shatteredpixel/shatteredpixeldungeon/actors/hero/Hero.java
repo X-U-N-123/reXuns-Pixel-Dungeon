@@ -668,10 +668,15 @@ public class Hero extends Char {
 			accuracy *= 1 + Dungeon.gold / (lvl * 100f * (5 - pointsInTalent(Talent.DEALING_DISSIDENTS)));
 		}
 
+		int skill = attackSkill;
+
+		for (Mob m : Dungeon.level.mobs.toArray(new Mob[0]))
+			if (m.buff(UDisk.ACCModifyTracker.class) != null) skill += 7;
+
 		if (!RingOfForce.fightingUnarmed(this)) {
-			return (int)(attackSkill * accuracy * wep.accuracyFactor( this, target ));
+			return (int)(skill * accuracy * wep.accuracyFactor( this, target ));
 		} else {
-			return (int)(attackSkill * accuracy);
+			return (int)(skill * accuracy);
 		}
 	}
 

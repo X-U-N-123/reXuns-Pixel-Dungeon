@@ -149,6 +149,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ElementalMask;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.UDisk;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.devShield;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeatBrew;
@@ -797,6 +798,7 @@ public abstract class Char extends Actor {
 		}
 		acuRoll *= accMulti;
 
+		if (defender.buff(UDisk.ACCModifyTracker.class) != null) defStat -= 7;
 		float defRoll = Random.Float( defStat );
 		if (defender.buff(Bless.class) != null) defRoll *= 1.25f;
 		if (defender.buff(  Hex.class) != null) defRoll *= 0.8f;
