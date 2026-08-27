@@ -260,9 +260,9 @@ public class Shovel extends MeleeWeapon {
             Level.set(cell, Terrain.EMPTY);
 
             Sample.INSTANCE.play( Assets.Sounds.BUILD );
-            ExplorerCooldown.affectCD(30, curUser);
+            ExplorerCooldown.affectCD(20, curUser);
 
-            if (curUser.pointsInTalent(Talent.DEMOLITION) >= 3 && Random.Float() > 1/3f
+            if (curUser.pointsInTalent(Talent.DEMOLITION) >= 3 && Random.Int(5) > 0
             && (terrain == Terrain.DOOR || terrain == Terrain.OPEN_DOOR)){
                 new DoorPlank().doPickUp(curUser);
             } else curUser.spendAndNext(Actor.TICK);//picking the door already consumes a turn
@@ -281,7 +281,7 @@ public class Shovel extends MeleeWeapon {
                 Level.set(cell, Terrain.EMPTY_SP);
 
             Sample.INSTANCE.play( Assets.Sounds.MINE );
-            ExplorerCooldown.affectCD(30, curUser);
+            ExplorerCooldown.affectCD(20, curUser);
             curUser.spendAndNext(Actor.TICK);
             GameScene.updateMap(cell);
             Dungeon.observe();

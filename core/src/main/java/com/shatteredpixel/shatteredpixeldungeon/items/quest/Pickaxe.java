@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Barricade;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Bee;
@@ -78,7 +79,7 @@ public class Pickaxe extends MeleeWeapon {
 	@Override
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = super.actions( hero );
-		if (hero.hasTalent(Talent.DEMOLITION)) actions.add(AC_MINE);
+		if (hero.hasTalent(Talent.DEMOLITION) && hero.heroClass != HeroClass.EXPLORER) actions.add(AC_MINE);
 		if (Dungeon.level instanceof MiningLevel){
 			actions.remove(AC_DROP);
 			actions.remove(AC_THROW);
@@ -89,7 +90,7 @@ public class Pickaxe extends MeleeWeapon {
     @Override
     public String desc(){
         String desc = super.desc();
-        if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.DEMOLITION))
+        if (Dungeon.hero != null && Dungeon.hero.hasTalent(Talent.DEMOLITION) && Dungeon.hero.heroClass != HeroClass.EXPLORER)
             desc += Messages.get(this, "desc_demolition");
         return desc;
     }

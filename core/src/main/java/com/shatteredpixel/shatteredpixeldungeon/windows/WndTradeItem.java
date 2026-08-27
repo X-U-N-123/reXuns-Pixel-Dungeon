@@ -47,6 +47,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CurrencyIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 
 public class WndTradeItem extends WndInfoItem {
@@ -149,9 +150,10 @@ public class WndTradeItem extends WndInfoItem {
 
 		float pos = height;
 
-		final int price = Shopkeeper.sellPrice( item );
+		boolean canSteal = Dungeon.hero.hasTalent(Talent.ROGUES_INSTINCT) && Dungeon.hero.buff(Talent.RoguesInstinctCooldown.class) == null;
+		final int price = canSteal ? 0 : Shopkeeper.sellPrice( item );
 
-		RedButton btnBuy = new RedButton( Messages.get(this, "buy", price) ) {
+		RedButton btnBuy = new RedButton( Messages.get(this, canSteal ? "talent" : "buy", price) ) {
 			@Override
 			protected void onClick() {
 				hide();
@@ -159,7 +161,8 @@ public class WndTradeItem extends WndInfoItem {
 			}
 		};
 		btnBuy.setRect( 0, pos + GAP, width, BTN_HEIGHT );
-		btnBuy.icon(new ItemSprite(ItemSpriteSheet.GOLD));
+		if (canSteal) btnBuy.icon(new TalentIcon(Talent.ROGUES_INSTINCT));
+		else btnBuy.icon(new ItemSprite(ItemSpriteSheet.GOLD));
 		btnBuy.enable( price <= Dungeon.gold );
 		add( btnBuy );
 
@@ -317,7 +320,7 @@ public class WndTradeItem extends WndInfoItem {
 			Catalog.countUses(Gold.class, price);
 			if (cd != null) cd.decreaseCD();
 		} else {
-			GLog.p(Messages.get(this, "instinct"));
+			GLog.p(Messages.get(MasterThievesArmband.class, "stole_item", item.name()));
 			Talent.RoguesInstinctCooldown.setup(9 - 3 * Dungeon.hero.pointsInTalent(Talent.ROGUES_INSTINCT));
 		}
 		if (!item.doPickUp( Dungeon.hero )) {
