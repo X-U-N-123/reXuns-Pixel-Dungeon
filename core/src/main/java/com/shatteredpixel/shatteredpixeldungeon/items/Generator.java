@@ -188,7 +188,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Flail;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Futsunomitama;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gauntlet;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Glaive;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Gloves;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greataxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatrunicblade;
@@ -250,6 +249,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wicker;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Windblade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Wolftailgrassspear;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WoodStick;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WoodSword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Zhouyi;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.ZhugeCrossbow;
@@ -520,7 +520,7 @@ public class Generator {
 					WornShortsword.class,
 					MagesStaff.class,   //Mage's special wep
 					Dagger.class,
-					Gloves.class,
+					WoodSword.class,
 					Rapier.class,
 					MultiTool.class,    //Engineer's special wep
 					HuntKnife.class,

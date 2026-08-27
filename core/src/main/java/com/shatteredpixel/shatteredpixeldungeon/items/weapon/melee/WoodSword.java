@@ -22,27 +22,38 @@
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
-public class Gloves extends MeleeWeapon {
+public class WoodSword extends MeleeWeapon {
 
 	{
-		image = ItemSpriteSheet.GLOVES;
-		hitSound = Assets.Sounds.HIT;
-		hitSoundPitch = 1.3f;
+		image = ItemSpriteSheet.WOOD_SWORD;
+		hitSound = Assets.Sounds.HIT_SLASH;
+		hitSoundPitch = 1.1f;
 
 		tier = 1;
-		DLY = 0.5f; //2x speed
-		
-		bones = false;
+	}
+
+	@Override
+	public int min(int lvl) {
+		return super.min(lvl) + tier + 1;
 	}
 
 	@Override
 	public int max(int lvl) {
-		return  Math.round(2.5f*(tier+1)) +     //5 base, down from 10
-				lvl*Math.round(0.5f*(tier+1));  //+1 per level, down from +2
+		return super.max(lvl) - tier - 1;
+	}
+
+	@Override
+	protected int baseChargeUse(Hero hero, Char target){
+		if (hero.buff(Sword.CleaveTracker.class) != null){
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 
 	@Override
@@ -52,23 +63,23 @@ public class Gloves extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		//+(3+0.75*lvl) damage, roughly +100% base damage, +100% scaling
+		//+(3+lvl) damage, roughly +55.5% base dmg, +66.7% scaling
 		int dmgBoost = augment.damageFactor(3 + buffedLvl());
-		Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+		Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
 	}
 
 	@Override
 	public String abilityInfo() {
 		int dmgBoost = levelKnown ? 3 + buffedLvl() : 3;
 		if (levelKnown){
-			return Messages.get(this, "ability_desc", augment.damageFactor(dmgBoost));
+			return Messages.get(this, "ability_desc", augment.damageFactor(min()+dmgBoost), augment.damageFactor(max()+dmgBoost));
 		} else {
-			return Messages.get(this, "typical_ability_desc", augment.damageFactor(dmgBoost));
+			return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
 		}
 	}
 
 	public String upgradeAbilityStat(int level){
-		return "+" + augment.damageFactor(3 + level);
+		int dmgBoost = 3 + level;
+		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
-
 }
