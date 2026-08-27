@@ -47,6 +47,7 @@ import com.watabou.utils.BArray;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.PathFinder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -325,24 +326,28 @@ public class Preparation extends Buff implements ActionIndicator.Action {
 				
 				AttackLevel lvl = AttackLevel.getLvl(turnsInvis);
 
+				ArrayList<Integer> usableCells = new ArrayList<>();
+				int reach = 1;
+				if (Dungeon.hero.belongings.weapon() != null && Dungeon.hero.belongings.weapon().reachFactor(target) > 1)
+					reach = Dungeon.hero.belongings.weapon().reachFactor(target);
+
+				PathFinder.buildDistanceMap(cell, BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null), reach);
+				for (int i = 0; i < Dungeon.level.length(); i++)
+					if (PathFinder.distance[i] < Integer.MAX_VALUE) usableCells.add(i);
+
 				PathFinder.buildDistanceMap(Dungeon.hero.pos,BArray.or(Dungeon.level.passable, Dungeon.level.avoid, null), lvl.blinkDistance());
 				int dest = -1;
-				for (int i : PathFinder.NEIGHBOURS8){
+				for (int i : usableCells){
 					//cannot blink into a cell that's occupied or impassable, only over them
-					if (Actor.findChar(cell+i) != null)     continue;
-					if (!Dungeon.level.passable[cell+i] && !(target.isFlying() && Dungeon.level.avoid[cell+i])) {
-						continue;
-					}
+					if (Actor.findChar(i) != null) continue;
+					if (!Dungeon.level.passable[i] && !(target.isFlying() && Dungeon.level.avoid[i])) continue;
 
-					if (dest == -1 || PathFinder.distance[dest] > PathFinder.distance[cell+i]){
-						dest = cell+i;
+					if (dest == -1 || PathFinder.distance[dest] > PathFinder.distance[i]){
+						dest = i;
 					//if two cells have the same pathfinder distance, prioritize the one with the closest true distance to the hero
-					} else if (PathFinder.distance[dest] == PathFinder.distance[cell+i]){
-						if (Dungeon.level.trueDistance(Dungeon.hero.pos, dest) > Dungeon.level.trueDistance(Dungeon.hero.pos, cell+i)){
-							dest = cell+i;
-						}
-					}
-
+					} else if (PathFinder.distance[dest] == PathFinder.distance[i]
+							&& Dungeon.level.trueDistance(Dungeon.hero.pos, dest) > Dungeon.level.trueDistance(Dungeon.hero.pos, i))
+						dest = i;
 				}
 
 				if (dest == -1 || PathFinder.distance[dest] == Integer.MAX_VALUE || Dungeon.hero.rooted){
