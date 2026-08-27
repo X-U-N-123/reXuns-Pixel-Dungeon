@@ -446,17 +446,17 @@ public class WndRanking extends WndTabbed {
 				final String challenge = Challenges.NAME_IDS[i];
 
 				Image icon = Icons.getChalIcon(i);
-				icon.x = (i % 2) * 60 + 3;
-				icon.y = (i / 2) * 18;
-				add( icon );
+				icon.x = (i % 2) * 61 + 1;
+				icon.y = (i / 2) * 18 + 1;
 
-				CheckBox cb = new CheckBox(""){};
+				CheckBox cb = new CheckBox("");
 				cb.checked( (Dungeon.challenges & Challenges.MASKS[i]) != 0 );
 				cb.active = false;
 
-				cb.setRect( (i % 2) * 60 + 23, (i / 2) * 18, 16, 16 );
+				cb.setRect( icon.x, icon.y, 57, 16 );
 
 				add( cb );
+				add( icon );
 
 				int finalI = i;
 				IconButton info = new IconButton(Icons.get(Icons.INFO)){
@@ -475,7 +475,7 @@ public class WndRanking extends WndTabbed {
 						return Messages.titleCase(Messages.get(Challenges.class, challenge));
 					}
 				};
-				info.setRect(cb.right() + 2, cb.top(), 16, 16);
+				info.setRect(icon.x + 16, icon.y, 22, 16);
 				add(info);
 			}
 		}

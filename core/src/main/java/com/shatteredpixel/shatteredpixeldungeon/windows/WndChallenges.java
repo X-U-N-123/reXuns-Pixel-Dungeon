@@ -39,7 +39,7 @@ public class WndChallenges extends Window {
 
 	private static final int WIDTH        = 100;
 	private static final int TTL_HEIGHT   = 16;
-	private static final int BTN_HEIGHT   = 16;
+	private static final int BTN_SIZE     = 16;
 	private static final int GAP          = 2;
 
 	private final boolean editable;
@@ -66,8 +66,7 @@ public class WndChallenges extends Window {
 
 			Image icon = Icons.getChalIcon(i);
 			icon.x = (i % 2) * 50 + 1;
-			icon.y = (i / 2) * (BTN_HEIGHT + GAP) + title.bottom() + 3;
-			add( icon );
+			icon.y = (i / 2) * (BTN_SIZE + GAP) + title.bottom() + 3;
 
 			CheckBox cb = new CheckBox(""){
 				@Override
@@ -78,10 +77,11 @@ public class WndChallenges extends Window {
 			cb.checked( (checked & Challenges.MASKS[i]) != 0 );
 			cb.active = editable;
 
-			cb.setRect( (i % 2) * 50 + 18, (i / 2) * (BTN_HEIGHT + GAP) + title.bottom() + 3, 16, BTN_HEIGHT );
+			cb.setRect(icon.x, icon.y, 48, BTN_SIZE);
 
 			add( cb );
 			boxes.add( cb );
+			add( icon );
 
 			int finalI = i;
 			IconButton info = new IconButton(Icons.get(Icons.INFO)){
@@ -100,7 +100,7 @@ public class WndChallenges extends Window {
 					return Messages.titleCase(Messages.get(Challenges.class, challenge));
 				}
 			};
-			info.setRect(cb.right(), cb.top(), 16, BTN_HEIGHT);
+			info.setRect(icon.x + 17, cb.top(), BTN_SIZE, BTN_SIZE);
 			add(info);
 			
 			posY = cb.bottom();
