@@ -83,7 +83,6 @@ public class MnemonicPrayer extends TargetedClericSpell {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void onTargetSelected(HolyTome tome, Hero hero, Integer target) {
 
 		if (target == null){
@@ -98,7 +97,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 
 		QuickSlotButton.target(ch);
 
-		float extension = 2 + hero.pointsInTalent(Talent.MNEMONIC_PRAYER);
+		int extension = 2 + hero.pointsInTalent(Talent.MNEMONIC_PRAYER);
 		affectChar(ch, extension);
 
 		Char ally = PowerOfMany.getPoweredAlly();
@@ -122,7 +121,7 @@ public class MnemonicPrayer extends TargetedClericSpell {
 
 	}
 
-	private void affectChar( Char ch, float extension ){
+	private void affectChar( Char ch, int extension ){
 		if (ch.alignment == Char.Alignment.ALLY){
 
 			Sample.INSTANCE.play(Assets.Sounds.CHARGEUP);
@@ -148,14 +147,14 @@ public class MnemonicPrayer extends TargetedClericSpell {
 				else if (b instanceof Barkskin)         ((Barkskin) b).delay(extension);
 				else if (b instanceof FireImbue)        ((FireImbue) b).extend(extension);
 				else if (b instanceof GreaterHaste)     ((GreaterHaste) b).extend(extension);
-				else if (b instanceof Healing)          ((Healing) b).increaseHeal((int)extension);
+				else if (b instanceof Healing)          ((Healing) b).increaseHeal(extension);
 				else if (b instanceof ToxicImbue)       ((ToxicImbue) b).extend(extension);
 				else if (b instanceof WellFed)          ((WellFed) b).extend(extension);
 				else if (b instanceof ElixirOfAquaticRejuvenation.AquaHealing)  ((ElixirOfAquaticRejuvenation.AquaHealing) b).extend(extension);
 				else if (b instanceof ScrollOfChallenge.ChallengeArena)         ((ScrollOfChallenge.ChallengeArena) b).extend(extension);
 				else if (b instanceof ShieldBuff)               ((ShieldBuff) b).delay(extension);
 				else if (b instanceof Kinetic.ConservedDamage)  ((Kinetic.ConservedDamage) b).delay(extension);
-				else if (b instanceof Sungrass.Health)          ((Sungrass.Health) b).boost((int) extension);
+				else if (b instanceof Sungrass.Health)          ((Sungrass.Health) b).boost(extension);
 
 				b.mnemoOrPeaceEleExtended = true;
 
