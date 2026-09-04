@@ -31,6 +31,9 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BlobImmunity;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -119,53 +122,58 @@ public class Futsunomitama extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		if (target == null) {
-			return;
-		}
+		if (target == null) return;
 
-		Char enemy = Actor.findChar(target);
-		if (enemy == null || enemy == hero || hero.isCharmedBy(enemy) || !Dungeon.level.heroFOV[target]) {
+		target = new Ballistica(hero.pos, target, Ballistica.PROJECTILE).collisionPos;
+
+		if ((!Dungeon.level.passable[target] && !Dungeon.level.avoid[target]) || target == hero.pos) {
 			GLog.w(Messages.get(this, "ability_no_target"));
 			return;
 		}
 
-		hero.belongings.abilityWeapon = this;
-		if (!hero.canAttack(enemy)){
-			GLog.w(Messages.get(this, "ability_target_range"));
-			hero.belongings.abilityWeapon = null;
+		ArrayList<Mob> mobs = new ArrayList<>();
+		Char mainTarget = Actor.findChar(target);
+
+		if (mainTarget instanceof Mob) {
+			mobs.add((Mob) mainTarget);
+			Char ch;
+			for (int i : PathFinder.NEIGHBOURS8) {
+				ch = Actor.findChar(target + i);
+				if (ch != null && ch instanceof Mob && ch.alignment == Char.Alignment.ENEMY && mobs.size() <= curCharge / 5)
+					mobs.add((Mob) ch);
+			}
+		}
+		if (mobs.isEmpty()){
+			GLog.w(Messages.get(this, "ability_no_target"));
 			return;
 		}
-		hero.belongings.abilityWeapon = null;
 
-		hero.sprite.attack(enemy.pos, () -> {
-			beforeAbilityUsed(hero, enemy);
-			AttackIndicator.target(enemy);
-			//no bonus damage, but have electricity effect
-			if (hero.attack(enemy, 1, 0, Char.INFINITE_ACCURACY)){
-				int chargeBefore = curCharge;
-				curCharge = Math.min(curCharge + 1, maxCharges);
-				if (chargeBefore < maxCharges && curCharge == maxCharges) {
-					GLog.p(Messages.get(Futsunomitama.class, "ready"));
-					updateQuickslot();
-				}
+		hero.sprite.attack(target);
 
-				int electricityDmg = Hero.heroDamageIntRange(2 + buffedLvl(), 9 + 2 * buffedLvl());
-				if (enemy.isAlive()) {
-					enemy.damage(electricityDmg, new Electricity());
-					enemy.sprite.burst(0xFFFFFFFF, 10);
-					Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
-				} else Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-			}
+		beforeAbilityUsed(hero, mainTarget);
+		AttackIndicator.target(mainTarget);
 
-			Invisibility.dispel();
-			hero.spendAndNext(hero.attackDelay());
+		ArrayList<Lightning.Arc> arcs = new ArrayList<>();
+		curCharge = 0;
 
-			if (!enemy.isAlive()){
+		for (Mob m : mobs) {
+			if (m == mainTarget) arcs.add(new Lightning.Arc(hero.sprite.center(), m.sprite.center()));
+			else arcs.add(new Lightning.Arc(mainTarget.sprite.center(), m.sprite.center()));
+
+			m.damage(Math.round(damageRoll(hero) * 0.9f), new Electricity());
+			m.sprite.burst(0xFFFFFFFF, 6);
+
+			if (!m.isAlive()){
 				hero.next();
-				onAbilityKill(hero, enemy);
+				onAbilityKill(hero, m);
 			}
-			afterAbilityUsed(hero);
-		});
+		}
+		Sample.INSTANCE.play(Assets.Sounds.LIGHTNING);
+		curUser.sprite.parent.addToFront( new Lightning( arcs, null ) );
+
+		Invisibility.dispel();
+		hero.spendAndNext(hero.attackDelay());
+		afterAbilityUsed(hero);
 	}
 
 	@Override

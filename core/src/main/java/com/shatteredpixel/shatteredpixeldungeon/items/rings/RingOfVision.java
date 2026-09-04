@@ -23,7 +23,6 @@ package com.shatteredpixel.shatteredpixeldungeon.items.rings;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -53,19 +52,6 @@ public class RingOfVision extends Ring {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public Item upgrade() {
-        super.upgrade();
-        updateView();
-        return this;
-    }
-
-    @Override
-    public void level(int value) {
-        super.level(value);
-        updateView();
     }
 
     private void updateView(){

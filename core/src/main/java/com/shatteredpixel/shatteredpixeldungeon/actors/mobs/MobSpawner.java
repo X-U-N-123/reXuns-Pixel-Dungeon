@@ -214,7 +214,7 @@ public class MobSpawner extends Actor {
 						Succubus.class,
 						Eye.class, Eye.class,
 						Scorpio.class, Scorpio.class,
-						DemonSentry.class, DemonSentry.class));
+						DemonSentry.class));
 		}
 
 	}
