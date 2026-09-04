@@ -1153,6 +1153,9 @@ public abstract class Char extends Actor {
 			isReal = true;
 		}
 
+		if (buff(Challenge.DuelParticipant.class) != null)
+			buff(Challenge.DuelParticipant.class).addDamage(Math.min(dmg, HP));
+
 		int shielded = dmg;
 
 		if (buff(devShield.devShieldBuff.class) == null) {

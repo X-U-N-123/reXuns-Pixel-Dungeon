@@ -38,7 +38,7 @@ public class WellFed extends Buff {
 		announced = true;
 	}
 	
-	int left;
+	int left = 0;
 	
 	@Override
 	public boolean act() {
@@ -50,7 +50,7 @@ public class WellFed extends Buff {
 			}
 			return true;
 		} else if (left % 18 == 0 && target.HP < target.HT){
-			target.HP += 1;
+			target.HP ++;
 			target.sprite.showStatusWithIcon(CharSprite.POSITIVE, "1", FloatingText.HEALING);
 
 			if (target.HP == target.HT && target instanceof Hero) {
@@ -64,22 +64,21 @@ public class WellFed extends Buff {
 	}
 	
 	public void reset(){
-		//heals one HP every 18 turns for 450 turns
-		//25 HP healed in total
-		reset((int)Hunger.STARVING);
-	}
-
-	public void reset(int turn){
-		//heals one HP every 18 turns for 450 turns
-		//25 HP healed in total
-		left = turn;
 		if (Dungeon.isChallenged(Challenges.NO_FOOD)){
 			//150 turns if on diet is enabled
-			left /= 3;
+			reset((int)(Hunger.STARVING / 3));
+		} else {
+			//heals one HP every 18 turns for 450 turns
+			//25 HP healed in total
+			reset((int)Hunger.STARVING);
 		}
 	}
 
-	public void extend( float duration ) {
+	public void reset(int turn){
+		left = turn;
+	}
+
+	public void extend( int duration ) {
 		left += duration;
 	}
 	

@@ -285,16 +285,8 @@ public class Challenge extends ArmorAbility {
 					Sample.INSTANCE.play(Assets.Sounds.BOSS);
 
 					if (Dungeon.hero.hasTalent(Talent.INVIGORATING_VICTORY)){
-						DuelParticipant heroBuff = Dungeon.hero.buff(DuelParticipant.class);
 
-						int hpToHeal = 0;
-						if (heroBuff != null){
-							hpToHeal = heroBuff.takenDmg;
-						}
-
-						//heals for 30%/50%/65%/75% of taken damage plus 5/10/15/20 bonus, based on talent points
-						hpToHeal = (int)Math.round(hpToHeal * (1f - Math.pow(0.707f, Dungeon.hero.pointsInTalent(Talent.INVIGORATING_VICTORY))));
-						hpToHeal += 5*Dungeon.hero.pointsInTalent(Talent.INVIGORATING_VICTORY);
+						int hpToHeal = takenDmg / (12 - 2 * Dungeon.hero.pointsInTalent(Talent.INVIGORATING_VICTORY));
 						hpToHeal = Math.min(hpToHeal, Dungeon.hero.HT - Dungeon.hero.HP);
 						if (hpToHeal > 0){
 							Dungeon.hero.HP += hpToHeal;

@@ -151,7 +151,7 @@ public class Food extends Item {
 		if (hero.hasTalent(Talent.TOILSOME_MEAL)) Buff.append(hero, ToilsomeMealTracker.class, eatingTime()).foodVal = foodVal;
 		else Buff.affect(hero, Hunger.class).satisfy(foodVal);
 
-		if (pocket) Buff.affect(hero, WellFed.class).reset((int)(foodVal / 10));
+		if (pocket) Buff.affect(hero, WellFed.class).extend((int)(foodVal / 8));
 	}
 	
 	@Override

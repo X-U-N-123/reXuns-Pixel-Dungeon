@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.cleric.PowerOfMany;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.duelist.Challenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.huntress.SpiritHawk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.pillager.Landmark;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
@@ -457,7 +458,7 @@ public class Dungeon {
 	//value used for scaling of damage values and other effects.
 	//is usually the dungeon depth, but can be set to 26 when ascending
 	public static int scalingDepth(){
-		if (Dungeon.hero != null && Dungeon.hero.buff(AscensionChallenge.class) != null){
+		if (hero != null && hero.buff(AscensionChallenge.class) != null){
 			return 26;
 		} else {
 			return depth;
@@ -465,10 +466,11 @@ public class Dungeon {
 	}
 
 	public static boolean interfloorTeleportAllowed(int depth){
-        return !Dungeon.level.locked
-            && !(Dungeon.level instanceof MiningLevel)
-            && (Dungeon.hero == null || (Dungeon.hero.belongings.getItem(Amulet.class) == null
-            && (Dungeon.hero.buff(Collapse.class) == null || Dungeon.hero.buff(Collapse.class).canReturnTo(depth)) ));
+        return !level.locked
+            && !(level instanceof MiningLevel)
+            && (hero == null || (hero.belongings.getItem(Amulet.class) == null
+            && (hero.buff(Collapse.class) == null || hero.buff(Collapse.class).canReturnTo(depth))
+			&& (hero.buff(Challenge.DuelParticipant.class) == null || !hero.hasTalent(Talent.BURN_BRIDGES))));
     }
 	
 	public static void switchLevel( final Level level, int pos ) {
