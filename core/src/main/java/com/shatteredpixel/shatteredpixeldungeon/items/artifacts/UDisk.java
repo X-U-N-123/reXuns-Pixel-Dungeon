@@ -147,12 +147,9 @@ public class UDisk extends Artifact {
 	}
 
 	private void onChargesCost(Hero hero){
-		//target hero level is 1 + 2*cloak level
-		int lvlDiffFromTarget = hero.lvl - (1+level()*2);
-		//plus an extra one for each level after 6
-		if (level() >= 7) {
-			lvlDiffFromTarget -= level() - 6;
-		}
+		//target hero level is 3*disk level
+		int lvlDiffFromTarget = hero.lvl - (level()*3);
+
 		if (lvlDiffFromTarget >= 0) {
 			exp += Math.round(10f * Math.pow(1.1f, lvlDiffFromTarget));
 		} else {
@@ -174,8 +171,8 @@ public class UDisk extends Artifact {
 			if (charge < chargeCap && !isCursed()) {
 				if (Regeneration.regenOn()) {
 					float missing = (chargeCap - charge);
-					if (level() > 7) missing += 5*(level() - 7)/3f;
-					float turnsToCharge = (45 - missing);
+					if (level() > 7) missing += 7*(level() - 7)/5f;
+					float turnsToCharge = (50 - missing);
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target, this);
 					/*if (Dungeon.hero.hasTalent(Talent.EMERGENCY_CHARGE)){
 						turnsToCharge /= 1f + ((float)Dungeon.hero.HP / Dungeon.hero.HT)

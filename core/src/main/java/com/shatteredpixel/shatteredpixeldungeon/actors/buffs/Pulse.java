@@ -84,7 +84,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
 
     @Override
     public boolean act(){
-        if (CD > 0) CD --;
+        if (CD > 0 && Regeneration.regenOn()) CD --;
         spend(1f);
         ActionIndicator.refresh();
         return true;
@@ -177,7 +177,7 @@ public class Pulse extends Buff implements ActionIndicator.Action {
                     return;
                 }
 
-                CD += 51;
+                CD += 61;
                 ActionIndicator.refresh();
                 target.sprite.attack(cell);
 

@@ -68,7 +68,7 @@ public class RingOfMimic extends Ring {
 			cooldown += 130 - 30 * Dungeon.hero.pointsInTalent(Talent.LIGHT_GREED);
 		return cooldown;
 	}
-	private static final int START_TIME = 20;
+	private static final int START_TIME = 25;
 
 	public String statsInfo() {
 		String desc = "";

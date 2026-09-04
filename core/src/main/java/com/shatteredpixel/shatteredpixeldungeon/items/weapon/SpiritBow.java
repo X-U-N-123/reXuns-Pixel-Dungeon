@@ -318,7 +318,7 @@ public class SpiritBow extends Weapon {
 
 			switch (augment){
 				case NONE:
-					damage = Math.round(damage * 0.667f);
+					damage = Math.round(damage * 0.8f);
 					break;
 				case SPEED:
 					damage = Math.round(damage * 0.5f);
