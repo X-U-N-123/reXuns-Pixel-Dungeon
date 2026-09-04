@@ -96,7 +96,7 @@ public class SewerBossLevel extends SewerLevel {
 		
 		int standards = standardRooms(true);
 		for (int i = 0; i < standards; i++) {
-			StandardRoom s = StandardRoom.createRoom();
+			StandardRoom s = StandardRoom.createRoom(false);
 			//force to normal size
 			s.setSizeCat(0, 0);
 			initRooms.add(s);

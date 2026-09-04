@@ -65,6 +65,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Document;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.builders.BranchesBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.FigureEightBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LoopBuilder;
@@ -135,8 +136,8 @@ public abstract class RegularLevel extends Level {
 	
 	protected ArrayList<Room> initRooms() {
 		ArrayList<Room> initRooms = new ArrayList<>();
-		initRooms.add ( roomEntrance = EntranceRoom.createEntrance());
-		initRooms.add( roomExit = ExitRoom.createExit());
+		initRooms.add ( roomEntrance = EntranceRoom.createEntrance(feeling == Feeling.CHAOS));
+		initRooms.add( roomExit = ExitRoom.createExit(feeling == Feeling.CHAOS));
 
 		//force max standard rooms and multiple by 1.5x for large levels
 		int standards = standardRooms(feeling == Feeling.LARGE);
@@ -146,7 +147,7 @@ public abstract class RegularLevel extends Level {
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
 			do {
-				s = StandardRoom.createRoom();
+				s = StandardRoom.createRoom(feeling == Feeling.CHAOS);
 				if (i == 0 && Random.Float() < FishingBait.extraRoomChance()) s = new AquariumRoom();
 			} while (!s.setSizeCat( standards-i ));
 			i += s.sizeFactor()-1;
@@ -187,6 +188,9 @@ public abstract class RegularLevel extends Level {
 	}
 	
 	protected Builder builder(){
+		if (feeling == Feeling.CHAOS){
+			return new BranchesBuilder();
+		}
 		if (Random.Int(2) == 0){
 			return new LoopBuilder()
 					.setLoopShape( 2 ,

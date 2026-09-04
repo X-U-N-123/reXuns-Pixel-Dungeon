@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
@@ -48,6 +49,7 @@ public class Scout extends Spell {
 		Dungeon.observe();
 		GameScene.updateFog();
 		Sample.INSTANCE.play(Assets.Sounds.SCAN);
+		Notes.add(Notes.Landmark.SCOUT_USED);
 
 		detach(hero.belongings.backpack);
 		Catalog.countUse(getClass());

@@ -43,6 +43,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.Key;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -118,6 +119,7 @@ public class Notes {
 		CHASM_FLOOR,
 		WATER_FLOOR,
 		GRASS_FLOOR,
+		CHAOS_FLOOR,
 		DARK_FLOOR,
 		LARGE_FLOOR,
 		TRAPS_FLOOR,
@@ -135,6 +137,7 @@ public class Notes {
 
 		LOST_PACK,
 		BEACON_LOCATION,
+		SCOUT_USED,
 		
 		GHOST,
 		RAT_KING,
@@ -167,6 +170,8 @@ public class Notes {
 					return Icons.STAIRS_WATER.get();
 				case GRASS_FLOOR:
 					return Icons.STAIRS_GRASS.get();
+				case CHAOS_FLOOR:
+					return Icons.STAIRS_CHAOS.get();
 				case DARK_FLOOR:
 					return Icons.STAIRS_DARK.get();
 				case LARGE_FLOOR:
@@ -200,6 +205,8 @@ public class Notes {
 					return Icons.get(Icons.BACKPACK_LRG);
 				case BEACON_LOCATION:
 					return new ItemSprite(ItemSpriteSheet.RETURN_BEACON);
+				case SCOUT_USED:
+					return new ItemSprite(ItemSpriteSheet.SCOUT);
 
 				case GHOST:
 					return new Image(new GhostSprite());
@@ -224,6 +231,7 @@ public class Notes {
 				case CHASM_FLOOR:   return Messages.get(Level.Feeling.class, "chasm_title");
 				case WATER_FLOOR:   return Messages.get(Level.Feeling.class, "water_title");
 				case GRASS_FLOOR:   return Messages.get(Level.Feeling.class, "grass_title");
+				case CHAOS_FLOOR:   return Messages.get(Level.Feeling.class, "chaos_title");
 				case DARK_FLOOR:    return Messages.get(Level.Feeling.class, "dark_title");
 				case LARGE_FLOOR:   return Messages.get(Level.Feeling.class, "large_title");
 				case TRAPS_FLOOR:   return Messages.get(Level.Feeling.class, "traps_title");
@@ -231,6 +239,7 @@ public class Notes {
 
 				case LOST_PACK:     return Messages.get(LostBackpack.class, "name");
 				case BEACON_LOCATION:return Messages.get(BeaconOfReturning.class, "name");
+				case SCOUT_USED:    return Messages.get(Scout.class, "name");
 			}
 		}
 
@@ -242,6 +251,7 @@ public class Notes {
 				case CHASM_FLOOR:   return Messages.get(Level.Feeling.class, "chasm_desc");
 				case WATER_FLOOR:   return Messages.get(Level.Feeling.class, "water_desc");
 				case GRASS_FLOOR:   return Messages.get(Level.Feeling.class, "grass_desc");
+				case CHAOS_FLOOR:    return Messages.get(Level.Feeling.class, "chaos_desc");
 				case DARK_FLOOR:    return Messages.get(Level.Feeling.class, "dark_desc");
 				case LARGE_FLOOR:   return Messages.get(Level.Feeling.class, "large_desc");
 				case TRAPS_FLOOR:   return Messages.get(Level.Feeling.class, "traps_desc");
@@ -261,6 +271,7 @@ public class Notes {
 
 				case LOST_PACK:         return Messages.get(LostBackpack.class, "desc");
 				case BEACON_LOCATION:   return Messages.get(BeaconOfReturning.class, "desc");
+				case SCOUT_USED:        return Messages.get(Scout.class, "desc_used");
 
 				case GHOST:         return Messages.get(Ghost.class, "desc");
 				case RAT_KING:      return new RatKing().description(); //variable description based on holiday/run state

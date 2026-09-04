@@ -99,6 +99,7 @@ public class MiningLevel extends CavesLevel {
 		s = new MineGiantRoom();
 		s.setSizeCat();
 		initRooms.add(s);
+		((FigureEightBuilder)builder).setLandmarkRoom(s);
 
 		int rooms = 3;
 		for (int i = 0; i < rooms; i++){

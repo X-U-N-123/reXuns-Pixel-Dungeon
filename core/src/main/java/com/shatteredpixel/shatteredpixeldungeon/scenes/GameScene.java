@@ -690,6 +690,10 @@ public class GameScene extends PixelScene {
 					GLog.w(Dungeon.level.feeling.desc());
 					Notes.add(Notes.Landmark.SECRETS_FLOOR);
 					break;
+				case CHAOS:
+					GLog.w(Dungeon.level.feeling.desc());
+					Notes.add(Notes.Landmark.CHAOS_FLOOR);
+					break;
 			}
 
 			for (Mob mob : Dungeon.level.mobs) {

@@ -187,8 +187,14 @@ public abstract class StandardRoom extends Room {
 	}
 	
 	
-	public static StandardRoom createRoom(){
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
+	public static StandardRoom createRoom(boolean chaos){
+		int depth = Dungeon.depth;
+		if (chaos){
+			do {
+				depth = 1 + Random.Int(24);
+			} while (Dungeon.bossLevel(depth));
+			if (depth == 1) depth ++;
+		}
+		return Reflection.newInstance(rooms.get(Random.chances(chances[depth])));
 	}
-	
 }

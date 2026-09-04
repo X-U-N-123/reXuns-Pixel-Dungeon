@@ -101,6 +101,7 @@ public enum Icons {
 	STAIRS_CHASM,
 	STAIRS_WATER,
 	STAIRS_GRASS,
+	STAIRS_CHAOS,
 	STAIRS_DARK,
 	STAIRS_LARGE,
 	STAIRS_TRAPS,
@@ -124,6 +125,7 @@ public enum Icons {
 	DEPTH_CHASM,
 	DEPTH_WATER,
 	DEPTH_GRASS,
+	DEPTH_CHAOS,
 	DEPTH_DARK,
 	DEPTH_LARGE,
 	DEPTH_TRAPS,
@@ -367,17 +369,20 @@ public enum Icons {
 			case STAIRS_SECRETS:
 				icon.frame( icon.texture.uvRectBySize( 112, 64, 15, 16 ) );
 				break;
-			case WELL_HEALTH:
-				icon.frame( icon.texture.uvRectBySize( 128, 64, 16, 16 ) );
+			case STAIRS_CHAOS:
+				icon.frame( icon.texture.uvRectBySize( 128, 64, 15, 16 ) );
 				break;
-			case WELL_AWARENESS:
+			case WELL_HEALTH:
 				icon.frame( icon.texture.uvRectBySize( 144, 64, 16, 16 ) );
 				break;
-			case SACRIFICE_ALTAR:
+			case WELL_AWARENESS:
 				icon.frame( icon.texture.uvRectBySize( 160, 64, 16, 16 ) );
 				break;
-			case DISTANT_WELL:
+			case SACRIFICE_ALTAR:
 				icon.frame( icon.texture.uvRectBySize( 176, 64, 16, 16 ) );
+				break;
+			case DISTANT_WELL:
+				icon.frame( icon.texture.uvRectBySize( 192, 64, 16, 16 ) );
 				break;
 
 			case SKULL:
@@ -425,34 +430,37 @@ public enum Icons {
 			case DEPTH_SECRETS:
 				icon.frame( icon.texture.uvRectBySize( 88 + runTypeOfsX(), 80 + runTypeOfsY(), 7, 7 ) );
 				break;
+			case DEPTH_CHAOS:
+				icon.frame( icon.texture.uvRectBySize( 96 + runTypeOfsX(), 80 + runTypeOfsY(), 7, 7 ) );
+				break;
 			case CHAL_COUNT:
 				int top = 80;
 				if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) top += 8;
-				icon.frame( icon.texture.uvRectBySize( 160, top, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 176, top, 7, 7 ) );
 				break;
 			case COIN_SML:
-				icon.frame( icon.texture.uvRectBySize( 168, 80, 7, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 184, 80, 7, 7 ) );
 				break;
 			case ENERGY_SML:
-				icon.frame( icon.texture.uvRectBySize( 168, 88, 8, 7 ) );
+				icon.frame( icon.texture.uvRectBySize( 184, 88, 8, 7 ) );
 				break;
 			case BACKPACK:
-				icon.frame( icon.texture.uvRectBySize( 176, 80, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 192, 48, 10, 10 ) );
 				break;
 			case SCROLL_HOLDER:
-				icon.frame( icon.texture.uvRectBySize( 186, 80, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 202, 48, 10, 10 ) );
 				break;
 			case SEED_POUCH:
-				icon.frame( icon.texture.uvRectBySize( 196, 80, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 212, 48, 10, 10 ) );
 				break;
 			case WAND_HOLSTER:
-				icon.frame( icon.texture.uvRectBySize( 206, 80, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 222, 48, 10, 10 ) );
 				break;
 			case POTION_BANDOLIER:
-				icon.frame( icon.texture.uvRectBySize( 216, 80, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 232, 48, 10, 10 ) );
 				break;
 			case FOOD_POCKET:
-				icon.frame( icon.texture.uvRectBySize( 226, 80, 10, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 242, 48, 10, 10 ) );
 				break;
 			case PASSIVE:
 				icon.frame( icon.texture.uvRectBySize( 236, 80, 8, 8 ) );
@@ -531,7 +539,7 @@ public enum Icons {
 	}
 
 	private static int runTypeOfsX(){
-		return Dungeon.daily ? 64 : 0;
+		return Dungeon.daily ? 72 : 0;
 	}
 
 	private static int runTypeOfsY(){
@@ -575,6 +583,8 @@ public enum Icons {
 				return get(DEPTH_WATER);
 			case GRASS:
 				return get(DEPTH_GRASS);
+			case CHAOS:
+				return get(DEPTH_CHAOS);
 			case DARK:
 				return get(DEPTH_DARK);
 			case LARGE:
@@ -596,6 +606,8 @@ public enum Icons {
 				return get(STAIRS_WATER);
 			case GRASS:
 				return get(STAIRS_GRASS);
+			case CHAOS:
+				return get(STAIRS_CHAOS);
 			case DARK:
 				return get(STAIRS_DARK);
 			case LARGE:

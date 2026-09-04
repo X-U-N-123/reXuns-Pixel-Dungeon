@@ -78,6 +78,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
+import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.TrackingDevice;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -147,7 +148,8 @@ public abstract class Level implements Bundlable {
 		DARK,
 		LARGE,
 		TRAPS,
-		SECRETS;
+		SECRETS,
+		CHAOS;
 
 		public String title(){
 			return Messages.get(this, name()+"_title");
@@ -271,8 +273,8 @@ public abstract class Level implements Bundlable {
 			
 			if (Dungeon.depth > 1) {
 				//50% chance of getting a level feeling
-				//~7.15% chance for each feeling
-				switch (Random.Int( 14 )) {
+				//6.25% chance for each feeling
+				switch (Random.Int( 16 )) {
 					case 0:
 						feeling = Feeling.CHASM;
 						break;
@@ -294,6 +296,9 @@ public abstract class Level implements Bundlable {
 					case 6:
 						feeling = Feeling.SECRETS;
 						break;
+					case 7:
+						feeling = Feeling.CHAOS;
+						break;
 					default:
 						//if-else statements are fine here as only one chance can be above 0 at a time
 						if (Random.Float() < MossyClump.overrideNormalLevelChance()){
@@ -311,7 +316,10 @@ public abstract class Level implements Bundlable {
 					if (Dungeon.isChallenged(Challenges.NO_RETURN))
 						addItemToSpawn(new Support());
 				}
-				if (feeling == Feeling.DARK) viewDistance = Math.round(5*viewDistance/8f);
+				if (feeling == Feeling.DARK) {
+					viewDistance = Math.round(3 * viewDistance / 4f);
+					addItemToSpawn(new Torch());
+				}
 			}
 		}
 		
@@ -460,7 +468,7 @@ public abstract class Level implements Bundlable {
 
 		feeling = bundle.getEnum( FEELING, Feeling.class );
 		if (feeling == Feeling.DARK) {
-			viewDistance = Math.round(5 * viewDistance / 8f);
+			viewDistance = Math.round(3 * viewDistance / 4f);
 		}
 
 		if (bundle.contains( "mobs_to_spawn" )) {
@@ -529,9 +537,8 @@ public abstract class Level implements Bundlable {
 	private ArrayList<Class<?extends Mob>> mobsToSpawn = new ArrayList<>();
 	
 	public Mob createMob() {
-		if (mobsToSpawn == null || mobsToSpawn.isEmpty()) {
+		if (mobsToSpawn == null || mobsToSpawn.isEmpty())
 			mobsToSpawn = MobSpawner.getMobRotation(Dungeon.depth);
-		}
 
 		Mob m = Reflection.newInstance(mobsToSpawn.remove(0));
 		ChampionEnemy.rollForChampion(m);
@@ -784,7 +791,7 @@ public abstract class Level implements Bundlable {
 				cooldown = Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
 			}
 		} else if (Dungeon.level.feeling == Feeling.DARK){
-			cooldown = 2*TIME_TO_RESPAWN/3f;
+			cooldown = 4*TIME_TO_RESPAWN/5f;
 		} else {
 			cooldown = TIME_TO_RESPAWN;
 		}

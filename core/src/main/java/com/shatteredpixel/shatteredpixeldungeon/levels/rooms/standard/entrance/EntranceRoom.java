@@ -181,8 +181,14 @@ public class EntranceRoom extends StandardRoom {
 		chances[26] = chances[25] = chances[24] = chances[23] = chances[22] = chances[21];
 	}
 
-	public static StandardRoom createEntrance(){
-		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
+	public static StandardRoom createEntrance(boolean chaos){
+		int depth = Dungeon.depth;
+		if (chaos){
+			do {
+				depth = 1 + Random.Int(24);
+			} while (Dungeon.bossLevel(depth));
+			if (depth <= 2) depth += 2;
+		}
+		return Reflection.newInstance(rooms.get(Random.chances(chances[depth])));
 	}
-
 }
