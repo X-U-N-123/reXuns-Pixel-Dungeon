@@ -39,21 +39,21 @@ public class RatSkull extends Trinket {
 	@Override
 	public String statsDesc() {
 		if (isIdentified()){
-			return Messages.get(this, "stats_desc", (int)(exoticChanceMultiplier(buffedLvl())));
+			return Messages.get(this, "stats_desc", exoticChanceMultiplier(buffedLvl()));
 		} else {
-			return Messages.get(this, "typical_stats_desc", (int)(exoticChanceMultiplier(0)));
+			return Messages.get(this, "typical_stats_desc", exoticChanceMultiplier(0));
 		}
 	}
 
-	public static float exoticChanceMultiplier(){
+	public static int exoticChanceMultiplier(){
 		return exoticChanceMultiplier(trinketLevel(RatSkull.class));
 	}
 
-	public static float exoticChanceMultiplier( int level ){
+	public static int exoticChanceMultiplier( int level ){
 		if (level == -1){
-			return 1f;
+			return 1;
 		} else {
-			return 2f + 1f*level;
+			return 2 + level;
 		}
 	}
 

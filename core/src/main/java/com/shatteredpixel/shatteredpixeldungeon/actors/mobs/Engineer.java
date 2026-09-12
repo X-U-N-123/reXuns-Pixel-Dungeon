@@ -22,10 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Blueprint;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.EngineerSprite;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -44,8 +45,8 @@ public class Engineer extends Mob {//专门恶心叠甲流 :)
 		EXP = 12;
 		maxLvl = 23;
 
-		loot = Generator.Category.SCROLL;
-		lootChance = 0.5f;
+		loot = new Blueprint();
+		lootChance = 1/3f;
 
 		//根据情节，他们宁愿自杀也要保全自由意志，所以不带有亡灵属性
 
@@ -75,7 +76,7 @@ public class Engineer extends Mob {//专门恶心叠甲流 :)
 			damage = Math.round(damage * 1.5f);
 			spend(0.5f);
 			prickCD = Random.NormalFloat(7, 10);
-			Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			if (Dungeon.level.heroFOV[pos]) Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 		}
 
 		return damage;
