@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.PhaseShift;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlink;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -254,6 +255,20 @@ public class WarpBeacon extends ArmorAbility {
 				e.pour(MagicMissile.WardParticle.UP, 0.05f);
 			}
 			else if (e != null) e.on = false;
+		}
+
+		@Override
+		public boolean attachTo(Char target) {
+			if (super.attachTo(target)){
+				Notes.add(Notes.Landmark.MAGE_WARP, depth);
+				return true;
+			} else return false;
+		}
+
+		@Override
+		public void detach() {
+			super.detach();
+			Notes.remove(Notes.Landmark.MAGE_WARP, depth);
 		}
 
 		public static final String POS = "pos";

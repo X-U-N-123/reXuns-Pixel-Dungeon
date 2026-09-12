@@ -36,7 +36,7 @@ public class Resentment extends Mob {
 	{
 		spriteClass = ResentmentSprite.class;
 
-		HP = HT = 55;
+		HP = HT = 50;
 		defenseSkill = 45;
 		viewDistance = Light.DISTANCE;
 

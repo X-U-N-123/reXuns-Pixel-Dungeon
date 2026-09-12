@@ -57,6 +57,6 @@ public class StarPoxCover extends Trinket {
 	}
 
 	public static int callEnenmyRadius(int level) {
-		return Math.max(0, 2 + 2 * level);
+		return Math.max(0, 3 + 3 * level);
 	}
 }

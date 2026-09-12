@@ -643,6 +643,7 @@ public class GameScene extends PixelScene {
 				Random.pushGenerator(Dungeon.seedCurDepth()+1);
 					if (reqSecrets <= 0 && Random.Int(4) < 2+Dungeon.hero.pointsInTalent(Talent.ROGUES_FORESIGHT)){
 						GLog.p(Messages.get(this, "secret_hint"));
+						Notes.add(Notes.Landmark.FORESIGHT);
 					}
 				Random.popGenerator();
 			}

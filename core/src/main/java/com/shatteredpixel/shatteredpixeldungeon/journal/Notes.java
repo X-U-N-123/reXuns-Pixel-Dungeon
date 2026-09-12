@@ -27,6 +27,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.SacrificialFire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfAwareness;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.WaterOfHealth;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.mage.WarpBeacon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
@@ -47,6 +49,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.spells.Scout;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.WeakFloorRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
@@ -60,6 +63,7 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.SpawnerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.StatueSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.WandmakerSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
+import com.shatteredpixel.shatteredpixeldungeon.ui.TalentIcon;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.Visual;
@@ -137,7 +141,9 @@ public class Notes {
 
 		LOST_PACK,
 		BEACON_LOCATION,
+		MAGE_WARP,
 		SCOUT_USED,
+		FORESIGHT,
 		
 		GHOST,
 		RAT_KING,
@@ -145,13 +151,13 @@ public class Notes {
 		TROLL,
 		IMP,
 
-		DEMON_SPAWNER;
+		DEMON_SPAWNER
 	}
 	
 	public static class LandmarkRecord extends Record {
 		
 		protected Landmark landmark;
-		
+
 		public LandmarkRecord() {}
 		
 		public LandmarkRecord(Landmark landmark, int depth ) {
@@ -205,8 +211,12 @@ public class Notes {
 					return Icons.get(Icons.BACKPACK_LRG);
 				case BEACON_LOCATION:
 					return new ItemSprite(ItemSpriteSheet.RETURN_BEACON);
+				case MAGE_WARP:
+					return new ItemSprite(ItemSpriteSheet.ARMOR_MAGE);
 				case SCOUT_USED:
 					return new ItemSprite(ItemSpriteSheet.SCOUT);
+				case FORESIGHT:
+					return new TalentIcon(Talent.ROGUES_FORESIGHT);
 
 				case GHOST:
 					return new Image(new GhostSprite());
@@ -239,7 +249,9 @@ public class Notes {
 
 				case LOST_PACK:     return Messages.get(LostBackpack.class, "name");
 				case BEACON_LOCATION:return Messages.get(BeaconOfReturning.class, "name");
+				case MAGE_WARP:     return Messages.get(WarpBeacon.class, "name");
 				case SCOUT_USED:    return Messages.get(Scout.class, "name");
+				case FORESIGHT:     return Talent.ROGUES_FORESIGHT.title();
 			}
 		}
 
@@ -270,8 +282,12 @@ public class Notes {
 				case MIS_TOWER:         return Messages.get(MissileTower.class, "desc");
 
 				case LOST_PACK:         return Messages.get(LostBackpack.class, "desc");
-				case BEACON_LOCATION:   return Messages.get(BeaconOfReturning.class, "desc");
+				case BEACON_LOCATION:   return Messages.get(BeaconOfReturning.class, "desc")
+									+ "\n\n" + Messages.get(BeaconOfReturning.class, "desc_set", depth);
+				case MAGE_WARP:         return Messages.get(WarpBeacon.class, "short_desc")
+									+ "\n\n" + Messages.get(WarpBeacon.class, "window_desc", depth);
 				case SCOUT_USED:        return Messages.get(Scout.class, "desc_used");
+				case FORESIGHT:         return Messages.get(GameScene.class, "secret_hint");
 
 				case GHOST:         return Messages.get(Ghost.class, "desc");
 				case RAT_KING:      return new RatKing().description(); //variable description based on holiday/run state
@@ -313,7 +329,7 @@ public class Notes {
 	public static class KeyRecord extends Record {
 		
 		protected Key key;
-		
+
 		public KeyRecord() {}
 		
 		public KeyRecord( Key key ){
@@ -710,14 +726,9 @@ public class Notes {
 	}
 
 	public static int customRecordLimit(){
-		return 5;
+		return 10;
 	}
 
-	private static final Comparator<Record> comparator = new Comparator<Record>() {
-		@Override
-		public int compare(Record r1, Record r2) {
-			return r1.order() - r2.order();
-		}
-	};
+	private static final Comparator<Record> comparator = (r1, r2) -> r1.order() - r2.order();
 	
 }
