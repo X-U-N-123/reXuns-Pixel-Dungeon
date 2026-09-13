@@ -110,7 +110,7 @@ public class ItemSpriteSheet {
 		assignItemRect(PULSE,       16, 9);
 		assignItemRect(TENGU_BOMB,      10, 10);
 		assignItemRect(TENGU_SHOCKER,   10, 10);
-		assignItemRect(GEO_BOULDER,     16, 14);
+		assignItemRect(GEO_BOULDER,     16, 15);
 		assignItemRect(BONE_THROWER,    12, 12);
 	}
 
@@ -194,7 +194,7 @@ public class ItemSpriteSheet {
 		assignItemRect(TORCH,           12, 15);
 		assignItemRect(BEACON,          16, 15);
 		assignItemRect(SATCHEL,         16, 13);
-		
+
 		assignItemRect(HONEYPOT,        14, 12);
 		assignItemRect(SHATTPOT,        14, 12);
 		assignItemRect(IRON_KEY,        8,  14);
@@ -1062,6 +1062,7 @@ public class ItemSpriteSheet {
 	public static final int TOKEN   = QUEST+5;
 	public static final int BLOB    = QUEST+6;
 	public static final int SHARD   = QUEST+7;
+	public static final int STATUE  = QUEST+8;
 	static{
 		assignItemRect(DUST,    12, 11);
 		assignItemRect(CANDLE,  12, 12);
@@ -1069,8 +1070,9 @@ public class ItemSpriteSheet {
 		assignItemRect(PICKAXE, 14, 14);
 		assignItemRect(ORE,     15, 15);
 		assignItemRect(TOKEN,   12, 12);
-		assignItemRect(BLOB,    10, 9 );
-		assignItemRect(SHARD,   8 , 10);
+		assignItemRect(BLOB,    10,  9);
+		assignItemRect(SHARD,    8, 10);
+		assignItemRect(STATUE,  10, 16);
 	}
 
 	private static final int BAGS       = xy(1, 19);  //8 slots

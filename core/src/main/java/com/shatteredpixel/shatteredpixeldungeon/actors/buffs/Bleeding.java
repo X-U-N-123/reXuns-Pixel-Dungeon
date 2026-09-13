@@ -47,7 +47,7 @@ import com.watabou.utils.Bundle;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
-public class Bleeding extends Buff {
+public class Bleeding extends Buff implements Buff.DOTbuff {
 
 	{
 		type = buffType.NEGATIVE;
@@ -81,13 +81,13 @@ public class Bleeding extends Buff {
 	}
 
 	public void set( float level, Class source ){
-		if (this.level < level) {
-			this.level = Math.max(this.level, level);
-			this.source = source;
-		}
+		//previously bleed would reduce them dmg, now it dmgs then reduces.
+		//this is essentially pre-calculating the first loss of bleed dmg.
+		//this helps the total incoming DOT calculation be more consistent
+		//avg. total damage is 3x the initial level, and becomes 4x the level with this pre-calc
 		if (target != null && target.alignment != Char.Alignment.ALLY
 				&& Dungeon.hero.hasTalent(Talent.NO_FLOUNDER)
-				&& target.HP * (0.4f - 0.05f * Dungeon.hero.pointsInTalent(Talent.NO_FLOUNDER)) <= this.level){
+				&& target.HP * (0.4f - 0.05f * Dungeon.hero.pointsInTalent(Talent.NO_FLOUNDER)) <= level){
 			if (Char.hasProp(target, Char.Property.BOSS)){
 				spendConstant( -5 );
 			} else {
@@ -103,6 +103,13 @@ public class Bleeding extends Buff {
 				}
 			}
 		}
+
+		level = Random.NormalFloat(level / 2f, level);
+		if (this.level < level) {
+			this.level = Math.max(this.level, level);
+			this.source = source;
+		}
+		if (target != null) target.needsIncomingDOTUpdate = true;
 	}
 
 	public void extend( float amount ) {
@@ -121,14 +128,9 @@ public class Bleeding extends Buff {
 	
 	@Override
 	public boolean act() {
-		if (target.isAlive() && !target.isImmune(Bleeding.class)) {
-			float min = (1 / 2f) + Dungeon.hero.pointsInTalent(Talent.ANTITHROMBIN) / 12f;
-			if (Dungeon.hero.subClass == HeroSubClass.POACHER && target.alignment == Char.Alignment.ALLY){
-				min = 0;
-			}
-			level = Random.NormalFloat(min * level, level);
+		if (target.isAlive()) {
+
 			int dmg = Math.round(level);
-			
 			if (dmg > 0) {
 				
 				target.damage( dmg, this );
@@ -160,10 +162,18 @@ public class Bleeding extends Buff {
 				}
 				
 				spend( TICK );
-			} else {
+			}
+
+			float min = (1 / 2f) + Dungeon.hero.pointsInTalent(Talent.ANTITHROMBIN) / 12f;
+			if (Dungeon.hero.subClass == HeroSubClass.POACHER && target.alignment == Char.Alignment.ALLY){
+				min = 0;
+			}
+			level = Random.NormalFloat(min * level, level);
+			if (Math.round(level) <= 0){
 				detach();
 			}
-			
+			target.needsIncomingDOTUpdate = true;
+
 		} else {
 			
 			detach();
@@ -174,16 +184,24 @@ public class Bleeding extends Buff {
 	}
 
 	@Override
+	public void detach() {
+		target.needsIncomingDOTUpdate = true;
+		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, Healing.class).setHeal(Math.round((2 + ((Hero) target).lvl /2f )
+					* (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH))), 0, 1);
+	}
+
+	@Override
 	public String desc() {
 		return Messages.get(this, "desc", Math.round(level));
 	}
 
 	@Override
-	public void detach() {
-		super.detach();
-		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
-			Buff.affect(target, Healing.class).setHeal(Math.round((2 + ((Hero) target).lvl /2f )
-					* (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH))), 0, 1);
+	public int totalIncomingDMG() {
+		//we reduce level after applying damage, otherwise this would be level*3
+		//note that we also reduce level when applying bleed initially, to simulate old behaviour
+		return Math.round(level*4f); //average damage
 	}
 
 	@Override

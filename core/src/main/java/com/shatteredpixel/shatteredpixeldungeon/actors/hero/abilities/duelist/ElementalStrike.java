@@ -45,9 +45,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
@@ -58,6 +60,8 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.RainbowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
@@ -65,6 +69,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -76,16 +82,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fluctuation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pressurized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wondrous;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Alienating;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blooming;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
@@ -94,6 +104,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Venomous;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -125,14 +137,18 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Chilling.class,     MagicMissile.SPARK_CONE);
 		effectTypes.put(Kinetic.class,      MagicMissile.FORCE_CONE);
 		effectTypes.put(Shocking.class,     MagicMissile.SPARK_CONE);
+		effectTypes.put(Venomous.class,     MagicMissile.POISON_CONE);
 		effectTypes.put(Blocking.class,     MagicMissile.WARD_CONE);
 		effectTypes.put(Blooming.class,     MagicMissile.FOLIAGE_CONE);
+		effectTypes.put(Eldritch.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(Elastic.class,      MagicMissile.FORCE_CONE);
 		effectTypes.put(Lucky.class,        MagicMissile.RAINBOW_CONE);
 		effectTypes.put(Projecting.class,   MagicMissile.PURPLE_CONE);
 		effectTypes.put(Unstable.class,     MagicMissile.RAINBOW_CONE);
+		effectTypes.put(Vorpal.class,       MagicMissile.BLOOD_CONE);
 		effectTypes.put(Peaceful.class,     MagicMissile.RAINBOW_CONE);
 		effectTypes.put(Corrupting.class,   MagicMissile.SHADOW_CONE);
+		effectTypes.put(Crystal.class,      MagicMissile.SPECK + Speck.LIGHT);
 		effectTypes.put(Grim.class,         MagicMissile.SHADOW_CONE);
 		effectTypes.put(Vampiric.class,     MagicMissile.BLOOD_CONE);
 
@@ -141,10 +157,12 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Displacing.class,   MagicMissile.SHADOW_CONE);
 		effectTypes.put(Dazzling.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(Explosive.class,    MagicMissile.SHADOW_CONE);
+		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
+		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
+		effectTypes.put(Pressurized.class,  MagicMissile.SHADOW_CONE);
 		effectTypes.put(Sacrificial.class,  MagicMissile.SHADOW_CONE);
 		effectTypes.put(Wayward.class,      MagicMissile.SHADOW_CONE);
-		effectTypes.put(Polarized.class,    MagicMissile.SHADOW_CONE);
-		effectTypes.put(Friendly.class,     MagicMissile.SHADOW_CONE);
+		effectTypes.put(Wondrous.class,     MagicMissile.SHADOW_CONE);
 		effectTypes.put(Rusted.class,       MagicMissile.SHADOW_CONE);
 		effectTypes.put(Fluctuation.class,  MagicMissile.SHADOW_CONE);
 
@@ -369,6 +387,15 @@ public class ElementalStrike extends ArmorAbility {
 				}
 			}
 			Dungeon.observe();
+
+		//*** Pressurized ***
+		} else if (ench instanceof Pressurized) {
+			for (int cell : cone.cells) {
+				if (Random.Float() < powerMulti/2f) {
+					Splash.at(cell, 0x5bc1e3, 5);
+					Dungeon.level.setCellToWater(true, cell);
+				}
+			}
 		}
 	}
 
@@ -413,9 +440,37 @@ public class ElementalStrike extends ArmorAbility {
 				hero.buff(Kinetic.ConservedDamage.class).detach();
 			}
 
+			//*** Venomous **
+		} else if (ench instanceof Venomous){
+			for (Char ch : affected){
+				if (ch != primaryTarget) {
+					Poison p = ch.buff(Poison.class);
+					if (p == null) {
+						p = Buff.affect(ch, Poison.class);
+						p.delay(3f);
+					}
+					//27 total damage at base
+					p.extend(powerMulti*10);
+				}
+			}
+
 			//*** Chilling ***
 		} else if (ench instanceof Chilling){
 			Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(2 * affected.size());
+
+		//*** Venomous **
+		} else if (ench instanceof Venomous){
+			for (Char ch : affected){
+				if (ch != primaryTarget) {
+					Poison p = ch.buff(Poison.class);
+					if (p == null) {
+						p = Buff.affect(ch, Poison.class);
+						p.delay(3f);
+					}
+					//27 total damage at base
+					p.extend(powerMulti*10);
+				}
+			}
 
 			//*** Blooming ***
 		} else if (ench instanceof Blooming){
@@ -445,6 +500,12 @@ public class ElementalStrike extends ArmorAbility {
 						true,
 						true,
 						ElementalStrike.this);
+			}
+
+		//*** Eldritch ***
+		} else if (ench instanceof Eldritch){
+			for (Char ch : affected){
+				Buff.affect(ch, Terror.class, powerMulti*10).object = hero.id();
 			}
 
 		//*** Lucky ***
@@ -478,6 +539,14 @@ public class ElementalStrike extends ArmorAbility {
 				}
 			}
 
+		//*** Vorpal ***
+		} else if (ench instanceof Vorpal){
+			for (Char ch : affected){
+				if (ch != primaryTarget) {
+					Buff.affect(ch, Bleeding.class).set(powerMulti*10);
+				}
+			}
+
 		//*** Corrupting ***
 		} else if (ench instanceof Corrupting){
 			for (Char ch : affected){
@@ -492,6 +561,15 @@ public class ElementalStrike extends ArmorAbility {
 						Corruption.corruptionHeal(ch);
 						AllyBuff.affectAndLoot((Mob) ch, hero, Corruption.class);
 					}
+				}
+			}
+
+		//*** Crystal **
+		} else if (ench instanceof Crystal){
+			for (Char ch : affected){
+				if (ch != primaryTarget) {
+					ch.damage(Math.round(powerMulti* Hero.heroDamageIntRange(10, 20)), ElementalStrike.this);
+					((Crystal) ench).repair(null, false, 4f*powerMulti);
 				}
 			}
 
@@ -602,6 +680,40 @@ public class ElementalStrike extends ArmorAbility {
 				if (Random.Float() < 0.5f*powerMulti){
 					Buff.affect(ch, Charm.class, 6f).object = hero.id();
 				}
+			}
+
+		//*** Wondrous ***
+		} else if (ench instanceof Wondrous){
+			boolean positiveOnly = Random.Float() < WondrousResin.positiveCurseEffectChance();
+			for (Char ch : affected){
+				if (Random.Float() < powerMulti/2f){
+					Ballistica aim = new Ballistica(hero.pos, ch.pos, Ballistica.STOP_TARGET);
+					ch.sprite.emitter().burst(RainbowParticle.BURST, 25);
+					CursedWand.randomValidEffect(null, hero, aim, positiveOnly).effect(null, hero, aim, positiveOnly);
+				}
+			}
+
+		//*** Pressurized ***
+		} else if (ench instanceof Pressurized){
+			//sorts affected from furthest to closest
+			Collections.sort(affected, new Comparator<Char>() {
+				@Override
+				public int compare(Char a, Char b) {
+					return Dungeon.level.distance(hero.pos, a.pos) - Dungeon.level.distance(hero.pos, b.pos);
+				}
+			});
+
+			for (Char ch : affected){
+				if (ch == primaryTarget && oldEnemyPos != primaryTarget.pos) continue;
+
+				Ballistica aim = new Ballistica(hero.pos, ch.pos, Ballistica.WONT_STOP);
+				int knockback = Math.round(2*powerMulti);
+				WandOfBlastWave.throwChar(ch,
+						new Ballistica(ch.pos, aim.collisionPos, Ballistica.MAGIC_BOLT),
+						knockback,
+						true,
+						true,
+						ElementalStrike.this);
 			}
 
 			//*** Rusted ***

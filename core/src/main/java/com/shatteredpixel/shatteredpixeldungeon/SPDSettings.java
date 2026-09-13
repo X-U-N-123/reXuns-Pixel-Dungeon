@@ -225,6 +225,7 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_INTRO		= "intro";
 
 	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
+	public static final String KEY_VAULT_INJURE_WARNS = "vault_injure_warns";
 
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
@@ -272,6 +273,14 @@ public class SPDSettings extends GameSettings {
 
 	public static boolean victoryNagged() {
 		return getBoolean(KEY_VICTORY_NAGGED, false);
+	}
+
+	public static void vaultInjureWarns( int value ) {
+		put( KEY_VAULT_INJURE_WARNS, value );
+	}
+
+	public static int vaultInjureWarns() {
+		return getInt(KEY_VAULT_INJURE_WARNS, 0);
 	}
 
 	//Input

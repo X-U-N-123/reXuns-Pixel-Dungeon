@@ -92,7 +92,7 @@ public class Regeneration extends Buff {
 		if (lock != null && !lock.regenOn()){
 			return false;
 		}
-		if (Dungeon.level instanceof VaultLevel || Dungeon.level instanceof LastLevel){
+		if (Dungeon.level instanceof LastLevel){
 			return false;
 		}
 		return true;

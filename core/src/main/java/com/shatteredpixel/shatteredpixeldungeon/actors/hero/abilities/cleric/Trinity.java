@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfFireblast;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.WornShortsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Antimatter;
@@ -144,6 +145,12 @@ public class Trinity extends ArmorAbility {
 								hide();
 							} else {
 								Buff.prolong(Dungeon.hero, BodyForm.BodyFormBuff.class, BodyForm.duration()).setEffect(bodyForm);
+
+								//Crystal is set to 30-60% durability (~10-20 melee weapon uses) based on talent tier
+								if (bodyForm instanceof Crystal){
+									((Crystal) bodyForm).setDurability(BodyForm.duration()*1.5f);
+								}
+
 								Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
 								Weapon w = new WornShortsword();
 								if (Dungeon.hero.belongings.weapon() != null) {

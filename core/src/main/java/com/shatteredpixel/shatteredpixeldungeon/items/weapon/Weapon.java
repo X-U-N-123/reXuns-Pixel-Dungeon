@@ -56,16 +56,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fluctuation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pressurized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wondrous;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Alienating;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blooming;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
@@ -74,6 +78,8 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projec
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Venomous;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Longinus;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
@@ -144,8 +150,6 @@ abstract public class Weapon extends KindOfWeapon {
 	@Override
 	public int proc( Char attacker, Char defender, int damage ) {
 
-		boolean becameAlly = false;
-		boolean wasAlly = defender.alignment == Char.Alignment.ALLY;
 		if (attacker.buff(MagicImmune.class) == null) {
 			Enchantment trinityEnchant = null;
 			//only when it's the hero or a char that uses the hero's weapon
@@ -162,14 +166,11 @@ abstract public class Weapon extends KindOfWeapon {
 				if (enchantment != null &&
 						(((Hero) attacker).subClass == HeroSubClass.PALADIN || hasCurseEnchant())){
 					damage = enchantment.proc(this, attacker, defender, damage);
-					if (defender.alignment == Char.Alignment.ALLY && !wasAlly){
-						becameAlly = true;
-					}
 				}
-				if (defender.isAlive() && !becameAlly && trinityEnchant != null){
+				if (defender.isAlive() && trinityEnchant != null){
 					damage = trinityEnchant.proc(this, attacker, defender, damage);
 				}
-				if (defender.isAlive() && !becameAlly) {
+				if (defender.isAlive()) {
 					int dmg = ((Hero) attacker).subClass == HeroSubClass.PALADIN ? 6 : 2;
 					defender.damage(Math.round(dmg * Enchantment.genericProcChanceMultiplier(attacker)), HolyWeapon.INSTANCE);
 				}
@@ -177,18 +178,15 @@ abstract public class Weapon extends KindOfWeapon {
 			} else {
 				if (enchantment != null) {
 					damage = enchantment.proc(this, attacker, defender, damage);
-					if (defender.alignment == Char.Alignment.ALLY && !wasAlly) {
-						becameAlly = true;
-					}
 				}
 
-				if (defender.isAlive() && !becameAlly && trinityEnchant != null){
+				if (defender.isAlive() && trinityEnchant != null){
 					damage = trinityEnchant.proc(this, attacker, defender, damage);
 				}
 			}
 
 			if (attacker instanceof Hero && isEquipped((Hero) attacker) &&
-					attacker.buff(Smite.SmiteTracker.class) != null && !becameAlly){
+					attacker.buff(Smite.SmiteTracker.class) != null && defender.isAlive()){
 				defender.damage(Smite.bonusDmg((Hero) attacker, defender), Smite.INSTANCE);
 			}
 		}
@@ -487,6 +485,11 @@ abstract public class Weapon extends KindOfWeapon {
 			} else if (level() >= 4 && Random.Float(10) < Math.pow(2, level()-4)){
 				enchant(null);
 			}
+
+			//if we still have a crystal enchant, repair it (just like thrown weapon repair)
+			if (enchantment instanceof Crystal){
+				((Crystal) enchantment).repair(this, false, 100);
+			}
 		}
 		
 		cursed = false;
@@ -613,14 +616,17 @@ abstract public class Weapon extends KindOfWeapon {
 	public static abstract class Enchantment implements Bundlable {
 
 		public static final Class<?>[] common = new Class<?>[]{
-				Blazing.class, Chilling.class, Kinetic.class, Shocking.class};
+				Blazing.class, Chilling.class, Kinetic.class, Shocking.class, Venomous.class
+		};
 
 		public static final Class<?>[] uncommon = new Class<?>[]{
-				Blocking.class, Blooming.class, Elastic.class,
-				Lucky.class, Projecting.class, Unstable.class, Peaceful.class};
+				Blocking.class, Blooming.class, Eldritch.class, Elastic.class,
+				Lucky.class, Projecting.class, Unstable.class, Vorpal.class, Peaceful.class
+		};
 
 		public static final Class<?>[] rare = new Class<?>[]{
-				Corrupting.class, Grim.class, Vampiric.class, Alienating.class};
+				Corrupting.class, Crystal.class, Grim.class, Vampiric.class, Alienating.class
+		};
 
 		public static final float[] typeChances = new float[]{
 				35, //8.75% each
@@ -629,10 +635,9 @@ abstract public class Weapon extends KindOfWeapon {
 		};
 
 		public static final Class<?>[] curses = new Class<?>[]{
-				Annoying.class, Displacing.class, Dazzling.class, Explosive.class, Rusted.class, Sacrificial.class,
-				Wayward.class, Polarized.class, Friendly.class, BarricadeCurse.class, Fluctuation.class
+				Annoying.class, BarricadeCurse.class, Displacing.class, Dazzling.class, Explosive.class, Fluctuation.class, Friendly.class,
+				Sacrificial.class, Wayward.class, Polarized.class, Pressurized.class, Rusted.class, Wondrous.class
 		};
-		
 			
 		public abstract int proc( Weapon weapon, Char attacker, Char defender, int damage );
 

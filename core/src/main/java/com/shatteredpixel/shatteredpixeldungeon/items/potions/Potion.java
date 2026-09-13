@@ -39,6 +39,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.ItemStatusHandler;
 import com.shatteredpixel.shatteredpixeldungeon.items.Recipe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.AquaBrew;
+import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.Brew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.brews.HeavinessBrew;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfAquaticRejuvenation;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfArcaneArmor;
@@ -140,14 +141,14 @@ public class Potion extends Item {
 		canThrowPots.add(PotionOfLevitation.class);
 		canThrowPots.add(PotionOfHaste.class);
 		canThrowPots.add(PotionOfInvisibility.class);
-		
+
 		//exotic
 		canThrowPots.add(PotionOfCleansing.class);
 		canThrowPots.add(PotionOfEarthenArmor.class);
 		canThrowPots.add(PotionOfMagicalSight.class);
 		canThrowPots.add(PotionOfShielding.class);
 		canThrowPots.add(PotionOfStamina.class);
-		
+
 		//elixirs
 		canThrowPots.add(ElixirOfHoneyedHealing.class);
 		canThrowPots.add(ElixirOfAquaticRejuvenation.class);
@@ -349,7 +350,7 @@ public class Potion extends Item {
 			}
 			shatter( cell );
 
-			if (!anonymous) {
+			if (!anonymous && (mustThrowPots.contains(getClass()) || canThrowPots.contains(getClass()) || this instanceof Brew)) {
 				Catalog.countUse(getClass());
 				if (Random.Float() < talentChance) {
 					Talent.onPotionUsed(curUser, cell, talentFactor);
@@ -510,7 +511,7 @@ public class Potion extends Item {
 		potionToSeed.put(PotionOfHealing.class,		Sungrass.Seed.class);
 		potionToSeed.put(PotionOfHaste.class,		Swiftthistle.Seed.class);
 	}
-	
+
 	public static class SeedToPotion extends Recipe {
 		
 		public static HashMap<Class<?extends Plant.Seed>, Class<?extends Potion>> types = new HashMap<>();

@@ -60,6 +60,7 @@ public class StatusPane extends Component {
 
 	private final Image shieldHP;
 	private final Image hp;
+	private final Image Dot; //a visual darkening over HP and shield that shows total incoming DOT
 	private final BitmapText hpText;
 	private final Button heroInfoOnBar;
 
@@ -145,9 +146,11 @@ public class StatusPane extends Component {
 		else        hp = new Image(asset, 0, 38, 50, 5);
 		add( hp );
 
-		if (large)  hunger = new Image(asset, 0, 94, 128, 9);
-		else        hunger = new Image(asset, 0, 43, 47, 5);
-		add( hunger );
+		if (large)  Dot = new Image(asset, 0, 103, 128, 9);
+		else        Dot = new Image(asset, 0, 40, 50, 4);
+		Dot.hardlight(0, 0, 0);
+		Dot.alpha(0.25f);
+		add( Dot );
 
 		hpText = new BitmapText(PixelScene.pixelFont);
 		hpText.alpha(0.6f);
@@ -218,8 +221,8 @@ public class StatusPane extends Component {
 			exp.x = x + 30;
 			exp.y = y + 30;
 
-			hp.x = shieldHP.x = x + 30;
-			hp.y = shieldHP.y = y + 19;
+			hp.x = shieldHP.x = Dot.x = x + 30;
+			hp.y = shieldHP.y = Dot.y = y + 19;
 
 			hunger.x = x + 30;
 			hunger.y = y + 8;
@@ -272,8 +275,8 @@ public class StatusPane extends Component {
 				hunger.frame(50-hpWidth, 43, hpWidth - 3, 5);
 			}
 
-			hp.x = shieldHP.x = hpleft;
-			hp.y = shieldHP.y = y + 2;
+			hp.x = shieldHP.x = Dot.x = hpleft;
+			hp.y = shieldHP.y = Dot.y = y + 2;
 
 			hunger.x = hpleft;
 			hunger.y = y + 9;
@@ -325,6 +328,7 @@ public class StatusPane extends Component {
 		
 		int health = Dungeon.hero.HP;
 		int shield = Dungeon.hero.shielding();
+		int incomingDOT = Dungeon.hero.incomingDOT();
 		int max = Dungeon.hero.HT;
 
 		Hunger hungerBuff = Dungeon.hero.buff(Hunger.class);
@@ -344,16 +348,20 @@ public class StatusPane extends Component {
 
 		float healthPercent = health/(float)max;
 		float shieldPercent = shield/(float)max;
+		float DOTPercent    = incomingDOT/(float)max;
 
 		if (healthPercent + shieldPercent > 1f){
 			float excess = healthPercent + shieldPercent;
 			healthPercent /= excess;
 			shieldPercent /= excess;
+			DOTPercent    /= excess;
 		}
 
 		hp.scale.x = healthPercent;
 		shieldHP.scale.x = healthPercent + shieldPercent;
 		if (hungerBuff != null) hunger.scale.x = 1 - hungerBuff.level / Hunger.STARVING;
+		Dot.scale.x = Math.min(DOTPercent, shieldHP.scale.x);
+		Dot.x = shieldHP.x + shieldHP.width() - Dot.width();
 
 		if (oldHP != health || oldShield != shield || oldMax != max){
 			if (shield <= 0) {

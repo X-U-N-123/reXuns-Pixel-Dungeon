@@ -387,8 +387,8 @@ public class Dungeon {
 			level = new DeadEndLevel();
 		}
 
-		//dead end levels (and vault levels for now!) get cleared, don't count as generated
-		if (!(level instanceof DeadEndLevel || level instanceof VaultLevel)){
+		//dead end levels get cleared, don't count as generated
+		if (!(level instanceof DeadEndLevel)){
 			//this assumes that we will never have a depth value outside the range 0 to 999
 			// or -500 to 499, etc.
 			if (!generatedLevels.contains(depth + 1000*branch)) {
@@ -466,12 +466,12 @@ public class Dungeon {
 	}
 
 	public static boolean interfloorTeleportAllowed(int depth){
-        return !level.locked
-            && !(level instanceof MiningLevel)
-            && (hero == null || (hero.belongings.getItem(Amulet.class) == null
-            && (hero.buff(Collapse.class) == null || hero.buff(Collapse.class).canReturnTo(depth))
-			&& (hero.buff(Challenge.DuelParticipant.class) == null || !hero.hasTalent(Talent.BURN_BRIDGES))));
-    }
+		return !level.locked
+				&& !(level instanceof MiningLevel) && !(level instanceof VaultLevel)
+				&& (hero == null || (hero.belongings.getItem(Amulet.class) == null
+				&& (hero.buff(Collapse.class) == null || hero.buff(Collapse.class).canReturnTo(depth))
+				&& (hero.buff(Challenge.DuelParticipant.class) == null || !hero.hasTalent(Talent.BURN_BRIDGES))));
+	}
 	
 	public static void switchLevel( final Level level, int pos ) {
 
@@ -962,6 +962,9 @@ public class Dungeon {
 				if (m instanceof Mimic && m.alignment == Char.Alignment.NEUTRAL && ((Mimic) m).stealthy()){
 					continue;
 				}
+				if (Char.hasProp(m, Char.Property.OBJECT)){
+					continue;
+				}
 
 				BArray.or( level.visited, level.heroFOV, m.pos - 1 - level.width(), 3, level.visited );
 				BArray.or( level.visited, level.heroFOV, m.pos - 1, 3, level.visited );
@@ -992,7 +995,7 @@ public class Dungeon {
 
 		for (TalismanOfForesight.CharAwareness c : hero.buffs(TalismanOfForesight.CharAwareness.class)){
 			Char ch = (Char) Actor.findById(c.charID);
-			if (ch == null || !ch.isAlive()) continue;
+			if (ch == null || !ch.isAlive() || Char.hasProp(ch, Char.Property.OBJECT)) continue;
 			BArray.or( level.visited, level.heroFOV, ch.pos - 1 - level.width(), 3, level.visited );
 			BArray.or( level.visited, level.heroFOV, ch.pos - 1, 3, level.visited );
 			BArray.or( level.visited, level.heroFOV, ch.pos - 1 + level.width(), 3, level.visited );

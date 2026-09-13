@@ -71,6 +71,7 @@ public class MagicMissile extends Emitter {
 	public static final int SHAMAN_BLUE     = 12;
 	public static final int SHAMAN_PURPLE   = 13;
 	public static final int SHAMAN_GREEN    = 17;
+	public static final int SHAMAN_ELMO     = 18;
 	public static final int ELMO            = 14;
 	public static final int POISON          = 15;
 	public static final int LIGHT_MISSILE   = 16;
@@ -88,6 +89,7 @@ public class MagicMissile extends Emitter {
 	public static final int PURPLE_CONE     = 111;
 	public static final int SPARK_CONE      = 112;
 	public static final int BLOOD_CONE      = 113;
+	public static final int POISON_CONE     = 114;
 
 	//use SPECK + the constant of the Speck you want. e.g. MagicMissile.SPECK + Speck.TOXIC
 	public static final int SPECK           = 1000;
@@ -195,6 +197,10 @@ public class MagicMissile extends Emitter {
 				size( 2 );
 				pour( ShamanParticle.GREEN, 0.01f );
 				break;
+			case SHAMAN_ELMO:
+				size( 2 );
+				pour( ShamanParticle.ELMO, 0.01f );
+				break;
 			case ELMO:
 				size( 5 );
 				pour( ElmoParticle.FACTORY, 0.01f );
@@ -259,6 +265,10 @@ public class MagicMissile extends Emitter {
 			case BLOOD_CONE:
 				size( 10 );
 				pour( BloodParticle.FACTORY, 0.03f );
+				break;
+			case POISON_CONE:
+				size( 10 );
+				pour( PoisonParticle.MISSILE, 0.03f );
 				break;
 		}
 
@@ -470,7 +480,19 @@ public class MagicMissile extends Emitter {
 						.reset( x, y, ColorMath.random(0x008800, 0x22BB22) );
 			}
 		};
-		
+
+		public static final Emitter.Factory ELMO = new Factory() {
+			@Override
+			public void emit( Emitter emitter, int index, float x, float y ) {
+				((ShamanParticle)emitter.recycle( ShamanParticle.class ))
+						.reset( x, y, ColorMath.random(0x66EE99, 0x22EE66) );
+			}
+			@Override
+			public boolean lightMode() {
+				return true;
+			}
+		};
+
 		int startColor;
 		int endColor;
 		
@@ -628,10 +650,15 @@ public class MagicMissile extends Emitter {
 			public void emit( Emitter emitter, int index, float x, float y ) {
 				((ForceParticle)emitter.recycle( ForceParticle.class )).reset( index, x, y );
 			}
+
+			@Override
+			public boolean lightMode() {
+				return true;
+			}
 		};
 
 		public void reset( int index, float x, float y ) {
-			super.reset( x, y, 0xFFFFFF, 8, 0.5f );
+			super.reset( x, y, ColorMath.interpolate(0xFFCC99, 0xBB4411, Random.Float()), 8, 0.5f );
 
 			speed.polar( PointF.PI2 / 8 * index, 12 );
 			this.x -= speed.x * lifespan;

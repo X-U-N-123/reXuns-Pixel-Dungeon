@@ -119,8 +119,6 @@ public class Badges {
 		ITEMS_CRAFTED_3             ( 47 ),
 		BOSS_SLAIN_2                ( 48 ),
 		BOSS_SLAIN_3                ( 49 ),
-		ALL_POTIONS_IDENTIFIED      , //still exists internally for pre-2.5 saves
-		ALL_SCROLLS_IDENTIFIED      , //still exists internally for pre-2.5 saves
 		CATALOG_POTIONS_SCROLLS     ( 50 ),
 		DEATH_FROM_ENEMY_MAGIC      ( 51 ),
 		DEATH_FROM_FRIENDLY_MAGIC   ( 52 ),
@@ -164,8 +162,6 @@ public class Badges {
 		ITEMS_CRAFTED_4             ( 77 ),
 		ITEMS_CRAFTED_5             ( 78 ),
 		BOSS_SLAIN_4                ( 79 ),
-		ALL_RINGS_IDENTIFIED        , //still exists internally for pre-2.5 saves
-		ALL_ARTIFACTS_IDENTIFIED    , //still exists internally for pre-2.5 saves
 		ALL_RARE_ENEMIES            ( 80, BadgeType.JOURNAL ), //no longer all, just 10 as of v3.1
 		DEATH_FROM_GRIM_TRAP        ( 81 ), //also disintegration traps
 		VICTORY                     ( 82 ),
@@ -183,10 +179,6 @@ public class Badges {
 		HAPPY_END                   ( 99 ),
 		HAPPY_END_REMAINS           ( 100 ),
 		RODNEY                      ( 101, BadgeType.JOURNAL ),
-		ALL_WEAPONS_IDENTIFIED      , //still exists internally for pre-2.5 saves
-		ALL_ARMOR_IDENTIFIED        , //still exists internally for pre-2.5 saves
-		ALL_WANDS_IDENTIFIED        , //still exists internally for pre-2.5 saves
-		ALL_ITEMS_IDENTIFIED        , //still exists internally for pre-2.5 saves
 		VICTORY_WARRIOR,
 		VICTORY_MAGE,
 		VICTORY_ROGUE,
@@ -292,6 +284,15 @@ public class Badges {
 	
 	private static final HashSet<String> removedBadges = new HashSet<>();
 	static{
+		//used only for save conversion since v2.5.0, actually removed in v4.0.0
+		removedBadges.add("ALL_WEAPONS_IDENTIFIED");
+		removedBadges.add("ALL_ARMOR_IDENTIFIED");
+		removedBadges.add("ALL_WANDS_IDENTIFIED");
+		removedBadges.add("ALL_RINGS_IDENTIFIED");
+		removedBadges.add("ALL_ARTIFACTS_IDENTIFIED");
+		removedBadges.add("ALL_POTIONS_IDENTIFIED");
+		removedBadges.add("ALL_SCROLLS_IDENTIFIED");
+		removedBadges.add("ALL_ITEMS_IDENTIFIED");
 		removedBadges.add("XUANWU");
 	}
 
@@ -1351,15 +1352,7 @@ public class Badges {
 			{Badge.DEATH_FROM_ENEMY_MAGIC, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_FRIENDLY_MAGIC, Badge.DEATH_FROM_ALL},
 			{Badge.DEATH_FROM_SACRIFICE, Badge.DEATH_FROM_ALL},
-			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL},
-
-			{Badge.ALL_WEAPONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_ARMOR_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_WANDS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_RINGS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_ARTIFACTS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_POTIONS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED},
-			{Badge.ALL_SCROLLS_IDENTIFIED, Badge.ALL_ITEMS_IDENTIFIED}
+			{Badge.DEATH_FROM_GRIM_TRAP, Badge.DEATH_FROM_ALL}
 	};
 	
 	public static List<Badge> filterReplacedBadges( List<Badge> badges ) {

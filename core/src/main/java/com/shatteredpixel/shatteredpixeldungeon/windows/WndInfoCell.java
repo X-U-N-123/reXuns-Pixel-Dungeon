@@ -54,8 +54,18 @@ public class WndInfoCell extends Window {
 		for (CustomTilemap i : Dungeon.level.customTiles){
 			if ((x >= i.tileX && x < i.tileX+i.tileW) &&
 					(y >= i.tileY && y < i.tileY+i.tileH)){
-				if ((customImage = i.image(x - i.tileX, y - i.tileY)) != null) {
-					break;
+				if (i.image(x - i.tileX, y - i.tileY) != null) {
+					customImage = i.image(x - i.tileX, y - i.tileY);
+				}
+			}
+		}
+		if (customImage == null){
+			for (CustomTilemap i : Dungeon.level.customTerrain){
+				if ((x >= i.tileX && x < i.tileX+i.tileW) &&
+						(y >= i.tileY && y < i.tileY+i.tileH)){
+					if (i.image(x - i.tileX, y - i.tileY) != null) {
+						customImage = i.image(x - i.tileX, y - i.tileY);
+					}
 				}
 			}
 		}
@@ -83,12 +93,23 @@ public class WndInfoCell extends Window {
 			if ((x >= i.tileX && x < i.tileX+i.tileW) &&
 					(y >= i.tileY && y < i.tileY+i.tileH)){
 				if (i.image(x - i.tileX, y - i.tileY) != null) {
-					x -= i.tileX;
-					y -= i.tileY;
 					customTile = i;
-					break;
 				}
 			}
+		}
+		if (customTile == null){
+			for (CustomTilemap i : Dungeon.level.customTerrain){
+				if ((x >= i.tileX && x < i.tileX+i.tileW) &&
+						(y >= i.tileY && y < i.tileY+i.tileH)){
+					if (i.image(x - i.tileX, y - i.tileY) != null) {
+						customTile = i;
+					}
+				}
+			}
+		}
+		if (customTile != null){
+			x -= customTile.tileX;
+			y -= customTile.tileY;
 		}
 
 		if (customTile != null && customTile.name(x, y) != null){
@@ -109,14 +130,24 @@ public class WndInfoCell extends Window {
 			if ((x >= i.tileX && x < i.tileX+i.tileW) &&
 					(y >= i.tileY && y < i.tileY+i.tileH)){
 				if (i.image(x - i.tileX, y - i.tileY) != null) {
-					x -= i.tileX;
-					y -= i.tileY;
 					customTile = i;
-					break;
 				}
 			}
 		}
-
+		if (customTile == null){
+			for (CustomTilemap i : Dungeon.level.customTerrain){
+				if ((x >= i.tileX && x < i.tileX+i.tileW) &&
+						(y >= i.tileY && y < i.tileY+i.tileH)){
+					if (i.image(x - i.tileX, y - i.tileY) != null) {
+						customTile = i;
+					}
+				}
+			}
+		}
+		if (customTile != null){
+			x -= customTile.tileX;
+			y -= customTile.tileY;
+		}
 
 		String desc = "";
 
@@ -144,20 +175,19 @@ public class WndInfoCell extends Window {
 		RenderedTextBlock info = PixelScene.renderTextBlock(6);
 		add(info);
 
-		if (Dungeon.level.heroFOV[cell]) {
-			for (Blob blob : Dungeon.level.blobs.values()) {
-				if (blob.volume > 0 && blob.cur[cell] > 0 && blob.tileDesc() != null) {
-					if (desc.length() > 0) {
-						desc += "\n\n";
-					}
-					desc += blob.tileDesc();
+		for (Blob blob : Dungeon.level.blobs.values()) {
+			if ((Dungeon.level.heroFOV[cell] || blob.alwaysVisible)
+					&& blob.volume > 0 && blob.cur[cell] > 0 && blob.tileDesc() != null) {
+				if (desc.length() > 0) {
+					desc += "\n\n";
+				}
+				desc += blob.tileDesc();
 					if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)) {
 						desc += "\n" + Messages.get(Blob.class, "dev_desc",
 							blob.getClass().getSimpleName(), Messages.decimalFormat("#.##", blob.cooldown()),
 								blob.id(), blob.actPriority());
 						desc += "\n" + Messages.get(Blob.class, "remain", blob.cur[cell]);
 					}
-				}
 			}
 		}
 		

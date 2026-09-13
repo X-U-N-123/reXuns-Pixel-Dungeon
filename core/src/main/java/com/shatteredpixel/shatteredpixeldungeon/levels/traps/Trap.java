@@ -32,6 +32,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTrap;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Sample;
@@ -137,7 +138,11 @@ public abstract class Trap implements Bundlable {
 	}
 
 	public String desc() {
-		String desc = Messages.get(this, "desc");
+		String desc = "";
+		if (!active){
+			desc += Messages.get(WndInfoTrap.class, "inactive") + "\n\n";
+		}
+		desc += Messages.get(this, "desc");
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
 			desc += "\n\n" + Messages.get(Trap.class, "class_name", getClass().getSimpleName());
 		return desc;
