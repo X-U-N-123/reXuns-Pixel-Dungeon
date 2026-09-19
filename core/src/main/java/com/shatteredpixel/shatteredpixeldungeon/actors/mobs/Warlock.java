@@ -84,7 +84,7 @@ public class Warlock extends Mob {
 	
 	protected boolean doAttack( Char enemy ) {
 
-		if (Dungeon.level.adjacent( pos, enemy.pos )
+		if (Dungeon.level.adjacent( pos, enemy.pos ) || buff(MagicImmune.class) != null
 				|| new Ballistica( pos, enemy.pos, Ballistica.MAGIC_BOLT).collisionPos != enemy.pos) {
 			
 			return super.doAttack( enemy );

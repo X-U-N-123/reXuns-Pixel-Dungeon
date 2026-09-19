@@ -25,12 +25,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.food.Blandfruit;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
 import com.watabou.utils.Random;
 
 public class GardenRoom extends SpecialRoom {
@@ -49,16 +49,16 @@ public class GardenRoom extends SpecialRoom {
 		int pos = plantPos(level);
 
 		if (bushes == 0) {
-			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) Dungeon.level.drop(seed, pos);
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) level.drop(seed, pos);
 			else level.plant(seed, pos);
 		} else if (bushes == 1) {
-			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) Dungeon.level.drop(seed, pos);
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) level.drop(new Blandfruit(), pos);
 			else level.plant(new BlandfruitBush.Seed(), pos);
 		} else if (Random.Int(5) == 0) {
 			int bushPos = plantPos(level);
 			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
-				Dungeon.level.drop(seed, pos);
-				Dungeon.level.drop(new Starflower.Seed(), bushPos);
+				level.drop(seed, pos);
+				level.drop(new Blandfruit(), bushPos);
 			} else {
 				level.plant(seed, pos);
 				level.plant(new BlandfruitBush.Seed(), bushPos);

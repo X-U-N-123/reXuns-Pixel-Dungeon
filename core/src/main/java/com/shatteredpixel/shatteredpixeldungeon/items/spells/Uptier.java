@@ -37,6 +37,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.MissileWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -101,7 +102,11 @@ public class Uptier extends InventorySpell {
 
         } else if (item instanceof Weapon) {//change weapon
 
-            Generator.Category cat = Generator.wepTiers[((Weapon)item).tier];
+            Generator.Category cat;
+            if (item instanceof MissileWeapon)
+                cat = Generator.misTiers[((Weapon)item).tier];
+            else
+                cat = Generator.wepTiers[((Weapon)item).tier];
 
             do {
                 result = (Weapon)Generator.randomUsingDefaults(cat);
@@ -141,7 +146,7 @@ public class Uptier extends InventorySpell {
                 }
                 Dungeon.hero.spend(-Dungeon.hero.cooldown()); //cancel equip/unequip time
             } else {
-                item.detach(Dungeon.hero.belongings.backpack);
+                item.detachAll(Dungeon.hero.belongings.backpack);
                 if (!result.collect()) {
                     Dungeon.level.drop(result, curUser.pos).sprite.drop();
                 }
