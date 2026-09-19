@@ -68,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.RecallInscription;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.CheckedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
@@ -225,7 +224,7 @@ public enum Talent {
 	//Duelist T1
 	STRENGTHENING_MEAL(192), ADVENTURERS_INTUITION(193), TESTED_CHARGE(194), PATIENT_STRIKE(195), AGGRESSIVE_BARRIER(196),
 	//Duelist T2
-	FOCUSED_MEAL(197), LIQUID_AGILITY(198), WEAPON_RECHARGING(199), LETHAL_HASTE(200), SWIFT_EQUIP(201), POWER_ACCUMULATION(202),
+	FOCUSED_MEAL(197), LIQUID_AGILITY(198), WEAPON_RECHARGING(199), LETHAL_HASTE(200), SWIFT_EQUIP(201), ENHANCED_ABILITY(202),
 	//Duelist T3
 	PRECISE_ASSAULT(203, 3), DEADLY_FOLLOWUP(204, 3), AGILE_COUNTATK(205, 3),
 	//Champion T3
@@ -1840,7 +1839,7 @@ public enum Talent {
 				Collections.addAll(tierTalents, INVIGORATING_MEAL, LIQUID_NATURE, REJUVENATING_STEPS, HEIGHTENED_SENSES, DURABLE_PROJECTILES, IVY_BIND);
 				break;
 			case DUELIST:
-				Collections.addAll(tierTalents, FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP, POWER_ACCUMULATION);
+				Collections.addAll(tierTalents, FOCUSED_MEAL, LIQUID_AGILITY, WEAPON_RECHARGING, LETHAL_HASTE, SWIFT_EQUIP, ENHANCED_ABILITY);
 				break;
 			case CLERIC:
 				Collections.addAll(tierTalents, ENLIGHTENING_MEAL, RECALL_INSCRIPTION, SUNRAY, DIVINE_SENSE, BLESS, ASCETICISM);

@@ -340,7 +340,11 @@ public abstract class Wand extends Item {
 			}
 		}
 
-		if (Dungeon.hero.hasTalent(Talent.IONIZING_RADIATION) && Dungeon.hero.heroClass != HeroClass.ENGINEER) {
+		Wand highest = w;
+		for (Wand wand : Dungeon.hero.belongings.getAllItems(Wand.class))
+			if (wand.trueLevel() > highest.trueLevel()) highest = wand;
+
+		if (Dungeon.hero.hasTalent(Talent.IONIZING_RADIATION) && Dungeon.hero.heroClass != HeroClass.ENGINEER && highest == w) {
 			Viscosity.DeferedDamage deferred = Buff.affect(target, Viscosity.DeferedDamage.class);
 			deferred.extend(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.IONIZING_RADIATION) / 4f);
 		}

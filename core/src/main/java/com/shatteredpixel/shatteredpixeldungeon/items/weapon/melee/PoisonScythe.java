@@ -66,7 +66,7 @@ public class PoisonScythe extends MeleeWeapon {
 				Buff.affect(defender, Ooze.class).set(3 + buffedLvl());
 				break;
 			case 2:
-				Buff.affect(defender, Corrosion.class).set(3 + buffedLvl(), (Dungeon.scalingDepth() + 1) / 5);
+				Buff.affect(defender, Corrosion.class).set(3 + buffedLvl(), (Dungeon.scalingDepth() + 1) / 5, attacker.getClass());
 				break;
 		}
 		return super.proc(attacker, defender, damage);

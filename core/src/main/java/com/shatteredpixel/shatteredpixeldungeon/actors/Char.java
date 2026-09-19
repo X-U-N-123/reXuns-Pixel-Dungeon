@@ -1087,12 +1087,6 @@ public abstract class Char extends Actor {
 				bleedSrc = Sickle.HarvestBleedTracker.class;
 			}
 			((Char) src).buff(Sickle.HarvestBleedTracker.class).detach();
-		} else if (src instanceof Char && ((Char) src).buff(Vorpal.VorpalTracker.class) != null){
-			if (!isImmune(Bleeding.class)){
-				bleedAmt = ((Char) src).buff(Vorpal.VorpalTracker.class).powerMulti*(2+dmg/2f);
-				bleedSrc = Vorpal.class;
-			}
-			((Char) src).buff(Vorpal.VorpalTracker.class).detach();
 		}
 
 		Class<?> srcClass = src.getClass();
@@ -1180,11 +1174,6 @@ public abstract class Char extends Actor {
 
 		if (buff(Challenge.DuelParticipant.class) != null)
 			buff(Challenge.DuelParticipant.class).addDamage(Math.min(dmg, HP));
-
-		//cancel bleed if the vorpal hit is going to kill
-		if (bleedSrc == Vorpal.class && dmg > (shielding() + HP)){
-			bleedAmt = 0;
-		}
 
 		if (bleedAmt > 0){
 			Bleeding b = buff(Bleeding.class);

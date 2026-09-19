@@ -45,7 +45,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.FlavourBuff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Ooze;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
@@ -69,9 +68,9 @@ import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClassArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.Viscosity;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
+import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WondrousResin;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
-import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Annoying;
@@ -105,7 +104,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Unstable;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Venomous;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -145,7 +143,6 @@ public class ElementalStrike extends ArmorAbility {
 		effectTypes.put(Lucky.class,        MagicMissile.RAINBOW_CONE);
 		effectTypes.put(Projecting.class,   MagicMissile.PURPLE_CONE);
 		effectTypes.put(Unstable.class,     MagicMissile.RAINBOW_CONE);
-		effectTypes.put(Vorpal.class,       MagicMissile.BLOOD_CONE);
 		effectTypes.put(Peaceful.class,     MagicMissile.RAINBOW_CONE);
 		effectTypes.put(Corrupting.class,   MagicMissile.SHADOW_CONE);
 		effectTypes.put(Crystal.class,      MagicMissile.SPECK + Speck.LIGHT);
@@ -440,20 +437,6 @@ public class ElementalStrike extends ArmorAbility {
 				hero.buff(Kinetic.ConservedDamage.class).detach();
 			}
 
-			//*** Venomous **
-		} else if (ench instanceof Venomous){
-			for (Char ch : affected){
-				if (ch != primaryTarget) {
-					Poison p = ch.buff(Poison.class);
-					if (p == null) {
-						p = Buff.affect(ch, Poison.class);
-						p.delay(3f);
-					}
-					//27 total damage at base
-					p.extend(powerMulti*10);
-				}
-			}
-
 			//*** Chilling ***
 		} else if (ench instanceof Chilling){
 			Buff.affect(hero, Swiftthistle.TimeBubble.class).reset(2 * affected.size());
@@ -462,13 +445,13 @@ public class ElementalStrike extends ArmorAbility {
 		} else if (ench instanceof Venomous){
 			for (Char ch : affected){
 				if (ch != primaryTarget) {
-					Poison p = ch.buff(Poison.class);
+					Corrosion p = ch.buff(Corrosion.class);
 					if (p == null) {
-						p = Buff.affect(ch, Poison.class);
-						p.delay(3f);
+						p = Buff.affect(ch, Corrosion.class);
+						p.set(0, 4, ElementalStrike.class);
 					}
 					//27 total damage at base
-					p.extend(powerMulti*10);
+					p.extend(powerMulti*5);
 				}
 			}
 
@@ -536,14 +519,6 @@ public class ElementalStrike extends ArmorAbility {
 					if (ch != primaryTarget) {
 						ench.proc((Weapon) w, hero, ch, w.damageRoll(hero));
 					}
-				}
-			}
-
-		//*** Vorpal ***
-		} else if (ench instanceof Vorpal){
-			for (Char ch : affected){
-				if (ch != primaryTarget) {
-					Buff.affect(ch, Bleeding.class).set(powerMulti*10);
 				}
 			}
 

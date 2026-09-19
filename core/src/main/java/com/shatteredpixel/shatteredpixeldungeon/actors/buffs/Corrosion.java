@@ -75,10 +75,6 @@ public class Corrosion extends Buff implements Hero.Doom, Buff.DOTbuff {
 		return left;
 	}
 
-	public void set(float duration, int damage){
-		set(duration, damage, null);
-	}
-
 	public void set(float duration, int damage, Class source) {
 		this.left = Math.max(duration, left);
 		if (this.damage < damage) this.damage = damage;

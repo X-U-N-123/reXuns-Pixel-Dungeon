@@ -21,11 +21,12 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
-import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PoisonParticle;
+import com.shatteredpixel.shatteredpixeldungeon.effects.particles.CorrosionParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.watabou.utils.Random;
@@ -45,16 +46,16 @@ public class Venomous extends Weapon.Enchantment {
 			float powerMulti = Math.max(1f, procChance);
 
 			//delays the poison's damage by 3 turns if the enemy had no poison on them already
-			Poison poison = defender.buff(Poison.class);
-			if (poison == null) {
-				poison = Buff.affect(defender, Poison.class);
-				poison.delay(3f);
-				poison = defender.buff(Poison.class);
+			Corrosion corrosion = defender.buff(Corrosion.class);
+			if (corrosion == null) {
+				corrosion = Buff.affect(defender, Corrosion.class);
+				corrosion.set(1, 1 + Dungeon.scalingDepth() / 5, attacker.getClass());
+				corrosion = defender.buff(Corrosion.class);
 			}
-			if (poison != null){
-				poison.extend(powerMulti * ((level / 2f) + 3));
+			if (corrosion != null){
+				corrosion.extend(powerMulti * ((level / 2f) + 3));
 			}
-			CellEmitter.center(defender.pos).burst(PoisonParticle.SPLASH, 5);
+			CellEmitter.center(defender.pos).burst(CorrosionParticle.SPLASH, 5);
 
 		}
 

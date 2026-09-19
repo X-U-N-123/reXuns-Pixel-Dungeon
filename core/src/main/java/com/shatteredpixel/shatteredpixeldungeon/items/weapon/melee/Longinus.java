@@ -30,6 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Roots;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -61,6 +62,23 @@ public class Longinus extends MeleeWeapon {
 	private boolean thrownAttack = false;
 
 	@Override
+	public int throwPos(Hero user, int dst) {
+
+		int projecting = 0;
+		if (hasEnchant(Projecting.class, user)){
+			projecting += 4;
+		}
+
+		if (projecting > 0
+				&& (Dungeon.level.passable[dst] || Dungeon.level.avoid[dst] || Actor.findChar(dst) != null)
+				&& Dungeon.level.distance(user.pos, dst) <= Math.round(projecting * Enchantment.genericProcChanceMultiplier(user))){
+			return dst;
+		} else {
+			return super.throwPos(user, dst);
+		}
+	}
+
+	@Override
 	public void cast(Hero user, int dst) {
 		if (isEquipped(user)) thrownAttack = true;
 		super.cast(user, dst);
@@ -70,13 +88,10 @@ public class Longinus extends MeleeWeapon {
 	protected void onThrow(int cell) {
 		Char ch = Actor.findChar(cell);
 		if (ch != null && ch.alignment != Char.Alignment.ALLY && thrownAttack && STRReq() <= curUser.STR()
-				&& Char.hit(curUser, ch, true)){
+				&& curUser.shoot(ch, this)){
 
-			ch.damage(proc(curUser, ch, damageRoll(curUser)), curUser);
 			Buff.affect(curUser, CircleBack.class).setup(this, cell, Dungeon.depth, Dungeon.branch, 5);
-			hitSound(1f);
-			Buff.prolong(ch, Roots.class, 3);
-			curUser.spendAndNext(delayFactor(curUser));
+			if (ch.isAlive()) Buff.prolong(ch, Roots.class, 2);
 			return;
 		}
 		thrownAttack = false;
