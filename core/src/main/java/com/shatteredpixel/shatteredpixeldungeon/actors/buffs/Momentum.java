@@ -101,7 +101,12 @@ public class Momentum extends Buff implements ActionIndicator.Action {
 		movedLastTurn = true;
 		if (freerunCooldown <= 0 && !freerunning()){
 			postpone(target.cooldown()+(1/target.speed()));
-			momentumStacks = Math.min(momentumStacks + 1, 10);
+			boolean notFullBfo = momentumStacks < 10;
+			momentumStacks ++;
+			if (momentumStacks >= 10){
+				momentumStacks = 10;
+				if (notFullBfo) Dungeon.hero.interrupt();
+			}
 			ActionIndicator.setAction(this);
 			BuffIndicator.refreshHero();
 		} else if (Random.Float()<=0.1f*Dungeon.hero.pointsInTalent(Talent.STRETCHING) && freerunCooldown>0){

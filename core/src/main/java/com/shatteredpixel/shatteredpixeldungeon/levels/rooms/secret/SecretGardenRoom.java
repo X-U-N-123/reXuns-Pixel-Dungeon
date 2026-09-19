@@ -21,7 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
@@ -52,17 +55,24 @@ public class SecretGardenRoom extends SecretRoom {
 		} else {
 			entrance().set( Door.Type.HIDDEN );
 		}
-		
-		level.plant(new Starflower.Seed(), plantPos(level));
-		level.plant(new WandOfRegrowth.Seedpod.Seed(), plantPos( level ));
-		level.plant(new WandOfRegrowth.Dewcatcher.Seed(), plantPos( level ));
-		
-		if (Random.Int(2) == 0){
-			level.plant(new WandOfRegrowth.Seedpod.Seed(), plantPos( level ));
+
+		int starPos = plantPos(level);
+		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
+			Dungeon.level.drop(new Starflower.Seed(), starPos);
+			for (int i = 0; i < 3 + Random.Int(3); i++)
+				Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.SEED), plantPos(level));
 		} else {
-			level.plant(new WandOfRegrowth.Dewcatcher.Seed(), plantPos( level ));
+			level.plant(new Starflower.Seed(), starPos);
+			level.plant(new WandOfRegrowth.Seedpod.Seed(), plantPos(level));
+			level.plant(new WandOfRegrowth.Dewcatcher.Seed(), plantPos(level));
+
+			if (Random.Int(2) == 0) {
+				level.plant(new WandOfRegrowth.Seedpod.Seed(), plantPos(level));
+			} else {
+				level.plant(new WandOfRegrowth.Dewcatcher.Seed(), plantPos(level));
+			}
 		}
-		
+
 		Foliage light = (Foliage)level.blobs.get( Foliage.class );
 		if (light == null) {
 			light = new Foliage();

@@ -79,7 +79,7 @@ public class ChaliceOfBlood extends Artifact {
 
 			int damage = 5 + 3*(level()*level());
 
-			if (damage > hero.HP*0.75) {
+			if (damage > hero.shielding() + hero.HP*0.8) {
 
 				GameScene.show(
 					new WndOptions(new ItemSprite(this),

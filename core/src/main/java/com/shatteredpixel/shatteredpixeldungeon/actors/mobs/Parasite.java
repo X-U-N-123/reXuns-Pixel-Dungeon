@@ -71,6 +71,7 @@ public class Parasite extends RipperDemon {
 		if (leapVictim != null && alignment != leapVictim.alignment){
 			if (hit(this, leapVictim, Char.INFINITE_ACCURACY, false)) {
 				Buff.append(leapVictim, Parasitism.class).parasite = this;
+				leapVictim.needsIncomingDOTUpdate = true;
 
 				Doom d = buff(Doom.class);
 				Actor.remove(this);
@@ -105,7 +106,7 @@ public class Parasite extends RipperDemon {
 		return Random.NormalIntRange(6, 10);
 	}
 
-	public static class Parasitism extends Buff {
+	public static class Parasitism extends Buff implements Buff.DOTbuff {
 
 		public Parasite parasite;
 		private int Time = 12;
@@ -138,6 +139,7 @@ public class Parasite extends RipperDemon {
 			spend(TICK);
 			target.damage(12 - Time, this);
 			if (Time <= 0) detach();
+			target.needsIncomingDOTUpdate = true;
 			return true;
 		}
 
@@ -184,12 +186,18 @@ public class Parasite extends RipperDemon {
 				Sample.INSTANCE.play(Assets.Sounds.HIT_STAB);
 				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 			}
+			target.needsIncomingDOTUpdate = true;
 			super.detach();
 		}
 
 		@Override
 		public String desc() {
 			return Messages.get(this, "desc", Time);
+		}
+
+		@Override
+		public int totalIncomingDMG() {
+			return (Math.max(0, 1 - Time) + 25 - Time) * Math.max(1, Time) / 2;
 		}
 	}
 }

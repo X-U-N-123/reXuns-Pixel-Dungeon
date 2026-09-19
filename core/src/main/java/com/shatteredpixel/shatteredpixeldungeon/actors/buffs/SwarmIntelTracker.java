@@ -65,7 +65,7 @@ public class SwarmIntelTracker extends Buff {
 		if (alertRange == 0 && leftAtZero <= 0){
 			return BuffIndicator.NONE;
 		} else {
-			return BuffIndicator.TARGETED;
+			return BuffIndicator.SWARM_INTEL;
 		}
 	}
 

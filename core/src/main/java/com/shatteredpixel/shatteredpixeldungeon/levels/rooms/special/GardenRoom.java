@@ -21,12 +21,16 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush;
-import com.shatteredpixel.shatteredpixeldungeon.plants.Sungrass;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
 import com.watabou.utils.Random;
 
 public class GardenRoom extends SpecialRoom {
@@ -39,14 +43,26 @@ public class GardenRoom extends SpecialRoom {
 		
 		entrance().set( Door.Type.REGULAR );
 
+		Plant.Seed seed = (Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED);
+
 		int bushes = Random.Int(3);
+		int pos = plantPos(level);
+
 		if (bushes == 0) {
-			level.plant(new Sungrass.Seed(), plantPos( level ));
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) Dungeon.level.drop(seed, pos);
+			else level.plant(seed, pos);
 		} else if (bushes == 1) {
-			level.plant(new BlandfruitBush.Seed(), plantPos( level ));
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) Dungeon.level.drop(seed, pos);
+			else level.plant(new BlandfruitBush.Seed(), pos);
 		} else if (Random.Int(5) == 0) {
-			level.plant(new Sungrass.Seed(), plantPos( level ));
-			level.plant(new BlandfruitBush.Seed(), plantPos( level ));
+			int bushPos = plantPos(level);
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
+				Dungeon.level.drop(seed, pos);
+				Dungeon.level.drop(new Starflower.Seed(), bushPos);
+			} else {
+				level.plant(seed, pos);
+				level.plant(new BlandfruitBush.Seed(), bushPos);
+			}
 		}
 		
 		Foliage light = (Foliage)level.blobs.get( Foliage.class );

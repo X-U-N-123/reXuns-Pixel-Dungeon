@@ -87,15 +87,26 @@ public class Crystal extends Weapon.Enchantment {
 				} else if (visualDurability <= 0) {
 					Sample.INSTANCE.play( Assets.Sounds.SHATTER );
 					Splash.at(attacker.pos, 0x0088FF, 15);
+
+					boolean toBreak = true;
+					if (weapon.trueLevel() > 0 && weapon.isUpgradable()) {
+						weapon.degrade();
+						toBreak = false;
+						durability = 100;
+						visualDurability = 100;
+					}
+
 					if (attacker instanceof Hero) {
-						if (weapon.isEquipped((Hero) attacker)) {
-							weapon.doUnequip((Hero) attacker, false);
-						} else {
-							weapon.detachAll(((Hero) attacker).belongings.backpack);
+						if (toBreak){
+							if (weapon.isEquipped((Hero) attacker)) {
+								weapon.doUnequip((Hero) attacker, false);
+							} else {
+								weapon.detachAll(((Hero) attacker).belongings.backpack);
+							}
 						}
 						GLog.n(Messages.get(this, "alert_shattered"));
 					} else if (attacker instanceof DriedRose.GhostHero){
-						((DriedRose.GhostHero) attacker).clearWeapon();
+						if (toBreak) ((DriedRose.GhostHero) attacker).clearWeapon();
 						GLog.n(Messages.get(this, "alert_shattered_ghost"));
 					}
 				}

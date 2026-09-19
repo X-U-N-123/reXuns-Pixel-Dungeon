@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
+import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.WornLock;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -79,7 +80,7 @@ public class RatKingRoom extends SecretRoom {
 
 		if (Random.Float() <= WornLock.revealHiddenDoorChance()) {
 			entrance.set( Door.Type.UNLOCKED );
-		} else {
+		} else
 			entrance.set( Door.Type.HIDDEN );
 		int door = level.pointToCell(entrance);
 
@@ -95,6 +96,17 @@ public class RatKingRoom extends SecretRoom {
 				center + 2*w,
 				center - 2 + 2*w,
 				center -2,
+		};
+
+		int[] chestPositions = new int[]{
+				center - 1 - 2*w,
+				center + 1 - 2*w,
+				center - 2 - w,
+				center + 2 - w,
+				center - 2 + w,
+				center + 2 + w,
+				center - 1 + 2*w,
+				center + 1 + 2*w,
 		};
 
 		for (int cell : statuePositions){
@@ -123,12 +135,8 @@ public class RatKingRoom extends SecretRoom {
 		king.pos = center;
 		level.mobs.add( king );
 
-		for (Point p : getPoints()){
-			int cell = level.pointToCell(p);
-			if (cell != center && (level.map[cell] == Terrain.EMPTY || level.map[cell] == Terrain.EMPTY_SP)){
-				level.drop( new Gold( Random.IntRange( 5, 20 ) ), cell );
-			}
-		}
+		for (int i : chestPositions)
+			level.drop( new Gold( Random.IntRange( 20, 30 ) ), i ).type = Heap.Type.CHEST;
 	}
 
 	public static class RatKingRoomDeco extends CustomTilemap {
