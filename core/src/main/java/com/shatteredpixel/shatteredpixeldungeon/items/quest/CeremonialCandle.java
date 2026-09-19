@@ -77,6 +77,13 @@ public class CeremonialCandle extends Item {
 	}
 
 	@Override
+	public void dropOne(Hero hero) {
+		super.dropOne(hero);
+		aflame = false;
+		checkCandles();
+	}
+
+	@Override
 	protected void onThrow(int cell) {
 		super.onThrow(cell);
 		aflame = false;

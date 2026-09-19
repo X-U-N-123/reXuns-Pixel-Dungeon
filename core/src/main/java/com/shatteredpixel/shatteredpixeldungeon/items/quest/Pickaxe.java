@@ -82,6 +82,7 @@ public class Pickaxe extends MeleeWeapon {
 		if (hero.hasTalent(Talent.DEMOLITION) && hero.heroClass != HeroClass.EXPLORER) actions.add(AC_MINE);
 		if (Dungeon.level instanceof MiningLevel){
 			actions.remove(AC_DROP);
+			actions.remove(AC_DROPONE);
 			actions.remove(AC_THROW);
 		}
 		return actions;

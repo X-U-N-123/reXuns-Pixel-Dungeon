@@ -41,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ItemSlot;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RedButton;
@@ -66,6 +67,7 @@ public class WndUpgrade extends Window {
 	private boolean force;
 
 	private RedButton btnUpgrade;
+	private RedButton btnUpgradeAll;
 
 	public WndUpgrade( Item upgrader, Item toUpgrade, boolean force){
 
@@ -76,6 +78,22 @@ public class WndUpgrade extends Window {
 
 		title.setRect(0, 0, WIDTH, 0);
 		add(title);
+
+		IconButton btnCancel = new IconButton(Icons.EXIT.get()) {
+			@Override
+			protected void onClick() {
+				super.onClick();
+				hide();
+				if (upgrader instanceof ScrollOfUpgrade) {
+					((ScrollOfUpgrade) upgrader).reShowSelector(force);
+				} else if (upgrader instanceof MagicalInfusion) {
+					((MagicalInfusion) upgrader).reShowSelector();
+				}
+			}
+
+		};
+		btnCancel.setRect(WIDTH - 16, 0, 16, 12);
+		add(btnCancel);
 
 		int quantity = upgrader.quantity();
 		Item moreUpgradeItem = Dungeon.hero.belongings.getItem(upgrader.getClass());
@@ -433,31 +451,46 @@ public class WndUpgrade extends Window {
 				}
 			}
 		};
-		btnUpgrade.setRect(0, bottom+2*GAP, WIDTH/2f, 16);
-		add(btnUpgrade);
 
-		RedButton btnCancel = new RedButton(Messages.get(this, "back")) {
+		btnUpgradeAll = new RedButton(Messages.get(this, "upgrade_all")){
 			@Override
 			protected void onClick() {
 				super.onClick();
-				hide();
-				if (upgrader instanceof ScrollOfUpgrade) {
-					((ScrollOfUpgrade) upgrader).reShowSelector(force);
-				} else if (upgrader instanceof MagicalInfusion) {
-					((MagicalInfusion) upgrader).reShowSelector();
-				}
-			}
+				Item moreUpgradeItem;
+				do {
+					if (upgrader instanceof ScrollOfUpgrade) {
+						((ScrollOfUpgrade) upgrader).readAnimation();
+						((ScrollOfUpgrade) upgrader).upgradeItem(toUpgrade);
+						Sample.INSTANCE.play(Assets.Sounds.READ);
+					} else if (upgrader instanceof MagicalInfusion) {
+						((MagicalInfusion) upgrader).useAnimation();
+						((MagicalInfusion) upgrader).upgradeItem(toUpgrade);
+					}
 
+					if (!force) upgrader.detach(Dungeon.hero.belongings.backpack);
+					moreUpgradeItem = Dungeon.hero.belongings.getItem(upgrader.getClass());
+				} while (moreUpgradeItem != null && toUpgrade.isUpgradable());
+
+				hide();
+				Dungeon.hero.timeToNow();
+				Dungeon.hero.spendAndNext(2);
+			}
 		};
-		btnCancel.setRect(btnUpgrade.right()+1, bottom+2*GAP, WIDTH/2f, 16);
-		add(btnCancel);
 
 		btnUpgrade.enable(Dungeon.hero.ready);
+		btnUpgradeAll.enable(Dungeon.hero.ready);
 
 		btnUpgrade.icon(new ItemSprite(upgrader));
-		btnCancel.icon(Icons.EXIT.get());
+		btnUpgradeAll.icon(Icons.get(Icons.STRENGTHEN));
 
-		bottom = (int) btnCancel.bottom();
+		if (quantity > 1){
+			btnUpgrade.setRect(0, bottom+2*GAP, WIDTH/2f, 16);
+			btnUpgradeAll.setRect(btnUpgrade.right()+1, bottom+2*GAP, WIDTH/2f, 16);
+			add(btnUpgradeAll);
+		} else btnUpgrade.setRect(0, bottom+2*GAP, WIDTH, 16);
+		add(btnUpgrade);
+
+		bottom = (int) btnUpgrade.bottom();
 
 		resize(WIDTH, (int)bottom);
 
@@ -468,6 +501,9 @@ public class WndUpgrade extends Window {
 		super.update();
 		if (!btnUpgrade.active && Dungeon.hero.ready){
 			btnUpgrade.enable(true);
+		}
+		if (!btnUpgradeAll.active && Dungeon.hero.ready){
+			btnUpgradeAll.enable(true);
 		}
 	}
 

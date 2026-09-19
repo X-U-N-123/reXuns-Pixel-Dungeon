@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
@@ -95,6 +94,13 @@ public abstract class EquipableItem extends Item {
 	public void doDrop( Hero hero ) {
 		if (!isEquipped( hero ) || doUnequip( hero, false, false )) {
 			super.doDrop( hero );
+		}
+	}
+
+	@Override
+	public void dropOne( Hero hero ) {
+		if (!isEquipped( hero ) || doUnequip( hero, false, false )) {
+			super.dropOne( hero );
 		}
 	}
 

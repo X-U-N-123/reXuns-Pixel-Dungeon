@@ -175,6 +175,12 @@ public class Honeypot extends Item {
 		}
 
 		@Override
+		public void dropOne(Hero hero) {
+			super.dropOne(hero);
+			dropPot(hero, hero.pos);
+		}
+
+		@Override
 		protected void onThrow(int cell) {
 			super.onThrow(cell);
 			dropPot(curUser, cell);

@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.utils.Holiday;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.watabou.noosa.Game;
-import com.watabou.utils.Callback;
 
 public class RatKing extends NPC {
 
@@ -129,38 +128,35 @@ public class RatKing extends NPC {
 			if (Dungeon.hero.belongings.armor() == null){
 				yell( Messages.get(RatKing.class, "crown_clothes") );
 			} else {
-				Game.runOnRenderThread(new Callback() {
+				Game.runOnRenderThread(() -> GameScene.show(new WndOptions(
+						sprite(),
+						Messages.titleCase(name()),
+						Messages.get(RatKing.class, "crown_desc"),
+						Messages.get(RatKing.class, "crown_yes"),
+						Messages.get(RatKing.class, "crown_info"),
+						Messages.get(RatKing.class, "crown_no")
+				){
 					@Override
-					public void call() {
-						GameScene.show(new WndOptions(
-								sprite(),
-								Messages.titleCase(name()),
-								Messages.get(RatKing.class, "crown_desc"),
-								Messages.get(RatKing.class, "crown_yes"),
-								Messages.get(RatKing.class, "crown_info"),
-								Messages.get(RatKing.class, "crown_no")
-						){
-							@Override
-							protected void onSelect(int index) {
-								if (index == 0){
-									crown.upgradeArmor(Dungeon.hero, Dungeon.hero.belongings.armor(), new Ratmogrify());
-									Statistics.qualifiedForRandomVictoryBadge = false;
-									((RatKingSprite)sprite).resetAnims();
-									yell(Messages.get(RatKing.class, "crown_thankyou"));
-								} else if (index == 1) {
-									GameScene.show(new WndInfoArmorAbility(Dungeon.hero.heroClass, new Ratmogrify()));
-								} else {
-									yell(Messages.get(RatKing.class, "crown_fine"));
-								}
-							}
-						});
+					protected void onSelect(int index) {
+						if (index == 0){
+							crown.upgradeArmor(Dungeon.hero, Dungeon.hero.belongings.armor(), new Ratmogrify());
+							Statistics.qualifiedForRandomVictoryBadge = false;
+							((RatKingSprite)sprite).resetAnims();
+							yell(Messages.get(RatKing.class, "crown_thankyou"));
+						} else if (index == 1) {
+							GameScene.show(new WndInfoArmorAbility(Dungeon.hero.heroClass, new Ratmogrify()));
+						} else {
+							yell(Messages.get(RatKing.class, "crown_fine"));
+						}
 					}
-				});
+				}));
 			}
 		} else if (Dungeon.hero.armorAbility instanceof Ratmogrify) {
 			yell( Messages.get(RatKing.class, "crown_after") );
+			super.interact(c);
 		} else {
 			yell( Messages.get(this, "what_is_it") );
+			super.interact(c);
 		}
 		return true;
 	}

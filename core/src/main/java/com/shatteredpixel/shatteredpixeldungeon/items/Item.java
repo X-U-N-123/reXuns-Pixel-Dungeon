@@ -77,6 +77,7 @@ public class Item implements Bundlable {
 	protected static final float TIME_TO_DROP		= 1.0f;
 	
 	public static final String AC_DROP		= "DROP";
+	public static final String AC_DROPONE	= "DROP_ONE";
 	public static final String AC_THROW		= "THROW";
 	
 	protected String defaultAction;
@@ -119,6 +120,7 @@ public class Item implements Bundlable {
 	public ArrayList<String> actions( Hero hero ) {
 		ArrayList<String> actions = new ArrayList<>();
 		actions.add( AC_DROP );
+		if (quantity > 1) actions.add( AC_DROPONE );
 		actions.add( AC_THROW );
 		return actions;
 	}
@@ -148,6 +150,12 @@ public class Item implements Bundlable {
 		hero.spendAndNext(TIME_TO_DROP);
 		int pos = hero.pos;
 		Dungeon.level.drop(detachAll(hero.belongings.backpack), pos).sprite.drop(pos);
+	}
+
+	public void dropOne( Hero hero ) {
+		hero.spendAndNext(TIME_TO_DROP);
+		int pos = hero.pos;
+		Dungeon.level.drop(detach(hero.belongings.backpack), pos).sprite.drop(pos);
 	}
 
 	//resets an item's properties, to ensure consistency between runs
@@ -181,6 +189,12 @@ public class Item implements Bundlable {
 				doThrow(hero);
 			}
 			
+		} else if (action.equals( AC_DROPONE )) {
+
+			if (hero.belongings.backpack.contains(this) || isEquipped(hero)) {
+				dropOne(hero);
+			}
+
 		}
 	}
 
