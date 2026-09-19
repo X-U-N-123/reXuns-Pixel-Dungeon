@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PathFinder;
 
 public class Rapier extends MeleeWeapon {
@@ -70,8 +69,7 @@ public class Rapier extends MeleeWeapon {
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(5+1.5*lvl) damage, roughly +111% base damage, +100% scaling
-		int dmgBoost =  augment.damageFactor(5 + Math.round(1.5f*buffedLvl()));
-		lungeAbility(hero, target, 1, dmgBoost, this);
+		lungeAbility(hero, target, this);
 	}
 
 	@Override
@@ -89,7 +87,7 @@ public class Rapier extends MeleeWeapon {
 		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
-	public static void lungeAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
+	public static void lungeAbility(Hero hero, Integer target, MeleeWeapon wep){
 		if (target == null){
 			return;
 		}
@@ -130,48 +128,43 @@ public class Rapier extends MeleeWeapon {
 
 		hero.busy();
 		Sample.INSTANCE.play(Assets.Sounds.MISS);
-		hero.sprite.jump(hero.pos, dest, 0, 0.1f, new Callback() {
-			@Override
-			public void call() {
-				if (Dungeon.level.map[hero.pos] == Terrain.OPEN_DOOR) {
-					Door.leave( hero.pos );
-				}
-				hero.pos = dest;
-				Dungeon.level.occupyCell(hero);
-				Dungeon.observe();
+		hero.sprite.jump(hero.pos, dest, 0, 0.1f, () -> {
+			if (Dungeon.level.map[hero.pos] == Terrain.OPEN_DOOR) {
+				Door.leave( hero.pos );
+			}
+			hero.pos = dest;
+			Dungeon.level.occupyCell(hero);
+			Dungeon.observe();
 
-				hero.belongings.abilityWeapon = wep; //set this early to we can check canAttack
-				if (enemy != null && hero.canAttack(enemy)) {
-					hero.sprite.attack(enemy.pos, new Callback() {
-						@Override
-						public void call() {
+			hero.belongings.abilityWeapon = wep; //set this early to we can check canAttack
+			if (enemy != null && hero.canAttack(enemy)) {
+				hero.sprite.attack(enemy.pos, () -> {
 
-							wep.beforeAbilityUsed(hero, enemy);
-							AttackIndicator.target(enemy);
-							if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY)) {
-								Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-								if (!enemy.isAlive()) {
-									wep.onAbilityKill(hero, enemy);
-								}
-							}
-							Invisibility.dispel();
-							hero.spendAndNext(hero.attackDelay());
-							wep.afterAbilityUsed(hero);
+					wep.beforeAbilityUsed(hero, enemy);
+					AttackIndicator.target(enemy);
+					if (hero.attack(enemy, 1,
+							wep.augment.damageFactor(4 + wep.tier + Math.round((1.3f + 0.2f * wep.tier)*wep.buffedLvl())), Char.INFINITE_ACCURACY)) {
+						Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+						if (!enemy.isAlive()) {
+							onAbilityKill(hero, enemy);
 						}
-					});
-				} else {
-					//spends charge but otherwise does not count as an ability use
-					Charger charger = Buff.affect(hero, Charger.class);
-					charger.partialCharge -= 1;
-					while (charger.partialCharge < 0 && charger.charges > 0) {
-						charger.charges--;
-						charger.partialCharge++;
 					}
-					hero.belongings.abilityWeapon = null;
-					updateQuickslot();
-					GLog.w(Messages.get(Rapier.class, "ability_no_target"));
-					hero.spendAndNext(1/hero.speed());
+					Invisibility.dispel();
+					hero.spendAndNext(hero.attackDelay());
+					wep.afterAbilityUsed(hero);
+				});
+			} else {
+				//spends charge but otherwise does not count as an ability use
+				Charger charger = Buff.affect(hero, Charger.class);
+				charger.partialCharge -= 1;
+				while (charger.partialCharge < 0 && charger.charges > 0) {
+					charger.charges--;
+					charger.partialCharge++;
 				}
+				hero.belongings.abilityWeapon = null;
+				updateQuickslot();
+				GLog.w(Messages.get(Rapier.class, "ability_no_target"));
+				hero.spendAndNext(1/hero.speed());
 			}
 		});
 	}

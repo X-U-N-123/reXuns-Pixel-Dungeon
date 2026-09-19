@@ -53,7 +53,7 @@ public class WoodStick extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(7+2*lvl) damage, roughly +100% base damage, +100% scaling
 		int dmgBoost = augment.damageFactor(8 + Math.round(2f*buffedLvl()));
-		Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+		Spear.spikeAbility(hero, target, this);
 	}
 
 	public String upgradeAbilityStat(int level){

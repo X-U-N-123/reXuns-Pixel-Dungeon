@@ -50,9 +50,8 @@ public class Doublesword extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(4+lvl) damage, roughly +33% base damage, +40% scaling
-        int dmgBoost = augment.damageFactor(4 + Math.round(1f*buffedLvl()));
-        Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+        //+(6+lvl) damage, roughly +33% base damage, +40% scaling
+        Sai.comboStrikeAbility(hero, target, this);
     }
 
     @Override

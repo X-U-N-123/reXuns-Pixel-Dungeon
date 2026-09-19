@@ -83,13 +83,15 @@ public class Dart extends MissileWeapon {
 	@Override
 	public int min(int lvl) {
 		if (bow != null){
+			int bowLvl = bow.buffedLvl();
 			if (!(this instanceof TippedDart) && Dungeon.hero.buff(KindOfCrossbow.ChargedShot.class) != null){
+				if (Dungeon.hero.buff(KindOfCrossbow.ChargedShot.class).enhanced) bowLvl ++;
 				//ability increases base dmg by 50%, scaling by 50%
 				return  10 - (bow.tier)/2 +     //9/8/7 base for tier 2/4/6
-						2*bow.buffedLvl() + lvl;//+2 per bow level, +1 per level
+						2*bowLvl + lvl;//+2 per bow level, +1 per level
 			} else {
 				return  4 +                     //4 base
-						bow.buffedLvl() + lvl;  //+1 per level or bow level
+						bowLvl + lvl;  //+1 per level or bow level
 			}
 		} else {
 			return  1 +     //1 base, down from 2

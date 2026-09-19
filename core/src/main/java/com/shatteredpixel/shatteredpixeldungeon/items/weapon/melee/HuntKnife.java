@@ -52,7 +52,7 @@ public class HuntKnife extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         //replaces damage with 7+1.5*lvl bleed, roughly 100% avg base dmg, 100% avg scaling
         int bleedAmt = augment.damageFactor(Math.round(7f + 1.5f*buffedLvl()));
-        Sickle.harvestAbility(hero, target, 0f, bleedAmt, this);
+        Sickle.harvestAbility(hero, target, this);
     }
 
     @Override

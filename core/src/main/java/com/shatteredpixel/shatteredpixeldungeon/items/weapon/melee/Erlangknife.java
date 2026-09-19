@@ -53,7 +53,7 @@ public class Erlangknife extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         //+(12+2.5*lvl) damage, roughly +45% base damage, +50% scaling
         int dmgBoost = augment.damageFactor(13 + Math.round(2.5f*buffedLvl()));
-        Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+        Spear.spikeAbility(hero, target, this);
     }
 
     public String upgradeAbilityStat(int level){
@@ -70,5 +70,4 @@ public class Erlangknife extends MeleeWeapon {
             return Messages.get(this, "typical_ability_desc", min(0)+dmgBoost, max(0)+dmgBoost);
         }
     }
-
 }

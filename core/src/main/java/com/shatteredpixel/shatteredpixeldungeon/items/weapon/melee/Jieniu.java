@@ -74,7 +74,7 @@ public class Jieniu extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Knife.cutAbility(hero, target, this, 3+buffedLvl());
+        Knife.cutAbility(hero, target, this);
     }
 
     @Override

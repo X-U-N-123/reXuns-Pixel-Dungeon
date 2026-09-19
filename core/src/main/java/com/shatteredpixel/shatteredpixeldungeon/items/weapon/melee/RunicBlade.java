@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class RunicBlade extends MeleeWeapon {
 
@@ -62,10 +61,10 @@ public class RunicBlade extends MeleeWeapon {
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
-		runicSlashAbility(hero, target, this, 3f);
+		runicSlashAbility(hero, target, this);
 	}
 
-	public static void runicSlashAbility(Hero hero, Integer target, MeleeWeapon wep, float enchStr){
+	public static void runicSlashAbility(Hero hero, Integer target, MeleeWeapon wep){
 		if (target == null) {
 			return;
 		}
@@ -78,8 +77,8 @@ public class RunicBlade extends MeleeWeapon {
 
 		//we apply here because of projecting
 		RunicSlashTracker tracker = Buff.affect(hero, RunicSlashTracker.class);
-		tracker.boost = enchStr + 0.5f * wep.buffedLvl();
 		hero.belongings.abilityWeapon = wep;
+		tracker.boost = (5f - wep.tier * 0.5f) + 0.5f * wep.buffedLvl();
 		if (!hero.canAttack(enemy)){
 			GLog.w(Messages.get(wep, "ability_target_range"));
 			tracker.detach();
@@ -88,22 +87,18 @@ public class RunicBlade extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
-		hero.sprite.attack(enemy.pos, new Callback() {
-			@Override
-			public void call() {
-				wep.beforeAbilityUsed(hero, enemy);
-				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					if (!enemy.isAlive()){
-						onAbilityKill(hero, enemy);
-					}
-				}
-				tracker.detach();
-				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
-				wep.afterAbilityUsed(hero);
+		hero.sprite.attack(enemy.pos, () -> {
+			wep.beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			if (hero.attack(enemy, 1f, 0, Char.INFINITE_ACCURACY)){
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+				if (!enemy.isAlive())
+					onAbilityKill(hero, enemy);
 			}
+			tracker.detach();
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
+			wep.afterAbilityUsed(hero);
 		});
 	}
 

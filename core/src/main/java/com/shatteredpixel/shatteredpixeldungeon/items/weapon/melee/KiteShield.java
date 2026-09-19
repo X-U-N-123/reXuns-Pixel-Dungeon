@@ -114,7 +114,7 @@ public class KiteShield extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        RoundShield.guardAbility(hero, 4+buffedLvl(), this);
+        RoundShield.guardAbility(hero, this);
     }
 
     @Override

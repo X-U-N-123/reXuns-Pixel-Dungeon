@@ -565,6 +565,10 @@ public abstract class Wand extends Item {
 
 			if (charger.target.buff(ScrollEmpower.class) != null) lvl += 2;
 
+			if (charger.target instanceof Hero && curCharges == maxCharges
+					&& ((Hero) charger.target).hasTalent(Talent.ENHANCED_ABILITY) && ((Hero) charger.target).heroClass != HeroClass.DUELIST)
+				lvl += ((Hero) charger.target).pointsInTalent(Talent.ENHANCED_ABILITY);
+
 			if (curCharges <= 1 && charger.target instanceof Hero && ((Hero)charger.target).hasTalent(Talent.DESPERATE_POWER))
 				lvl += ((Hero)charger.target).pointsInTalent(Talent.DESPERATE_POWER);
 
@@ -1144,10 +1148,6 @@ public abstract class Wand extends Item {
 
 			float turnsToCharge = (float) (BASE_CHARGE_DELAY
 					+ (SCALING_CHARGE_ADDITION * Math.pow(scalingFactor, missingCharges)));
-
-			if (Dungeon.hero.hasTalent(Talent.POWER_ACCUMULATION) && Dungeon.hero.heroClass != HeroClass.DUELIST){
-				turnsToCharge /= 1f + 0.12f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION) * missingCharges / maxCharges;
-			}
 
 			for (Wand wand :Dungeon.hero.belongings.getAllItems(Wand.class)){
 				if (wand.curCharges >= wand.maxCharges) turnsToCharge /= 1f + 0.06f * Dungeon.hero.pointsInTalent(Talent.RELAY_RECHARGING);

@@ -52,7 +52,7 @@ public class Greataxe extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(7+1.5*lvl) damage, roughly +41.1% base dmg, +37.5% scaling
 		int dmgBoost = augment.damageFactor(6 + Math.round(1.5f*buffedLvl()));
-		Mace.heavyBlowAbility(hero, target, 1, dmgBoost, this);
+		Mace.heavyBlowAbility(hero, target, this);
 	}
 
 	public String upgradeAbilityStat(int level){

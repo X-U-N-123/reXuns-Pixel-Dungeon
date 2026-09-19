@@ -37,7 +37,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 
 public class Sai extends MeleeWeapon {
 
@@ -64,8 +63,7 @@ public class Sai extends MeleeWeapon {
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(4+lvl) damage, roughly +60% base damage, +67% scaling
-		int dmgBoost = augment.damageFactor(4 + buffedLvl());
-		Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+		Sai.comboStrikeAbility(hero, target, this);
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class Sai extends MeleeWeapon {
 		return "+" + augment.damageFactor(4 + level);
 	}
 
-	public static void comboStrikeAbility(Hero hero, Integer target, float multiPerHit, int boostPerHit, MeleeWeapon wep){
+	public static void comboStrikeAbility(Hero hero, Integer target, MeleeWeapon wep){
 		if (target == null) {
 			return;
 		}
@@ -101,32 +99,30 @@ public class Sai extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
-		hero.sprite.attack(enemy.pos, new Callback() {
-			@Override
-			public void call() {
-				wep.beforeAbilityUsed(hero, enemy);
-				AttackIndicator.target(enemy);
+		hero.sprite.attack(enemy.pos, () -> {
+			wep.beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
 
-				int recentHits = 0;
-				ComboStrikeTracker buff = hero.buff(ComboStrikeTracker.class);
-				if (buff != null){
-					recentHits = buff.hits;
-					buff.detach();
-				}
-
-				boolean hit = hero.attack(enemy, 1f + multiPerHit*recentHits, boostPerHit*recentHits, Char.INFINITE_ACCURACY);
-				if (hit && !enemy.isAlive()){
-					wep.onAbilityKill(hero, enemy);
-				}
-
-				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
-				if (recentHits >= 2 && hit){
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-				}
-
-				wep.afterAbilityUsed(hero);
+			int recentHits = 0;
+			ComboStrikeTracker buff = hero.buff(ComboStrikeTracker.class);
+			if (buff != null){
+				recentHits = buff.hits;
+				buff.detach();
 			}
+
+			boolean hit = hero.attack(enemy, 1,
+					wep.augment.damageFactor(((3 + wep.tier/2) + wep.buffedLvl())*recentHits), Char.INFINITE_ACCURACY);
+			if (hit && !enemy.isAlive()){
+				onAbilityKill(hero, enemy);
+			}
+
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
+			if (recentHits >= 2 && hit){
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			}
+
+			wep.afterAbilityUsed(hero);
 		});
 	}
 

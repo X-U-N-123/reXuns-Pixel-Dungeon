@@ -1,3 +1,24 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2026 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -15,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class Lightsword extends MeleeWeapon{
 
@@ -89,29 +109,26 @@ public class Lightsword extends MeleeWeapon{
         }
         hero.belongings.abilityWeapon = null;
 
-        hero.sprite.attack(enemy.pos, new Callback() {
-            @Override
-            public void call() {
-                beforeAbilityUsed(hero, enemy);
-                AttackIndicator.target(enemy);
-                //deal 50% extra damage to undead and demonic enemies
-                if (hero.attack(enemy, (enemy.properties().contains(Char.Property.DEMONIC) || enemy.properties().contains(Char.Property.UNDEAD)) ? 1.5f : 1f,
-                        0, Char.INFINITE_ACCURACY)){
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                    Buff.affect(hero, Light.class, 2f+buffedLvl());
-                    Buff.affect(hero, MagicalSight.class, 2f);
-                }
+        hero.sprite.attack(enemy.pos, () -> {
+			beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			//deal 50% extra damage to undead and demonic enemies
+			if (hero.attack(enemy, (Char.hasProp(enemy, Char.Property.DEMONIC) || Char.hasProp(enemy, Char.Property.UNDEAD)) ? 1.5f : 1f,
+					0, Char.INFINITE_ACCURACY)){
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+				Buff.affect(hero, Light.class, 2f+buffedLvl());
+				Buff.affect(hero, MagicalSight.class, 2f);
+			}
 
-                Invisibility.dispel();
+			Invisibility.dispel();
 
-                if (!enemy.isAlive()){
-                    hero.next();
-                    onAbilityKill(hero, enemy);
-                }
-                hero.spendAndNext(hero.attackDelay());
-                afterAbilityUsed(hero);
-            }
-        });
+			if (!enemy.isAlive()){
+				hero.next();
+				onAbilityKill(hero, enemy);
+			}
+			hero.spendAndNext(hero.attackDelay());
+			afterAbilityUsed(hero);
+		});
     }
 
     @Override

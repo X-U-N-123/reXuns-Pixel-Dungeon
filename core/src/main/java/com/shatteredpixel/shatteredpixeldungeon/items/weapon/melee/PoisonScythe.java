@@ -89,9 +89,8 @@ public class PoisonScythe extends MeleeWeapon {
 		}
 
 		//excess volume if some cells were blocked
-		if (centerVolume > 0){
+		if (centerVolume > 0)
 			GameScene.add( Blob.seed( hero.pos, centerVolume, ToxicGas.class ) );
-		}
 
 		Sample.INSTANCE.play(Assets.Sounds.GAS);
 

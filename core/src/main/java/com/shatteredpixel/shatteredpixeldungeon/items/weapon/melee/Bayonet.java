@@ -54,9 +54,8 @@ public class Bayonet extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(8+2*lvl) damage, roughly +8 base damage, +75% scaling
-        int dmgBoost = augment.damageFactor(8 + Math.round(3f*buffedLvl()));
-        Rapier.lungeAbility(hero, target, 1, dmgBoost, this);
+        //+(7+2*lvl) damage, roughly +8 base damage, +75% scaling
+        Rapier.lungeAbility(hero, target, this);
     }
 
     @Override

@@ -50,9 +50,8 @@ public class Crabclaw extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(3+1.5*lvl) damage, roughly +60% base damage, +50% scaling
-        int dmgBoost = augment.damageFactor(3 + Math.round(1.5f*buffedLvl()));
-        Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+        //+(3+lvl) damage, roughly +60% base damage, +50% scaling
+        Sai.comboStrikeAbility(hero, target, this);
     }
 
     @Override

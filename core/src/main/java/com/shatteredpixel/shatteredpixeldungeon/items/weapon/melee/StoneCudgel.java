@@ -112,7 +112,7 @@ public class StoneCudgel extends MeleeWeapon {
 
         PathFinder.buildDistanceMap( target, BArray.not( Dungeon.level.solid, null ), 2 );
 
-        int a = 0;
+        int a = 2 + buffedLvl();
         int range = 0;
         for (Mob mob : Dungeon.level.mobs.toArray(new Mob[0])) {
 
@@ -123,7 +123,7 @@ public class StoneCudgel extends MeleeWeapon {
                 }
             }
 
-            if (mob instanceof StoneGuardian && a < 2+buffedLvl() && mob.alignment == Char.Alignment.ALLY) {
+            if (mob instanceof StoneGuardian && a > 0 && mob.alignment == Char.Alignment.ALLY) {
 
                 if (!telePoints.isEmpty()) {
                     int point = Random.element(telePoints);
@@ -132,7 +132,7 @@ public class StoneCudgel extends MeleeWeapon {
                     Dungeon.level.occupyCell(mob);
                     CellEmitter.get( point ).burst( Speck.factory( Speck.ROCK ), 3 );
                     mob.beckon(target);
-                    a ++;
+                    a --;
                 } else {
                     range ++;
                 }

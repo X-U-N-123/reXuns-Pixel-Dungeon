@@ -52,7 +52,7 @@ public class HandAxe extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(4+1.5*lvl) damage, roughly +55% base dmg, +75% scaling
 		int dmgBoost = augment.damageFactor(4 + Math.round(1.5f*buffedLvl()));
-		Mace.heavyBlowAbility(hero, target, 1, dmgBoost, this);
+		Mace.heavyBlowAbility(hero, target, this);
 	}
 
 	@Override

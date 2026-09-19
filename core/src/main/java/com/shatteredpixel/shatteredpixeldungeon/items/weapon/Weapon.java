@@ -459,6 +459,15 @@ abstract public class Weapon extends KindOfWeapon {
 	}
 	
 	@Override
+	public int buffedLvl() {
+		if (isEquipped(Dungeon.hero) && Dungeon.hero.belongings.abilityWeapon == this
+				&& Random.Int(2) < Dungeon.hero.pointsInTalent(Talent.ENHANCED_ABILITY)){
+			return super.buffedLvl() + 1;
+		}
+		return super.buffedLvl();
+	}
+
+	@Override
 	public Item upgrade() {
 		return upgrade(false);
 	}

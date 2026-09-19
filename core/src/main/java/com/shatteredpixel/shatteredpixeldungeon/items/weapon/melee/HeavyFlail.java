@@ -26,11 +26,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Random;
 
 public class HeavyFlail extends MeleeWeapon{
 
@@ -78,7 +80,10 @@ public class HeavyFlail extends MeleeWeapon{
             spin.detach();
             //+(9+2*lvl) damage per spin, roughly +36.4% base damage, +36.4% scaling
             // so +109.1% base dmg, +109.1% scaling at 3 spins
-            Flail.spinBoost = spin.spins * augment.damageFactor(10 + 2*buffedLvl());
+            int lvl = buffedLvl();
+            if (owner instanceof Hero && Random.Int(2) < ((Hero) owner).pointsInTalent(Talent.ENHANCED_ABILITY))
+                lvl ++;
+            Flail.spinBoost = spin.spins * augment.damageFactor(8 + 2*lvl);
             return Float.POSITIVE_INFINITY;
         } else if (Flail.spinBoost != 0) {
             return Float.POSITIVE_INFINITY;

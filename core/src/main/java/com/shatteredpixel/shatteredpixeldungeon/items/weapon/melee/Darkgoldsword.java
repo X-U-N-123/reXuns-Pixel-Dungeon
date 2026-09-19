@@ -36,7 +36,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class Darkgoldsword extends MeleeWeapon{
 
@@ -91,31 +90,28 @@ public class Darkgoldsword extends MeleeWeapon{
         }
         hero.belongings.abilityWeapon = null;
 
-        hero.sprite.attack(enemy.pos, new Callback() {
-            @Override
-            public void call() {
-                beforeAbilityUsed(hero, enemy);
-                AttackIndicator.target(enemy);
-                //41.6% base, 33% scaling
-                if (hero.attack(enemy, 1, 5+level(), Char.INFINITE_ACCURACY)){
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                }
+        hero.sprite.attack(enemy.pos, () -> {
+			beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			//41.6% base, 33% scaling
+			if (hero.attack(enemy, 1, 5+buffedLvl(), Char.INFINITE_ACCURACY)){
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+			}
 
-                Invisibility.dispel();
-                hero.spendAndNext(hero.attackDelay());
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
 
-                if (!enemy.isAlive()){
-                    hero.next();
-                    onAbilityKill(hero, enemy);
+			if (!enemy.isAlive()){
+				hero.next();
+				onAbilityKill(hero, enemy);
 
-                    Wraith w = Wraith.spawnAt(enemy.pos, Wraith.class, true, false);
-                    Buff.affect(w, Corruption.class);
+				Wraith w = Wraith.spawnAt(enemy.pos, Wraith.class, true, false);
+				if (w != null) Buff.affect(w, Corruption.class);
 
-                    Sample.INSTANCE.play(Assets.Sounds.CURSED);
-                }
-                afterAbilityUsed(hero);
-            }
-        });
+				Sample.INSTANCE.play(Assets.Sounds.CURSED);
+			}
+			afterAbilityUsed(hero);
+		});
     }
 
     @Override
@@ -135,5 +131,3 @@ public class Darkgoldsword extends MeleeWeapon{
 
     public static class HTDecreaseTracker extends Buff {}
 }
-
-

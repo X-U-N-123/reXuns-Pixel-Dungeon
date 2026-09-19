@@ -51,8 +51,8 @@ public class Twobroadaxe extends MeleeWeapon {
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
         //+(3+lvl) damage, roughly +40% base damage, +50% scaling
-        int dmgBoost = augment.damageFactor(3 + Math.round(1f*buffedLvl()));
-        Sai.comboStrikeAbility(hero, target, 0, dmgBoost, this);
+        int dmgBoost = augment.damageFactor(4 + buffedLvl());
+        Sai.comboStrikeAbility(hero, target, this);
     }
 
     @Override

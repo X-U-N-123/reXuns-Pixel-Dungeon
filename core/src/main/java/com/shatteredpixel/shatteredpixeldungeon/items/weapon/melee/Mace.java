@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class Mace extends MeleeWeapon {
 
@@ -62,8 +61,7 @@ public class Mace extends MeleeWeapon {
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(5+1.5*lvl) damage, roughly +55% base dmg, +60% scaling
-		int dmgBoost = augment.damageFactor(5 + Math.round(1.5f*buffedLvl()));
-		Mace.heavyBlowAbility(hero, target, 1, dmgBoost, this);
+		Mace.heavyBlowAbility(hero, target, this);
 	}
 
 	@Override
@@ -81,7 +79,7 @@ public class Mace extends MeleeWeapon {
 		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
-	public static void heavyBlowAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
+	public static void heavyBlowAbility(Hero hero, Integer target, MeleeWeapon wep){
 		if (target == null) {
 			return;
 		}
@@ -100,31 +98,26 @@ public class Mace extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
+		int dmgBoost;
 		//no bonus damage if attack isn't a surprise
-		if (enemy instanceof Mob && !((Mob) enemy).surprisedBy(hero)){
-			dmgMulti = Math.min(1, dmgMulti);
-			dmgBoost = 0;
-		}
+		if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero)){
+			dmgBoost = wep.augment.damageFactor(5 + Math.round(1.5f*wep.buffedLvl()));
+		} else dmgBoost = 0;
 
-		float finalDmgMulti = dmgMulti;
-		int finalDmgBoost = dmgBoost;
-		hero.sprite.attack(enemy.pos, new Callback() {
-			@Override
-			public void call() {
-				wep.beforeAbilityUsed(hero, enemy);
-				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, finalDmgMulti, finalDmgBoost, Char.INFINITE_ACCURACY)) {
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-					if (enemy.isAlive()){
-						Buff.affect(enemy, Daze.class, Daze.DURATION);
-					} else {
-						wep.onAbilityKill(hero, enemy);
-					}
+		hero.sprite.attack(enemy.pos, () -> {
+			wep.beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			if (hero.attack(enemy, 1, dmgBoost, Char.INFINITE_ACCURACY)) {
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+				if (enemy.isAlive()){
+					Buff.affect(enemy, Daze.class, Daze.DURATION);
+				} else {
+					onAbilityKill(hero, enemy);
 				}
-				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
-				wep.afterAbilityUsed(hero);
 			}
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
+			wep.afterAbilityUsed(hero);
 		});
 	}
 

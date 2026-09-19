@@ -74,7 +74,7 @@ public class Ripperclaw extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        Knife.cutAbility(hero, target, this, 2+buffedLvl());
+        Knife.cutAbility(hero, target, this);
     }
 
     @Override

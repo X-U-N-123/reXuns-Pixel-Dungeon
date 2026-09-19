@@ -1,3 +1,24 @@
+/*
+ * Pixel Dungeon
+ * Copyright (C) 2012-2015 Oleg Dolya
+ *
+ * Shattered Pixel Dungeon
+ * Copyright (C) 2014-2026 Evan Debenham
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
@@ -14,11 +35,10 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
-import com.watabou.utils.Callback;
 
 public class Havoc extends MeleeWeapon {
 
-    public int Enemieskilled = 0;
+    public int enemiesKilled = 0;
 
     {
         image = ItemSpriteSheet.Havoc;
@@ -30,7 +50,7 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     public int min(int lvl) {//every 5 killed enemy increase its min dmg by 1 point, no scaling
-        return Math.min(1 + (int)(Enemieskilled / 5f), max());
+        return Math.min(1 + (int)(enemiesKilled / 5f), max());
     }
 
     @Override
@@ -43,14 +63,15 @@ public class Havoc extends MeleeWeapon {
     public int proc(Char attacker, Char defender, int damage) {
         if(defender.HP <= damage && defender.buff(Brute.BruteRage.class) == null
                 && !(defender instanceof Ghoul && ((Ghoul) defender).timesDowned() > 0))//preventting brute and ghoul
-            Enemieskilled++;
+            enemiesKilled++;
 
         return super.proc( attacker, defender, damage );
     }
 
     @Override
-    public String statsInfo()
-        {return Messages.get(this, "stats_desc", Enemieskilled);}
+    public String statsInfo() {
+        return Messages.get(this, "stats_desc", enemiesKilled);
+    }
 
     @Override
     public String targetingPrompt() {
@@ -59,8 +80,6 @@ public class Havoc extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(2+lvl) damage, roughly +40% base dmg, +100% scaling
-        int dmgBoost = augment.damageFactor(2 + buffedLvl());
         if (target == null) {
             return;
         }
@@ -79,28 +98,24 @@ public class Havoc extends MeleeWeapon {
         }
         hero.belongings.abilityWeapon = null;
 
-        hero.sprite.attack(enemy.pos, new Callback() {
-            @Override
-            public void call() {
-                beforeAbilityUsed(hero, enemy);
-                AttackIndicator.target(enemy);
-                if (hero.attack(enemy, 1, dmgBoost, Char.INFINITE_ACCURACY)){
-                    Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-                }
+        hero.sprite.attack(enemy.pos, () -> {
+			beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			if (hero.attack(enemy, 1, augment.damageFactor(3 + buffedLvl()), Char.INFINITE_ACCURACY))
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 
-                Invisibility.dispel();
+			Invisibility.dispel();
 
-                if (!enemy.isAlive()){
-                    hero.next();
-                    onAbilityKill(hero, enemy);
-                } else {
-                    Enemieskilled ++;
-                }
-                hero.spendAndNext(hero.attackDelay());
+			if (!enemy.isAlive()){
+				hero.next();
+				onAbilityKill(hero, enemy);
+			} else {
+				enemiesKilled++;
+			}
+			hero.spendAndNext(hero.attackDelay());
 
-                afterAbilityUsed(hero);
-            }
-        });
+			afterAbilityUsed(hero);
+		});
     }
 
     @Override
@@ -123,13 +138,13 @@ public class Havoc extends MeleeWeapon {
     @Override
     public void storeInBundle( Bundle bundle ) {
         super.storeInBundle( bundle );
-        bundle.put( ENEMIESKILLED, Enemieskilled );
+        bundle.put( ENEMIESKILLED, enemiesKilled);
     }
 
     @Override
     public void restoreFromBundle( Bundle bundle ) {
         super.restoreFromBundle( bundle );
-        Enemieskilled = bundle.getInt(ENEMIESKILLED);
+        enemiesKilled = bundle.getInt(ENEMIESKILLED);
     }
 
 }

@@ -83,10 +83,10 @@ public class Knife extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        cutAbility(hero, target, this, 4+buffedLvl());
+        cutAbility(hero, target, this);
     }
 
-    public static void cutAbility(Hero hero, Integer target, MeleeWeapon wep, int debuffDuration){
+    public static void cutAbility(Hero hero, Integer target, MeleeWeapon wep){
         if (target == null) {
             return;
         }
@@ -118,6 +118,7 @@ public class Knife extends MeleeWeapon {
 			if (!enemy.isAlive()){
 				MeleeWeapon.onAbilityKill(hero, enemy);
 			} else {
+                int debuffDuration =  5 - wep.tier / 2 + wep.buffedLvl();
 				Buff.prolong(enemy, Vulnerable.class, debuffDuration);
 				Buff.prolong(enemy, Cripple.class, debuffDuration);
 			}

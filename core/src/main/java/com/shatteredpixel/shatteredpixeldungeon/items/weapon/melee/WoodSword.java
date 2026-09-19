@@ -65,7 +65,7 @@ public class WoodSword extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(3+lvl) damage, roughly +55.5% base dmg, +66.7% scaling
 		int dmgBoost = augment.damageFactor(3 + buffedLvl());
-		Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
+		Sword.cleaveAbility(hero, target, this);
 	}
 
 	@Override

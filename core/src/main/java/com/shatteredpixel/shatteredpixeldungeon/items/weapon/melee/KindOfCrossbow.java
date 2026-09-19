@@ -26,11 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfBlastWave;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
+import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class KindOfCrossbow extends MeleeWeapon {
 
@@ -136,7 +139,8 @@ public class KindOfCrossbow extends MeleeWeapon {
 		}
 
 		beforeAbilityUsed(hero, null);
-		Buff.affect(hero, ChargedShot.class);
+		Buff.affect(hero, ChargedShot.class)
+				.enhanced = Random.Int(2) < hero.pointsInTalent(Talent.ENHANCED_ABILITY);
 		hero.sprite.operate(hero.pos);
 		hero.next();
 		afterAbilityUsed(hero);
@@ -163,11 +167,26 @@ public class KindOfCrossbow extends MeleeWeapon {
 			type = buffType.POSITIVE;
 		}
 
+		public boolean enhanced = false;
+
 		@Override
 		public int icon() {
 			return BuffIndicator.DUEL_XBOW;
 		}
 
+		private static final String ENHANCED = "enhanced";
+
+		@Override
+		public void storeInBundle(Bundle bundle) {
+			super.storeInBundle(bundle);
+			bundle.put(ENHANCED, enhanced);
+		}
+
+		@Override
+		public void restoreFromBundle(Bundle bundle) {
+			super.restoreFromBundle(bundle);
+			enhanced = bundle.getBoolean(ENHANCED);
+		}
 	}
 
 	@Override

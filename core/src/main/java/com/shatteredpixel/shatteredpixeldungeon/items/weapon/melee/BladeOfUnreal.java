@@ -115,9 +115,9 @@ public class BladeOfUnreal extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
-		hits = Math.round(augment.delayFactor(3 + buffedLvl())) + 2;
 		beforeAbilityUsed(curUser, enemy);
 		AttackIndicator.target(enemy);
+		hits = Math.round(augment.delayFactor(3 + buffedLvl())) + 2;
 
 		wasAlly = enemy.alignment == curUser.alignment;
 

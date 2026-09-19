@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class Spear extends MeleeWeapon {
 
@@ -63,8 +62,7 @@ public class Spear extends MeleeWeapon {
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(9+2*lvl) damage, roughly +83% base damage, +80% scaling
-		int dmgBoost = augment.damageFactor(9 + Math.round(2f*buffedLvl()));
-		Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+		Spear.spikeAbility(hero, target, this);
 	}
 
 	@Override
@@ -82,7 +80,7 @@ public class Spear extends MeleeWeapon {
 		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
-	public static void spikeAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
+	public static void spikeAbility(Hero hero, Integer target, MeleeWeapon wep){
 		if (target == null) {
 			return;
 		}
@@ -101,30 +99,28 @@ public class Spear extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
-		hero.sprite.attack(enemy.pos, new Callback() {
-			@Override
-			public void call() {
-				wep.beforeAbilityUsed(hero, enemy);
-				AttackIndicator.target(enemy);
-				int oldPos = enemy.pos;
-				//do not push if enemy has moved, or another push is active (e.g. elastic)
-				if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY)) {
-					if (enemy.isAlive() && enemy.pos == oldPos && !Pushing.pushingExistsForChar(enemy)){
-						//trace a ballistica to our target (which will also extend past them)
-						Ballistica trajectory = new Ballistica(hero.pos, enemy.pos, Ballistica.STOP_TARGET);
-						//trim it to just be the part that goes past them
-						trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
-						//knock them back along that ballistica
-						WandOfBlastWave.throwChar(enemy, trajectory, 1, true, false, hero);
-					} else if (!enemy.isAlive()) {
-						wep.onAbilityKill(hero, enemy);
-					}
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
+		hero.sprite.attack(enemy.pos, () -> {
+			wep.beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			int oldPos = enemy.pos;
+			//do not push if enemy has moved, or another push is active (e.g. elastic)
+			if (hero.attack(enemy, 1, wep.augment.damageFactor(7 + wep.tier + Math.round((1.6f + 0.2f * wep.tier)*wep.buffedLvl())),
+					Char.INFINITE_ACCURACY)) {
+				if (enemy.isAlive() && enemy.pos == oldPos && !Pushing.pushingExistsForChar(enemy)){
+					//trace a ballistica to our target (which will also extend past them)
+					Ballistica trajectory = new Ballistica(hero.pos, enemy.pos, Ballistica.STOP_TARGET);
+					//trim it to just be the part that goes past them
+					trajectory = new Ballistica(trajectory.collisionPos, trajectory.path.get(trajectory.path.size() - 1), Ballistica.PROJECTILE);
+					//knock them back along that ballistica
+					WandOfBlastWave.throwChar(enemy, trajectory, 1, true, false, hero);
+				} else if (!enemy.isAlive()) {
+					onAbilityKill(hero, enemy);
 				}
-				Invisibility.dispel();
-				hero.spendAndNext(hero.attackDelay());
-				wep.afterAbilityUsed(hero);
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 			}
+			Invisibility.dispel();
+			hero.spendAndNext(hero.attackDelay());
+			wep.afterAbilityUsed(hero);
 		});
 	}
 

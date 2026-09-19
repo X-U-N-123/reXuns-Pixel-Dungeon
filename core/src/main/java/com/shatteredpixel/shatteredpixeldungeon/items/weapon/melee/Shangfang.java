@@ -65,7 +65,7 @@ public class Shangfang extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         //+(8+lvl) damage, roughly +39% base dmg, +25% scaling
         int dmgBoost = augment.damageFactor(8 + buffedLvl());
-        Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
+        Sword.cleaveAbility(hero, target, this);
     }
 
     @Override

@@ -35,7 +35,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.utils.Callback;
 
 public class Sword extends MeleeWeapon {
 	
@@ -75,7 +74,7 @@ public class Sword extends MeleeWeapon {
 	protected void duelistAbility(Hero hero, Integer target) {
 		//+(5+lvl) damage, roughly +45% base dmg, +40% scaling
 		int dmgBoost = augment.damageFactor(5 + buffedLvl());
-		Sword.cleaveAbility(hero, target, 1, dmgBoost, this);
+		Sword.cleaveAbility(hero, target, this);
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class Sword extends MeleeWeapon {
 		return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
 	}
 
-	public static void cleaveAbility(Hero hero, Integer target, float dmgMulti, int dmgBoost, MeleeWeapon wep){
+	public static void cleaveAbility(Hero hero, Integer target, MeleeWeapon wep){
 		if (target == null) {
 			return;
 		}
@@ -112,33 +111,28 @@ public class Sword extends MeleeWeapon {
 		}
 		hero.belongings.abilityWeapon = null;
 
-		hero.sprite.attack(enemy.pos, new Callback() {
-			@Override
-			public void call() {
-				wep.beforeAbilityUsed(hero, enemy);
-				AttackIndicator.target(enemy);
-				if (hero.attack(enemy, dmgMulti, dmgBoost, Char.INFINITE_ACCURACY)){
-					Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
-				}
+		hero.sprite.attack(enemy.pos, () -> {
+			wep.beforeAbilityUsed(hero, enemy);
+			AttackIndicator.target(enemy);
+			if (hero.attack(enemy, 1, wep.augment.damageFactor(2 + wep.tier + wep.buffedLvl()), Char.INFINITE_ACCURACY))
+				Sample.INSTANCE.play(Assets.Sounds.HIT_STRONG);
 
-				Invisibility.dispel();
+			Invisibility.dispel();
 
-				if (!enemy.isAlive()){
-					hero.next();
-					wep.onAbilityKill(hero, enemy);
-					if (hero.buff(CleaveTracker.class) != null) {
-						hero.buff(CleaveTracker.class).detach();
-					} else {
-						Buff.prolong(hero, CleaveTracker.class, 4f); //1 less as attack was instant
-					}
+			if (!enemy.isAlive()){
+				hero.next();
+				onAbilityKill(hero, enemy);
+				if (hero.buff(CleaveTracker.class) != null) {
+					hero.buff(CleaveTracker.class).detach();
 				} else {
-					hero.spendAndNext(hero.attackDelay());
-					if (hero.buff(CleaveTracker.class) != null) {
-						hero.buff(CleaveTracker.class).detach();
-					}
+					Buff.prolong(hero, CleaveTracker.class, 4f); //1 less as attack was instant
 				}
-				wep.afterAbilityUsed(hero);
+			} else {
+				hero.spendAndNext(hero.attackDelay());
+				if (hero.buff(CleaveTracker.class) != null)
+					hero.buff(CleaveTracker.class).detach();
 			}
+			wep.afterAbilityUsed(hero);
 		});
 	}
 

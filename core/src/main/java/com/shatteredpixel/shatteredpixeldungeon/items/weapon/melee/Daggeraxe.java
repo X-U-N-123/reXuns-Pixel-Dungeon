@@ -51,9 +51,9 @@ public class Daggeraxe extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        //+(12+2*lvl) damage, roughly +66.7% base damage, +67% scaling
+        //+(10+2*lvl) damage, roughly +66.7% base damage, +67% scaling
         int dmgBoost = augment.damageFactor(10 + Math.round(2f*buffedLvl()));
-        Spear.spikeAbility(hero, target, 1, dmgBoost, this);
+        Spear.spikeAbility(hero, target, this);
     }
 
     @Override
@@ -70,5 +70,4 @@ public class Daggeraxe extends MeleeWeapon {
         int dmgBoost = 10 + Math.round(2f*level);
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
     }
-
 }

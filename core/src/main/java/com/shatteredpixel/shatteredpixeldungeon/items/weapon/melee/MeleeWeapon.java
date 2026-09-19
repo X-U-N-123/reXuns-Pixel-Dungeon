@@ -471,8 +471,6 @@ public class MeleeWeapon extends Weapon {
 						chargeToGain /= 4f;
 					}
 
-					chargeToGain *= 1f + 0.12f*Dungeon.hero.pointsInTalent(Talent.POWER_ACCUMULATION) * (chargeCap() - charges)/chargeCap();
-
 					partialCharge += chargeToGain;
 				}
 

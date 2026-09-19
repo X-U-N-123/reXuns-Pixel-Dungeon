@@ -52,7 +52,7 @@ public class Hoe extends MeleeWeapon {
     protected void duelistAbility(Hero hero, Integer target) {
         //replaces damage with 16+3*lvl bleed, roughly 86% avg base dmg, 100% avg scaling
         int bleedAmt = augment.damageFactor(Math.round(16f + 3f*buffedLvl()));
-        Sickle.harvestAbility(hero, target, 0f, bleedAmt, this);
+        Sickle.harvestAbility(hero, target, this);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class Canopy extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        RoundShield.guardAbility(hero, 2+buffedLvl(), this);
+        RoundShield.guardAbility(hero, this);
     }
 
     @Override

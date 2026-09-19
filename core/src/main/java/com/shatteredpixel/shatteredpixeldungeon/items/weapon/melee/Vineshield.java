@@ -67,7 +67,7 @@ public class Vineshield extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        RoundShield.guardAbility(hero, 6+buffedLvl(), this);
+        RoundShield.guardAbility(hero, this);
     }
 
     @Override

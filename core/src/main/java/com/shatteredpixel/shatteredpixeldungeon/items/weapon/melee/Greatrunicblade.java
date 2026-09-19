@@ -49,7 +49,7 @@ public class Greatrunicblade extends MeleeWeapon {
 
     @Override
     protected void duelistAbility(Hero hero, Integer target) {
-        RunicBlade.runicSlashAbility(hero, target, this, 2f);
+        RunicBlade.runicSlashAbility(hero, target, this);
     }
 
     @Override
