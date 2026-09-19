@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -77,6 +78,22 @@ public class BladeOfUnreal extends MeleeWeapon {
 	}
 
 	static int hits;
+	static boolean wasAlly;
+
+	@Override
+	protected int STRReq(int tier, int lvl) {
+		int baseSTR = 8 + tier * 2;
+		if (modify == Modification.PNEUMATICS) baseSTR ++;
+		if (Dungeon.hero != null){
+			MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
+			if (tool != null && tool.modify == Modification.PNEUMATICS
+					&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
+					&& isEquipped(Dungeon.hero)) {
+				baseSTR++;
+			}
+		}
+		return baseSTR;
+	}
 
 	@Override
 	protected void duelistAbility(Hero hero, Integer target) {
@@ -102,14 +119,14 @@ public class BladeOfUnreal extends MeleeWeapon {
 		beforeAbilityUsed(curUser, enemy);
 		AttackIndicator.target(enemy);
 
-		boolean wasAlly = enemy.alignment == curUser.alignment;
+		wasAlly = enemy.alignment == curUser.alignment;
 
 		Actor.add(new Actor() {
 			{actPriority = VFX_PRIO;}
 
 			@Override
 			protected boolean act() {
-				if (hits > 0 && enemy.isAlive() && hero.canAttack(enemy) &&
+				if (hits > 0 && enemy.isAlive() && hero.canAttack(enemy) && hero.paralysed <= 0 &&
 						(wasAlly || enemy.alignment != curUser.alignment)){
 					curUser.sprite.attack(enemy.pos, () -> {
 

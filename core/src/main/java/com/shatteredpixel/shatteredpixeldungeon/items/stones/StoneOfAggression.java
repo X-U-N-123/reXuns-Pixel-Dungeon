@@ -45,10 +45,14 @@ public class StoneOfAggression extends Runestone {
 		
 		Char ch = Actor.findChar( cell );
 		
-		if (ch != null
-				&& !Char.hasProp(ch, Char.Property.BOSS)
-				&& !Char.hasProp(ch, Char.Property.MINIBOSS)) {
-			Buff.prolong(ch, Aggression.class, Aggression.DURATION);
+		if (ch != null) {
+			if (Char.hasProp(ch, Char.Property.BOSS) || Char.hasProp(ch, Char.Property.MINIBOSS)){
+				Buff.prolong(ch, Aggression.class, 5);
+			} else if (ch.alignment != Char.Alignment.ALLY) {
+				Buff.prolong(ch, Aggression.class, 10);
+			} else {
+				Buff.prolong(ch, Aggression.class, Aggression.DURATION);
+			}
 		}
 
 		CellEmitter.center(cell).start( Speck.factory( Speck.SCREAM ), 0.3f, 3 );

@@ -174,8 +174,9 @@ public class Berserk extends ShieldBuff implements ActionIndicator.Action {
 	public boolean berserking(){
 		if (target.HP <= 0
 				&& state == State.NORMAL
-				&& power >= 1f
-				&& ((Hero)target).hasTalent(Talent.DEATHLESS_FURY)){
+				&& ((Hero)target).hasTalent(Talent.DEATHLESS_FURY)
+				&& power >= 1.2f - 0.2f * ((Hero)target).pointsInTalent(Talent.DEATHLESS_FURY)){
+			power = Math.max(power, 1f);
 			startBerserking();
 			ActionIndicator.clearAction(this);
 		}

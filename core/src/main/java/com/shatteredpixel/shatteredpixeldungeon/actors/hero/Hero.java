@@ -568,9 +568,9 @@ public class Hero extends Char {
 				if (pointsInTalent(Talent.FAR_STANDOFF) >= 2)
 					Buff.affect( this, Combo.class ).hit( enemy );
 			}
-
-		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );
+			if (heroClass == HeroClass.DUELIST){
+				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );
+			}
 			if (hasTalent(Talent.HOMEMADE_DRUG)){
 				Poison p = buff(Poison.class);
 				if (p != null && !attackTarget.isImmune(Poison.class)){
@@ -2297,8 +2297,6 @@ public class Hero extends Char {
 			if (Dungeon.hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(this)){
 				Buff.prolong(Dungeon.hero, Talent.MarchForwardTracker.class, 5f).step++;
 			}
-			DwarvesTile.TileRockTracker rock = Dungeon.hero.buff(DwarvesTile.TileRockTracker.class);
-			if (rock != null) rock.fx(true);
 			sprite.move(pos, step);
 			move(step);
 
@@ -2827,10 +2825,10 @@ public class Hero extends Char {
 			}
 			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null)
 				Buff.prolong( this, Talent.SkilleddualTracker.class, 10).hit((Weapon)belongings.weapon());
-		}
 
-		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
-			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );
+			if (heroClass == HeroClass.DUELIST)
+				Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );
+
 			if (hasTalent(Talent.HOMEMADE_DRUG)){
 				Poison p = buff(Poison.class);
 				if (p != null && !attackTarget.isImmune(Poison.class)){

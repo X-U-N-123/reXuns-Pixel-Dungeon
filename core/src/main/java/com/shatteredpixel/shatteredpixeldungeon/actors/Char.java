@@ -128,8 +128,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.PrismaticImage;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Sheep;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.LeafParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
@@ -163,7 +163,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfPsionicBlast;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
 import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.FerretTuft;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
@@ -179,7 +178,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Peaceful;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vorpal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.DMdrill;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Darkgoldsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -361,8 +359,6 @@ public abstract class Char extends Actor {
 			if (hero.hasTalent(Talent.MARCH_FORWARD) && !Swiftness.enemynear(c)){
 				Buff.prolong(c, Talent.MarchForwardTracker.class, 5f).step++;
 			}
-			DwarvesTile.TileRockTracker rock = hero.buff(DwarvesTile.TileRockTracker.class);
-			if (rock != null) rock.fx(true);
 
 			hero.justMoved = true;
 
@@ -1339,7 +1335,6 @@ public abstract class Char extends Actor {
 		NO_ARMOR_PHYSICAL_SOURCES.add(Parasite.Parasitism.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(KindOfWeapon.BattleModule.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(SummoningBeacon.class);
-		NO_ARMOR_PHYSICAL_SOURCES.add(DwarvesTile.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Landmark.LandMark.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(Illusion.TenacityTracker.class);
 		NO_ARMOR_PHYSICAL_SOURCES.add(ThrowerSprite.Bone.class);

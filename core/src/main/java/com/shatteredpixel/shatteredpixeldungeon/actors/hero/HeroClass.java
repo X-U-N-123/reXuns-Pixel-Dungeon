@@ -105,7 +105,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportat
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfUpgrade;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Extract;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.DwarvesTile;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfMagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BladeOfMimic;
@@ -218,7 +217,6 @@ public enum HeroClass {
 			else hero.belongings.misc = ring;
 			ring.activate(hero);
 
-			new DwarvesTile().identify(false).collect();
 			new Extract().quantity(10).collect();
 			new UDisk().identify().collect();
 
