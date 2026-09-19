@@ -2666,10 +2666,6 @@ public class Hero extends Char {
 					}
 				});
 
-				if (cause instanceof Doom) {
-					((Doom)cause).onDeath();
-				}
-
 				SacrificialFire.Marked sacMark = buff(SacrificialFire.Marked.class);
 				if (sacMark != null){
 					sacMark.detach();
@@ -2746,10 +2742,6 @@ public class Hero extends Char {
 				Sample.INSTANCE.play( Assets.Sounds.DEATH );
 			}
 		});
-
-		if (cause instanceof Doom) {
-			((Doom)cause).onDeath();
-		}
 
 		Dungeon.deleteGame( GamesInProgress.curSlot, true );
 	}
@@ -2835,6 +2827,7 @@ public class Hero extends Char {
 			}
 			if (hasTalent(Talent.SKILLED_DUAL) && belongings.weapon() != null)
 				Buff.prolong( this, Talent.SkilleddualTracker.class, 10).hit((Weapon)belongings.weapon());
+		}
 
 		if (hit && heroClass == HeroClass.DUELIST && wasEnemy){
 			Buff.affect( this, Sai.ComboStrikeTracker.class).addHit( attackTarget );

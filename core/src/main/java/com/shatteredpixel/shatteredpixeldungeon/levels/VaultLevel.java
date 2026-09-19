@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
@@ -111,7 +112,6 @@ import com.shatteredpixel.shatteredpixeldungeon.plants.Swiftthistle;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.audio.Music;
-import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 import com.watabou.utils.Reflection;
 
@@ -124,7 +124,8 @@ public class VaultLevel extends CityLevel {
 
 	@Override
 	public void playLevelMusic() {
-		Music.INSTANCE.play(Assets.Music.CITY_TENSE, true);
+		if (SPDSettings.useOldMusic()) Music.INSTANCE.play(Assets.Music.GAME, true);
+		else Music.INSTANCE.play(Assets.Music.CITY_TENSE, true);
 	}
 
 	@Override
@@ -456,7 +457,6 @@ public class VaultLevel extends CityLevel {
 					Reflection.newInstance(Random.oneOf(ScrollOfRecharging.class, ScrollOfTerror.class)),
 					Reflection.newInstance(Random.oneOf(StoneOfDeepSleep.class, StoneOfClairvoyance.class, StoneOfAggression.class))));
 			Collections.shuffle(consumableLoot.get(1));
-			consumableLoot.get(1).add(0, new PotionOfHealing());
 		}
 
 		//T2
@@ -467,7 +467,6 @@ public class VaultLevel extends CityLevel {
 					Reflection.newInstance(Random.oneOf(ScrollOfLullaby.class, ScrollOfMagicMapping.class)),
 					Reflection.newInstance(Random.oneOf(StoneOfBlast.class, StoneOfBlink.class))));
 			Collections.shuffle(consumableLoot.get(2));
-			consumableLoot.get(2).add(0, new PotionOfHealing());
 		}
 
 		//T3
@@ -643,17 +642,8 @@ public class VaultLevel extends CityLevel {
 				((VaultFinalRoom) r).unlock();
 			}
 		}
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				Music.INSTANCE.fadeOut(5f, new Callback() {
-					@Override
-					public void call() {
-						Music.INSTANCE.end();
-					}
-				});
-			}
-		});
+		if (!SPDSettings.useOldMusic())
+			Game.runOnRenderThread(() -> Music.INSTANCE.fadeOut(5f, Music.INSTANCE::end));
 	}
 
 	public static class VaultFlameTrap extends Trap {

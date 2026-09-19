@@ -2088,7 +2088,7 @@ public abstract class Mob extends Char {
 				|| (toPickUp instanceof PhantomBomb && ((PhantomBomb) toPickUp).generation > 1))
 			return false;
 
-		if (Dungeon.depth > 15 && Dungeon.depth < 20 && Dungeon.branch == 1 && Dungeon.level instanceof VaultLevel){
+		if (Dungeon.level instanceof VaultLevel){
 			return false;
 		}
 

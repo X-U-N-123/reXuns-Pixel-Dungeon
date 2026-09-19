@@ -1445,7 +1445,7 @@ public enum Talent {
 				left = Math.max(0, left);
 				for (curr = left + y * Dungeon.level.width(); curr <= right + y * Dungeon.level.width(); curr++){
 
-					GameScene.effectOverFog( new CheckedCell( curr, hero.pos ) );
+					GameScene.checkedCell( curr, hero.pos ) ;
 					Dungeon.level.mapped[curr] = true;
 
 					if (Dungeon.level.secret[curr]) {

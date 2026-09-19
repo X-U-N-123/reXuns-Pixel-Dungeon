@@ -77,7 +77,7 @@ public class SkeletonSprite extends MobSprite {
 
 		@Override
 		protected int texOffset() {
-			return 21;
+			return 42;
 		}
 
 		@Override

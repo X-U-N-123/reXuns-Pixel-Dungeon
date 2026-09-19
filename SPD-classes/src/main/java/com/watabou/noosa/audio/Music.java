@@ -24,7 +24,6 @@ package com.watabou.noosa.audio;
 import com.badlogic.gdx.Gdx;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Callback;
-import com.watabou.utils.DeviceCompat;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
@@ -50,14 +49,10 @@ public enum Music {
 	String[] trackList;
 	float[] trackChances;
 	private final ArrayList<String> trackQueue = new ArrayList<>();
-	private HashMap<String, com.badlogic.gdx.audio.Music> trackPlayers = new HashMap<>();
+	private final HashMap<String, com.badlogic.gdx.audio.Music> trackPlayers = new HashMap<>();
 	boolean shuffle = false;
 	
 	public synchronized void play( String assetName, boolean looping ) {
-		//iOS cannot play ogg, so we use an mp3 alternative instead
-		if (assetName != null && DeviceCompat.isiOS()){
-			assetName = assetName.replace(".ogg", ".mp3");
-		}
 
 		if (player != null && lastPlayed != null && lastPlayed.equals( assetName )) {
 			player.setVolume(volumeWithFade());
@@ -168,13 +163,10 @@ public enum Music {
 		}
 	}
 
-	private com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = new com.badlogic.gdx.audio.Music.OnCompletionListener() {
-		@Override
-		public void onCompletion(com.badlogic.gdx.audio.Music music) {
-			//don't play the next track if we're currently in the middle of a fade
-			if (fadeTotal == -1f) {
-				playNextTrack(music);
-			}
+	private final com.badlogic.gdx.audio.Music.OnCompletionListener trackLooper = music -> {
+		//don't play the next track if we're currently in the middle of a fade
+		if (fadeTotal == -1f) {
+			playNextTrack(music);
 		}
 	};
 
@@ -199,7 +191,7 @@ public enum Music {
 		}
 
 		play(trackQueue.remove(0), trackLooper);
-	};
+	}
 
 	private synchronized void play(String track, com.badlogic.gdx.audio.Music.OnCompletionListener listener){
 		try {

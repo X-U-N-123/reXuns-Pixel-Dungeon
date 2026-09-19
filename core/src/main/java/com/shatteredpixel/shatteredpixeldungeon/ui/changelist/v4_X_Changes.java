@@ -26,9 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.scenes.ChangesScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
-import com.watabou.utils.DeviceCompat;
 
 import java.util.ArrayList;
 
@@ -63,13 +61,6 @@ public class v4_X_Changes {
 
 		changes.addButton( new ChangeButton( ChangeIcons.V081_MISC, "Misc. Changes",
 				"And of course, I expect v4.1 will include lots of little fixes an adjustments. All of the new content in v4.0 will likely get some adjustments in patches, but there will be larger changes to it that will need to be done in v4.1 instead."));
-
-		if (DeviceCompat.isiOS() && DeviceCompat.getPlatformVersion() <= 12) {
-			changes.addButton(new ChangeButton(Icons.WARNING.get(), "iOS 12 end of support",
-					"Unfortunately, due to an impending requirement by Apple, v4.0.0 and any immediate patches will be the last versions of Shattered compatible with iOS 12.\n" +
-					"\n" +
-					"iOS 13 and 14 support will also have to be dropped around this time next year due to the same requirements."));
-		}
 	}
 
 	public static void add_v4_0_Changes( ArrayList<ChangeInfo> changeInfos ) {

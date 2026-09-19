@@ -1230,16 +1230,17 @@ public abstract class Char extends Actor {
 			}
 		}
 
-		if ((src instanceof Char || src instanceof Bomb || src instanceof Wand) && ((Char) src).buff(Kinetic.KineticTracker.class) != null){
+		Char ch;
+		if (src instanceof Char) ch = (Char) src;
+		else ch = hero;
+		if ((src instanceof Char || src instanceof Wand || src instanceof Bomb)
+				&& ch.buff(Kinetic.KineticTracker.class) != null){
 			int dmgToAdd = 0;
-			Char ch;
-			if (src instanceof Char) ch = (Char) src;
-			else ch = hero;
 			//hitting an ally can spend conserved dmg, but not build it
 			if (HP < 0 && alignment != ch.alignment){
 				dmgToAdd = -HP;
 				dmgToAdd -= ch.buff(Kinetic.KineticTracker.class).conservedDamage;
-				dmgToAdd = Math.round(dmgToAdd * Weapon.Enchantment.genericProcChanceMultiplier((Char) src));
+				dmgToAdd = Math.round(dmgToAdd * Weapon.Enchantment.genericProcChanceMultiplier(ch));
 			}
 			if (dmgToAdd > 0){
 				Buff.affect(ch, Kinetic.ConservedDamage.class).setBonus(dmgToAdd);
@@ -1405,7 +1406,6 @@ public abstract class Char extends Actor {
 		if (buff(DeathMark.DeathMarkTracker.class) != null){
 			buff(DeathMark.DeathMarkTracker.class).detachOnDeath();
 		}
-		destroy();
 		if (src != Chasm.class) {
 			sprite.die();
 			if (!isFlying() && Dungeon.level != null && sprite instanceof MobSprite && Dungeon.level.map[pos] == Terrain.CHASM){

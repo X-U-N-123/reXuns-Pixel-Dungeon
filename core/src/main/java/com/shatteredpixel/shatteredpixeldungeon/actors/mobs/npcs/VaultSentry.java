@@ -122,9 +122,9 @@ public class VaultSentry extends NPC {
 									&& ch.alignment == Alignment.ALLY
 									&& ch.invisible == 0) {
 								if (recentZaps.contains(ch.id())) {
-									ch.damage(Random.NormalIntRange(3, 6), new DM100.LightningBolt());
+									ch.damage(Random.NormalIntRange(3, 6), new DM100.LightningBolt(new DM100()));
 								} else {
-									ch.damage(Random.NormalIntRange(6, 12), new DM100.LightningBolt());
+									ch.damage(Random.NormalIntRange(6, 12), new DM100.LightningBolt(new DM100()));
 								}
 								curZaps.add(ch.id());
 								if (ch.sprite.visible || sprite.visible) {
@@ -206,7 +206,7 @@ public class VaultSentry extends NPC {
 						if (fieldOfView[cell]) {
 							//mainly to prevent the hero from auto-picking up items when targeted
 							Dungeon.hero.interrupt();
-							GameScene.targetedCell(cell, 0xFF0000, TICK);
+							GameScene.targetedCell(cell, TICK);
 						}
 					}
 				}

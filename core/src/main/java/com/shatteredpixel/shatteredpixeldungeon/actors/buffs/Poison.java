@@ -21,8 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.buffs;
 
-import com.shatteredpixel.shatteredpixeldungeon.Badges;
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -32,11 +30,10 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.PoisonParticle;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
-import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.Image;
 import com.watabou.utils.Bundle;
 
-public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
+public class Poison extends Buff implements Buff.DOTbuff {
 	
 	protected float left;
 	
@@ -68,10 +65,6 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 	public void extend( float duration ) {
 		this.left += duration;
 		if (target != null) target.needsIncomingDOTUpdate = true;
-	}
-
-	public void delay( float turns ){
-		spend(turns);
 	}
 
 	public float left() {
@@ -110,6 +103,9 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 	public void detach() {
 		target.needsIncomingDOTUpdate = true;
 		super.detach();
+		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
+			Buff.affect(target, ToxicImbue.class).set(
+					1 + 5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
 	}
 
 	@Override
@@ -152,21 +148,5 @@ public class Poison extends Buff implements Hero.Doom, Buff.DOTbuff {
 			total += i/3 + 1;
 		}
 		return total;
-	}
-
-	@Override
-	public void onDeath() {
-		Badges.validateDeathFromPoison();
-		
-		Dungeon.fail( this );
-		GLog.n( Messages.get(this, "ondeath") );
-	}
-
-	@Override
-	public void detach() {
-		super.detach();
-		if (target instanceof Hero && ((Hero) target).heroClass == HeroClass.WRAITH)
-			Buff.affect(target, ToxicImbue.class).set(
-					1 + 5 * (1 + 0.2f*((Hero) target).pointsInTalent(Talent.WICKED_GROWTH)));
 	}
 }

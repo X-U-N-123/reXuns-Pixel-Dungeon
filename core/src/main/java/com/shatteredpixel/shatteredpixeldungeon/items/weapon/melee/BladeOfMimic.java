@@ -38,16 +38,20 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Fluctuation;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Friendly;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Polarized;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Pressurized;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Rusted;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Sacrificial;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wayward;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Wondrous;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Alienating;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blazing;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blooming;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Kinetic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Lucky;
@@ -55,6 +59,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Peacef
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Vampiric;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Venomous;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
@@ -113,32 +118,37 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
     public static ArrayList<Enchantment> enchList = new ArrayList<>();
     public static LinkedHashMap<Class<? extends Enchantment> , Integer> enchPrio = new LinkedHashMap<>();
     static{
+        enchPrio.put(Alienating.class,2);
         enchPrio.put(Blazing.class,1);
         enchPrio.put(Blocking.class, 0);
         enchPrio.put(Blooming.class, 0);
         enchPrio.put(Chilling.class, 1);
         enchPrio.put(Corrupting.class, 0);
+        enchPrio.put(Crystal.class, 0);
         enchPrio.put(Elastic.class, 1);
+        enchPrio.put(Eldritch.class, 0);
         enchPrio.put(Grim.class, 0);
         enchPrio.put(Kinetic.class, 0);
         enchPrio.put(Lucky.class, 0);
+        enchPrio.put(Peaceful.class,0);
         enchPrio.put(Projecting.class, 2);
         enchPrio.put(Shocking.class, 1);
         enchPrio.put(Vampiric.class, 1);
-        enchPrio.put(Alienating.class,2);
-        enchPrio.put(Peaceful.class,0);
+        enchPrio.put(Venomous.class, 1);
 
         enchPrio.put(Annoying.class, 0);
+        enchPrio.put(BarricadeCurse.class, 0);
         enchPrio.put(Displacing.class, 1);
         enchPrio.put(Dazzling.class, 0);
         enchPrio.put(Explosive.class, 2);
+        enchPrio.put(Fluctuation.class, 0);
         enchPrio.put(Friendly.class, 0);
-        enchPrio.put(Rusted.class, 0);
         enchPrio.put(Polarized.class, 2);
+        enchPrio.put(Pressurized.class, 1);
+        enchPrio.put(Rusted.class, 0);
         enchPrio.put(Sacrificial.class, 1);
         enchPrio.put(Wayward.class, 2);
-        enchPrio.put(BarricadeCurse.class, 0);
-        enchPrio.put(Fluctuation.class, 0);
+        enchPrio.put(Wondrous.class, 0);
     }
 
     @Override

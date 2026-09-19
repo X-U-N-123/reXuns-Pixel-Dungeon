@@ -146,6 +146,10 @@ public class StatusPane extends Component {
 		else        hp = new Image(asset, 0, 38, 50, 5);
 		add( hp );
 
+		if (large)  hunger = new Image(asset, 0, 94, 128, 9);
+		else        hunger = new Image(asset, 0, 43, 47, 5);
+		add( hunger );
+
 		if (large)  Dot = new Image(asset, 0, 103, 128, 9);
 		else        Dot = new Image(asset, 0, 40, 50, 4);
 		Dot.hardlight(0, 0, 0);

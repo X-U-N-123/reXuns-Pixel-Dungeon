@@ -85,12 +85,8 @@ public class BlacksmithRoom extends StandardRoom {
 			if (Random.Float() < SolidifiedMetal.missileReplaceChance()) cat1 = Generator.Category.MISSILE;
 			Generator.Category cat2 = Generator.Category.ARMOR;
 			if (Random.Float() < MagicalGem.wandReplaceChance()) cat2 = Generator.Category.WAND;
-			level.drop(
-					Generator.random( Random.oneOf(
-					cat1,
-					cat2,
-							Generator.Category.MISSILE
-					) ), equipPos );
+
+			level.drop(Generator.random( Random.oneOf(cat1, cat2, Generator.Category.MISSILE) ), equipPos );
 			Painter.set(level, equipPos, Terrain.PEDESTAL);
 			equipPos--;
 		}

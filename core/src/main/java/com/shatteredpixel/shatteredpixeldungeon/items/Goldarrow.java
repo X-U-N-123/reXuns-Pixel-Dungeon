@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
@@ -30,7 +31,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Foresight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicalSight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MindVision;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.elixirs.ElixirOfFeatherFall;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -53,6 +53,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 
 import java.util.ArrayList;
 
@@ -411,9 +412,10 @@ public class Goldarrow extends Item {
 			curUser.sprite.attack(cell);
 			for (int i : trajectory.path){
 				if (i == trajectory.collisionPos)
-					curUser.sprite.parent.addToFront(new TargetedCell(i, Window.XUN_COLOR));
-				else curUser.sprite.parent.addToFront(new TargetedCell(i, Window.WHITE));
+					GameScene.targetedCell(i, Window.XUN_COLOR, -1);
+				GameScene.checkedCell(i, curUser.pos);
 			}
+			Sample.INSTANCE.play(Assets.Sounds.SCAN);
 		}
 	};
 

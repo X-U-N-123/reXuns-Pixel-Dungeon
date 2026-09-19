@@ -39,6 +39,7 @@ public class Unstable extends Weapon.Enchantment {
 			Chilling.class,
 			Corrupting.class,
 			Elastic.class,
+			Eldritch.class,
 			Grim.class,
             Kinetic.class,
 			Lucky.class,
@@ -46,9 +47,7 @@ public class Unstable extends Weapon.Enchantment {
 			//projecting not included, no on-hit effect
 			Shocking.class,
 			Vampiric.class,
-			Venomous.class,
-			Vorpal.class,
-			Eldritch.class
+			Venomous.class
 	};
 
 	@Override

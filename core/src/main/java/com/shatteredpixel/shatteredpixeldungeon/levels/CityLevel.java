@@ -34,8 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClothArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.EscapeCrystal;
-import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
-import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -67,7 +65,6 @@ import com.watabou.noosa.Group;
 import com.watabou.noosa.audio.Music;
 import com.watabou.noosa.particles.Emitter;
 import com.watabou.noosa.particles.PixelParticle;
-import com.watabou.utils.Callback;
 import com.watabou.utils.PointF;
 import com.watabou.utils.Random;
 
@@ -154,44 +151,38 @@ public class CityLevel extends RegularLevel {
 				return false;
 			}
 
-			Game.runOnRenderThread(new Callback() {
+			Game.runOnRenderThread(() -> GameScene.show(new WndOptions( new ImpSprite(),
+					Messages.titleCase(Messages.get(Imp.class, "name")),
+					Messages.get(Imp.class, "enter_text"),
+					Messages.get(Imp.class, "enter_yes"),
+					Messages.get(Imp.class, "enter_no")){
 				@Override
-				public void call() {
-					GameScene.show( new WndOptions( new ImpSprite(),
-							Messages.titleCase(Messages.get(Imp.class, "name")),
-							Messages.get(Imp.class, "enter_text"),
-							Messages.get(Imp.class, "enter_yes"),
-							Messages.get(Imp.class, "enter_no")){
-						@Override
-						protected void onSelect(int index) {
-							if (index == 0){
+				protected void onSelect(int index) {
+					if (index == 0){
 
-								Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
-								hero.HP = hero.HT; //full heal
+						Dungeon.hero.live(); //clears all non-persist buffs, resets hunger/regen
+						hero.HP = hero.HT; //full heal
 
-								EscapeCrystal crystal = hero.belongings.getItem(EscapeCrystal.class);
-								if (crystal == null) {
-									crystal = new EscapeCrystal();
-								} else {
-									crystal.detachAll(Dungeon.hero.belongings.backpack);
-								}
-								if (crystal.storedItems == null){
-									crystal.storeHeroBelongings(Dungeon.hero);
-								}
-								crystal.collect();
-								}
-								if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
-									HeroClass.initDevItem();
-
-								hero.belongings.armor = new ClothArmor();
-								hero.belongings.armor.identify();
-								hero.updateHT( false );
-								CityLevel.super.activateTransition(hero, transition);
-							}
+						EscapeCrystal crystal = hero.belongings.getItem(EscapeCrystal.class);
+						if (crystal == null) {
+							crystal = new EscapeCrystal();
+						} else {
+							crystal.detachAll(Dungeon.hero.belongings.backpack);
 						}
-					} );
+						if (crystal.storedItems == null){
+							crystal.storeHeroBelongings(Dungeon.hero);
+						}
+						crystal.collect();
+						if (Dungeon.isChallenged(Challenges.X_U_NS_POWER))
+							HeroClass.initDevItem();
+
+						hero.belongings.armor = new ClothArmor();
+						hero.belongings.armor.identify();
+						hero.updateHT( false );
+						CityLevel.super.activateTransition(hero, transition);
+					}
 				}
-			});
+			} ));
 			return false;
 
 		} else {

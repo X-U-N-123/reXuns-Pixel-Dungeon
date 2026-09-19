@@ -60,8 +60,7 @@ public class Vampiric extends Weapon.Enchantment {
 
 				if (VialOfBlood.delayBurstHealing()){
 					Healing healing = Buff.affect(attacker, Healing.class);
-					healing.setHeal(healAmt, 0, VialOfBlood.maxHealPerTurn());
-					healing.applyVialEffect();
+					healing.setHeal(healAmt, 0, VialOfBlood.maxHealPerTurn(), true);
 				} else {
 					attacker.HP += healAmt;
 					attacker.sprite.showStatusWithIcon( CharSprite.POSITIVE, Integer.toString( healAmt ), FloatingText.HEALING );

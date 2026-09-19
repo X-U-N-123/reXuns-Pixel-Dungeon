@@ -28,7 +28,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -118,12 +117,12 @@ public class devSpyglass extends Item {
 								}
 								for (int i = 0; i < mob.fieldOfView.length; i++) {
 									if (mob.fieldOfView[i])
-										mob.sprite.parent.addToFront(new TargetedCell(i, Window.WHITE));
+										GameScene.checkedCell(i, mob.pos);
 								}
 								if (mob.target() != -1)
-									mob.sprite.parent.addToFront(new TargetedCell(mob.target(), Window.XUN_COLOR));
+									GameScene.targetedCell(mob.target(), Window.XUN_COLOR, -1);
 								if (mob.enemy() != null)
-									mob.sprite.parent.addToFront(new TargetedCell(mob.enemy().pos, 0xFF0000));
+									GameScene.targetedCell(mob.enemy().pos, -1);
 
 								Sample.INSTANCE.play(Assets.Sounds.BEACON);
 

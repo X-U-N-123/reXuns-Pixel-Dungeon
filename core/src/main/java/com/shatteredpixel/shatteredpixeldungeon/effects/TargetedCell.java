@@ -36,10 +36,11 @@ public class TargetedCell extends Image implements Bundlable {
 	public float time;
 
 	private float alpha;
+	public int color;
 
 	public static SparseArray<TargetedCell> cells = new SparseArray<>();
 
-	public void reset( int pos, float time ){
+	public void reset( int pos, float time, int color ){
 		copy(Icons.get(Icons.TARGET));
 		origin.set( width/2f );
 		camera = null;
@@ -47,7 +48,8 @@ public class TargetedCell extends Image implements Bundlable {
 		this.pos = pos;
 		point( DungeonTilemap.tileToWorld( pos ) );
 
-		hardlight(0xFF0000);
+		this.color = color;
+		hardlight(color);
 
 		alpha = 1f;
 		this.time = time;
@@ -94,12 +96,14 @@ public class TargetedCell extends Image implements Bundlable {
 	public void storeInBundle(Bundle bundle) {
 		bundle.put(POS, pos);
 		bundle.put(TIME, time);
+		bundle.put(COLOR, color);
 	}
 
 	@Override
 	public void restoreFromBundle(Bundle bundle) {
 		pos = bundle.getInt(POS);
 		time = bundle.getInt(TIME);
+		color = bundle.getInt(COLOR);
 	}
 
 }

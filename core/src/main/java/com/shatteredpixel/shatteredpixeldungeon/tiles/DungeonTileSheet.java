@@ -322,13 +322,13 @@ public class DungeonTileSheet {
 	public static final int RAISED_MINE_CRYSTAL_BLUE_1  = RAISED_OTHER+12; //blue1 is the default
 	public static final int RAISED_MINE_CRYSTAL_BLUE_2  = RAISED_OTHER+13;
 	public static final int RAISED_MINE_CRYSTAL_GREEN_1 = RAISED_OTHER+14;
-	public static final int RAISED_MINE_CRYSTAL_GREEN_2 = RAISED_OTHER+15;
-	public static final int RAISED_MINE_CRYSTAL_RED_1   = RAISED_OTHER+16;
-	public static final int RAISED_MINE_CRYSTAL_RED_2   = RAISED_OTHER+17;
+	public static final int RAISED_MINE_BOULDER         = RAISED_OTHER+15;
+	public static final int RAISED_MINE_BOULDER_ALT     = RAISED_OTHER+16;
+	public static final int RAISED_MINE_BOULDER_ALT_2   = RAISED_OTHER+17;
+	public static final int RAISED_MINE_CRYSTAL_GREEN_2 = RAISED_OTHER+18;
+	public static final int RAISED_MINE_CRYSTAL_RED_1   = RAISED_OTHER+19;
+	public static final int RAISED_MINE_CRYSTAL_RED_2   = RAISED_OTHER+20;
 
-	public static final int RAISED_MINE_BOULDER     = RAISED_OTHER+15;
-	public static final int RAISED_MINE_BOULDER_ALT = RAISED_OTHER+16;
-	public static final int RAISED_MINE_BOULDER_ALT_2=RAISED_OTHER+17;
 
 
 	/**********************************************************************

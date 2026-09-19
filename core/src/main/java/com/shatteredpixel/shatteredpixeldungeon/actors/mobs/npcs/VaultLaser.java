@@ -94,7 +94,7 @@ public class VaultLaser extends NPC {
 				}
 				Char ch = Actor.findChar(cell);
 				if (ch != null && ch.alignment == Alignment.ALLY){
-					ch.damage(Random.NormalIntRange(10, 20), new Eye.DeathGaze());
+					ch.damage(Random.NormalIntRange(10, 20), new Eye.DeathGaze(this));
 					if (ch.sprite.visible){
 						ch.sprite.flash();
 						CellEmitter.center( pos ).burst( PurpleParticle.BURST, Random.IntRange( 1, 2 ) );

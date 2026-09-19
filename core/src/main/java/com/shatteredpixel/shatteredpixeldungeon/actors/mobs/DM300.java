@@ -46,7 +46,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vertigo;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.WallOfLight;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.DriedRose;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.MetalShard;
@@ -468,7 +467,7 @@ public class DM300 extends Mob {
 			GameScene.targetedCell(i, delay);
 		}
 		//don't want to overly punish players with slow move or attack speed
-		Buff.append(this, FallingRockBuff.class, delay).setRockPositions(rockCells);
+		Buff.append(this, FallingRockBuff.class, delay).setStatus(rockCells, true, Dungeon.depth);
 
 	}
 

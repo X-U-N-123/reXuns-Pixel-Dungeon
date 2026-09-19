@@ -134,7 +134,7 @@ public class ItemSpriteSheet {
 		assignItemRect(EBONY_CHEST,     16, 14);
 	}
 
-	private static final int REMAIN_ITEM = xy(17, 2);   //16 slots
+	private static final int REMAIN_ITEM = xy(21, 2);   //16 slots
 	public static final int SEAL_SHARD   = REMAIN_ITEM +0;
 	public static final int BROKEN_STAFF = REMAIN_ITEM +1;
 	public static final int CLOAK_SCRAP  = REMAIN_ITEM +2;
@@ -1053,7 +1053,7 @@ public class ItemSpriteSheet {
 		assignItemRect(CRISPY_PASTRY,   16, 16);
 	}
 
-	private static final int QUEST  = xy(9, 2);  //8 slots
+	private static final int QUEST  = xy(9, 2);  //12 slots
 	public static final int DUST    = QUEST+0;
 	public static final int CANDLE  = QUEST+1;
 	public static final int EMBER   = QUEST+2;

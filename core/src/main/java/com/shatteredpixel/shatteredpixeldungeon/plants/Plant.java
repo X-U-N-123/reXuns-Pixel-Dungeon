@@ -71,13 +71,6 @@ public abstract class Plant implements Bundlable {
 	public void trigger(){
 
 		Char ch = Actor.findChar(pos);
-
-		if (ch instanceof Hero){
-			((Hero) ch).interrupt();
-			if(((Hero) ch).hasTalent(Talent.BARKSKIN)){
-				Barkskin.conditionallyAppend(ch, (((Hero) ch).lvl* ((Hero) ch).pointsInTalent(Talent.BARKSKIN))/3, 1 );
-			}
-		}
 		/*
 		if (Dungeon.level.heroFOV[pos] && Dungeon.hero.hasTalent(Talent.NATURES_AID)){
 			// 3/5 turns based on talent points spent

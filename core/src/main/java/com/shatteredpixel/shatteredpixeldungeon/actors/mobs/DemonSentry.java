@@ -30,7 +30,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
-import com.shatteredpixel.shatteredpixeldungeon.sprites.DemonSentrySprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.SentrySprite;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
@@ -41,7 +41,7 @@ public class DemonSentry extends Mob {
 	private float callCD = 0;
 
 	{
-		spriteClass = DemonSentrySprite.class;
+		spriteClass = SentrySprite.Demon.class;
 
 		HP = HT = 100;
 		defenseSkill = 15;

@@ -368,7 +368,7 @@ public class GameScene extends PixelScene {
 		targetedCells = new Group();
 		add(targetedCells);
 		for (TargetedCell cell : TargetedCell.cells.valueList()){
-			cell.reset(cell.pos, cell.time);
+			cell.reset(cell.pos, cell.time, cell.color);
 			targetedCells.add(cell);
 		}
 
@@ -1236,25 +1236,25 @@ public class GameScene extends PixelScene {
 	}
 
 	public static TargetedCell targetedCell(int pos, int color, float delay){
-		return targetedCell(pos, delay);
-	}
-
-	public static TargetedCell targetedCell(int pos, float delay){
 		if (scene != null) {
 			TargetedCell cell;
 			synchronized (TargetedCell.cells) {
 				if (TargetedCell.cells.containsKey(pos)) {
 					cell = TargetedCell.cells.get(pos);
-					cell.reset(pos, Actor.now()+delay);
+					cell.reset(pos, Actor.now()+delay, color);
 					return cell;
 				}
 			}
 			cell = (TargetedCell) scene.targetedCells.recycle(TargetedCell.class);
-			cell.reset(pos, Actor.now()+delay);
+			cell.reset(pos, Actor.now()+delay, color);
 			return cell;
 		} else {
 			return null;
 		}
+	}
+
+	public static TargetedCell targetedCell(int pos, float delay){
+		return targetedCell(pos, 0xFF0000, delay);
 	}
 
 	public static Ripple ripple( int pos ) {

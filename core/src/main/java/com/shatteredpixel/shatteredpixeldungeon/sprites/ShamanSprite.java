@@ -128,4 +128,15 @@ public abstract class ShamanSprite extends MobSprite {
 			return 63;
 		}
 	}
+
+	public static class Vault extends ShamanSprite {
+		{
+			boltType = MagicMissile.SHAMAN_ELMO;
+		}
+
+		@Override
+		protected int texOffset() {
+			return 84;
+		}
+	}
 }

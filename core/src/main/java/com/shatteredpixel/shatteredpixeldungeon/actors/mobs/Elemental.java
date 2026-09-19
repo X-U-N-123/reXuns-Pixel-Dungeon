@@ -40,7 +40,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Lightning;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
-import com.shatteredpixel.shatteredpixeldungeon.effects.TargetedCell;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfFrost;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfLiquidFlame;
@@ -545,7 +544,10 @@ public abstract class Elemental extends Mob {
 
 			boolean visible = sprite.visible || enemy.sprite.visible;
 			for (Char ch : affected){
-				if (ch.sprite.visible) visible = true;
+				if (ch.sprite.visible) {
+					visible = true;
+					break;
+				}
 			}
 
 			if (visible) {

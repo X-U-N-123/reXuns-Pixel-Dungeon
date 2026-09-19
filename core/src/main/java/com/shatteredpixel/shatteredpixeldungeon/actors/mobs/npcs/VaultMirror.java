@@ -27,16 +27,22 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.items.KindOfWeapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.CloakOfShadows;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.HolyTome;
+import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfMimic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.BoneSpike;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Greatsword;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MagesStaff;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MultiTool;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Shovel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.VaultMirrorSprite;
@@ -70,7 +76,7 @@ public class VaultMirror extends NPC {
 		//we create a new generator here as some heroes call RNG here and some don't
 		Random.pushGenerator(Random.Long());
 			switch (cls) {
-				case WARRIOR:
+				case WARRIOR: default:
 					reward = new BrokenSeal().upgrade().identify(false);
 					((BrokenSeal)reward).setGlyph(Armor.Glyph.random());
 					break;
@@ -94,6 +100,22 @@ public class VaultMirror extends NPC {
 					reward = new HolyTome().upgrade(8).identify(false);
 					((HolyTome) reward).directCharge(8);
 					break;
+				case EXPLORER:
+					reward = new Shovel().upgrade(3).identify(false);
+					((Shovel)reward).enchant();
+					break;
+				case WRAITH:
+					reward = new BoneSpike().upgrade(3).identify(false);
+					((BoneSpike)reward).enchant();
+					break;
+				case ENGINEER:
+					reward = new MultiTool().upgrade(3).identify(false);
+					((MultiTool)reward).enchant();
+					((MultiTool)reward).modify(KindOfWeapon.Modification.LONG_HANDLE);
+					break;
+				case PILLAGER:
+					reward = new RingOfMimic().identify(false);
+					break;
 			}
 		Random.popGenerator();
 	}
@@ -107,26 +129,9 @@ public class VaultMirror extends NPC {
 					if (reward != null) {
 
 						String sceneText = Messages.get(VaultMirror.class, "approach") + "\n\n";
-						switch (((Hero) c).heroClass){
-							case WARRIOR:
-								sceneText += Messages.get(VaultMirror.class, "scene_warrior");
-								break;
-							case MAGE:
-								sceneText += Messages.get(VaultMirror.class, "scene_mage");
-								break;
-							case ROGUE:
-								sceneText += Messages.get(VaultMirror.class, "scene_rogue");
-								break;
-							case HUNTRESS:
-								sceneText += Messages.get(VaultMirror.class, "scene_huntress");
-								break;
-							case DUELIST:
-								sceneText += Messages.get(VaultMirror.class, "scene_duelist");
-								break;
-							case CLERIC:
-								sceneText += Messages.get(VaultMirror.class, "scene_cleric");
-								break;
-						}
+						if (((Hero) c).heroClass == HeroClass.WARRIOR && ((Hero) c).hasTalent(Talent.INTACT_SEAL)){
+							sceneText += Messages.get(VaultMirror.class, "scene_warrior_intact");
+						} else sceneText += Messages.get(VaultMirror.class, "scene_" + ((Hero) c).heroClass.name());
 						sceneText += "\n\n" + Messages.get(VaultMirror.class, "scene_final");
 
 						GameScene.show(new WndOptions(sprite(),
