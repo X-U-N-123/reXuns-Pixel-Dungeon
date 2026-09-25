@@ -45,6 +45,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.DivineSense;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
@@ -79,6 +80,8 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.ChapelRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret.SecretRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SpecialRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -290,6 +293,7 @@ public class Dungeon {
 		Wandmaker.Quest.reset();
 		Blacksmith.Quest.reset();
 		Imp.Quest.reset();
+		DwarfCleric.Quest.reset();
 
 		hero = new Hero();
 		hero.live();
@@ -496,6 +500,26 @@ public class Dungeon {
 			hero.buff(AscensionChallenge.class).onLevelSwitch();
 		}
 
+		DwarfCleric.ClericTracker buff = hero.buff(DwarfCleric.ClericTracker.class);
+		if (buff != null && level instanceof CityLevel){
+			for (Room r : ((CityLevel)level).rooms()) {
+				if (r instanceof ChapelRoom) {
+
+					DwarfCleric npc = new DwarfCleric();
+					npc.HP = buff.HP;
+					npc.pos = ((ChapelRoom) r).clericPos;
+					level.mobs.add(npc);
+
+					npc.yell(Messages.get(DwarfCleric.class, "found_the_way", hero.name()));
+					hero.buff(DwarfCleric.ClericTracker.class).detach();
+
+					Statistics.questScores[4] += Math.min(3000, 50 * buff.HP);
+
+					break;
+				}
+			}
+		}
+
 		Mob.restoreAllies( level, pos );
 
 		Actor.init();
@@ -675,6 +699,7 @@ public class Dungeon {
 			Wandmaker	.Quest.storeInBundle( quests );
 			Blacksmith	.Quest.storeInBundle( quests );
 			Imp			.Quest.storeInBundle( quests );
+			DwarfCleric .Quest.storeInBundle( quests );
 			bundle.put( QUESTS, quests );
 			
 			SpecialRoom.storeRoomsInBundle( bundle );
@@ -781,11 +806,13 @@ public class Dungeon {
 				Wandmaker.Quest.restoreFromBundle( quests );
 				Blacksmith.Quest.restoreFromBundle( quests );
 				Imp.Quest.restoreFromBundle( quests );
+				DwarfCleric.Quest.restoreFromBundle( quests );
 			} else {
 				Ghost.Quest.reset();
 				Wandmaker.Quest.reset();
 				Blacksmith.Quest.reset();
 				Imp.Quest.reset();
+				DwarfCleric.Quest.reset();
 			}
 			
 			SpecialRoom.restoreRoomsFromBundle(bundle);

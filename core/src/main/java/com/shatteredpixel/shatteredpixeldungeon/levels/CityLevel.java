@@ -38,6 +38,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.ChapelRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.BlazingTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CorrosionTrap;
 import com.shatteredpixel.shatteredpixeldungeon.levels.traps.CursingTrap;
@@ -192,7 +193,9 @@ public class CityLevel extends RegularLevel {
 
 	@Override
 	protected ArrayList<Room> initRooms() {
-		return Imp.Quest.spawn(super.initRooms());
+		ArrayList<Room> rooms = super.initRooms();
+		if (Dungeon.depth == 19) rooms.add(new ChapelRoom());
+		return Imp.Quest.spawn(rooms);
 	}
 	
 	@Override

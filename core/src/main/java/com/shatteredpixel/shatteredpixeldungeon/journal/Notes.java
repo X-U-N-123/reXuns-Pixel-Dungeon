@@ -33,13 +33,13 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.DemonSpawner;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.MissileTower;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.ImpShopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.RatKing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
-import com.shatteredpixel.shatteredpixeldungeon.items.EquipableItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.LostBackpack;
@@ -52,6 +52,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.BlacksmithSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ClericSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.GhostSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ImpSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
@@ -150,6 +151,7 @@ public class Notes {
 		WANDMAKER,
 		TROLL,
 		IMP,
+		CLERIC,
 
 		DEMON_SPAWNER
 	}
@@ -228,6 +230,8 @@ public class Notes {
 					return new Image(new BlacksmithSprite());
 				case IMP:
 					return new Image(new ImpSprite());
+				case CLERIC:
+					return new Image(new ClericSprite());
 
 				case DEMON_SPAWNER:
 					return new Image(new SpawnerSprite());
@@ -252,6 +256,7 @@ public class Notes {
 				case MAGE_WARP:     return Messages.get(WarpBeacon.class, "name");
 				case SCOUT_USED:    return Messages.get(Scout.class, "name");
 				case FORESIGHT:     return Talent.ROGUES_FORESIGHT.title();
+				case CLERIC:        return Messages.get(DwarfCleric.class, "name");
 			}
 		}
 
@@ -294,6 +299,7 @@ public class Notes {
 				case WANDMAKER:     return Messages.get(Wandmaker.class, "desc");
 				case TROLL:         return Messages.get(Blacksmith.class, "desc");
 				case IMP:           return Messages.get(Imp.class, "desc");
+				case CLERIC:        return DwarfCleric.description(depth);
 
 				case DEMON_SPAWNER: return Messages.get(DemonSpawner.class, "desc");
 			}

@@ -104,6 +104,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.MirrorImage;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -578,6 +579,9 @@ public class Hero extends Char {
 					Talent.HomemadeDrugTracker drug = buff(Talent.HomemadeDrugTracker.class);
 					if (drug != null) drug.spend(3f);
 				}
+			}
+			if (DwarfCleric.Quest.rewardType == 0){
+				enemy.damage(Random.IntRange(1, Dungeon.hero.lvl / 3), new DwarfCleric.DwarfBless());
 			}
 		}
 
@@ -2060,14 +2064,17 @@ public class Hero extends Char {
 		if (src instanceof Hunger) postHP -= shielding();
 		int effectiveDamage = preHP - postHP;
 
+		if (HP <= HT / 5f) Badges.validateWraithUnlock();
+
 		if (effectiveDamage <= 0) return;
 
 		if (buff(EvilUnfold.Evil.class) != null){
 			buff(EvilUnfold.Evil.class).delayTime(effectiveDamage);
 		}
 
-        if (HP <= HT / 5f) Badges.validateWraithUnlock();
-
+		if (buff(DwarfCleric.ClericTracker.class) != null && !(src instanceof Hunger)){
+			buff(DwarfCleric.ClericTracker.class).damage(effectiveDamage / 3);
+		}
 
 		//flash red when hit for serious damage.
 		float percentDMG = effectiveDamage / (float)preHP; //percent of current HP that was taken

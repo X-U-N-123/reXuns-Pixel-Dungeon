@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.HallsPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
@@ -80,7 +81,8 @@ public class HallsLevel extends RegularLevel {
 	public void playLevelMusic() {
         if (SPDSettings.useOldMusic()){
             Music.INSTANCE.play(Assets.Music.GAME, true);
-        } else if (Statistics.amuletObtained){
+        } else if (Statistics.amuletObtained
+				|| (Dungeon.hero != null && Dungeon.hero.buff(DwarfCleric.ClericTracker.class) != null)){
 			Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
 		} else {
 			Music.INSTANCE.playTracks(HALLS_TRACK_LIST, HALLS_TRACK_CHANCES, false);
@@ -93,7 +95,7 @@ public class HallsLevel extends RegularLevel {
 
 		rooms.add(new DemonSpawnerRoom());
 
-		return rooms;
+		return DwarfCleric.Quest.spawn(rooms);
 	}
 
 	@Override

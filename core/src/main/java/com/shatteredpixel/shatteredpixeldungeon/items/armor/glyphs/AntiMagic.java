@@ -51,6 +51,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Marlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Shaman;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.YogFist;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.ChaliceOfBlood;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.ArcaneBomb;
@@ -143,6 +144,7 @@ public class AntiMagic extends Armor.Glyph {
 		RESISTS.add( WarpBeacon.class );
 
 		RESISTS.add( CorruptionSpell.class);
+		RESISTS.add( DwarfCleric.DwarfBless.class);
 
 		RESISTS.add( DM100.LightningBolt.class );
 		RESISTS.add( Shaman.EarthenBolt.class );
