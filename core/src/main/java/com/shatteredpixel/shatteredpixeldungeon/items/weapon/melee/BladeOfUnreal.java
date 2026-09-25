@@ -29,7 +29,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.BrokenArmor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
-import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.HeroSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -82,17 +81,7 @@ public class BladeOfUnreal extends MeleeWeapon {
 
 	@Override
 	protected int STRReq(int tier, int lvl) {
-		int baseSTR = 8 + tier * 2;
-		if (modify == Modification.PNEUMATICS) baseSTR ++;
-		if (Dungeon.hero != null){
-			MultiTool tool = Dungeon.hero.belongings.getItem(MultiTool.class);
-			if (tool != null && tool.modify == Modification.PNEUMATICS
-					&& Dungeon.hero.hasTalent(Talent.MULTI_MODIFY)
-					&& isEquipped(Dungeon.hero)) {
-				baseSTR++;
-			}
-		}
-		return baseSTR;
+		return super.STRReq(tier, lvl / 2);
 	}
 
 	@Override

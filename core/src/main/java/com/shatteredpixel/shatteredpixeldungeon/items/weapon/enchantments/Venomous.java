@@ -21,7 +21,6 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments;
 
-import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Corrosion;
@@ -49,7 +48,7 @@ public class Venomous extends Weapon.Enchantment {
 			Corrosion corrosion = defender.buff(Corrosion.class);
 			if (corrosion == null) {
 				corrosion = Buff.affect(defender, Corrosion.class);
-				corrosion.set(1, 1 + Dungeon.scalingDepth() / 5, attacker.getClass());
+				corrosion.set(1, 1, attacker.getClass());
 				corrosion = defender.buff(Corrosion.class);
 			}
 			if (corrosion != null){

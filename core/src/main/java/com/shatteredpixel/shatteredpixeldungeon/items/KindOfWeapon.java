@@ -371,16 +371,17 @@ abstract public class KindOfWeapon extends EquipableItem {
 				Buff.affect(Dungeon.hero, PhysicalEmpower.class).set((int)(Dungeon.hero.lvl * 0.5f), 2);
 			}
 		} else {
-			if (!activeRepair)
-				modDurability = 0;
+			if (!activeRepair) modDurability = 0;
 
 			float duraToInc = mod.maxDurability() * (1 + 0.15f * Dungeon.hero.pointsInTalent(Talent.DURABLE_MODIFIES));
 			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 2 && activeRepair) duraToInc *= 1.2f;
 			modDurability += Math.round(duraToInc);
 
-			Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
-			Transmuting.show(curUser, this, this);
-			curUser.sprite.operate(curUser.pos);
+			if (curUser.sprite != null){
+				Sample.INSTANCE.play(Assets.Sounds.UNLOCK);
+				Transmuting.show(curUser, this, this);
+				curUser.sprite.operate(curUser.pos);
+			}
 
 			if (Dungeon.hero.pointsInTalent(Talent.ACTIVE_REPAIR) >= 3 && activeRepair){
 				MetalPart part = new MetalPart();

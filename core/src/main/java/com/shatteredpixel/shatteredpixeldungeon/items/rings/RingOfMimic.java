@@ -268,7 +268,7 @@ public class RingOfMimic extends Ring {
 
 	@Override
 	public int level() {
-		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/6;
+		return Dungeon.hero == null ? 0 : Dungeon.hero.lvl/5;
 	}
 
 	@Override
