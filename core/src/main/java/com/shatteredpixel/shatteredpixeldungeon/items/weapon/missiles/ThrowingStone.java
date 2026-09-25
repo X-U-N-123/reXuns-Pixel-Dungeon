@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Vulnerable;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -43,24 +45,33 @@ public class ThrowingStone extends MissileWeapon {
 	}
 	
 	@Override
+	public int proc(Char attacker, Char defender, int damage) {
+		if (attacker instanceof Hero && ((Hero) attacker).pointsInTalent(Talent.FLYING_LOCUST_STONE) >= 3)
+			Buff.prolong(defender, Vulnerable.class, 3);
+		return super.proc(attacker, defender, damage);
+	}
+
+	@Override
 	public int damageRoll(Char owner) {
 		if (owner instanceof Hero) {
 			Hero hero = (Hero)owner;
 			Char enemy = hero.attackTarget();
+			int damage;
+
 			if (enemy instanceof Mob && ((Mob) enemy).surprisedBy(hero) &&
-			((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) {
+			((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) >= 2) {
 				//deals 80% toward max on surprise, instead of min to max.
 				int diff = max() - min();
-				int damage = augment.damageFactor(Hero.heroDamageIntRange(
-				min() + Math.round(diff*0.8f), max()));
+				damage = augment.damageFactor(Hero.heroDamageIntRange(min() + Math.round(diff*0.9f), max()));
 
-				int exStr = hero.STR() - STRReq();
-				if (exStr > 0) {
-					if (((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) damage += exStr;
-					else damage += Hero.heroDamageIntRange(0, exStr);
-				}
-				return damage;
+			} else damage = super.damageRoll(owner);
+
+			int exStr = hero.STR() - STRReq();
+			if (exStr > 0) {
+				if (((Hero) owner).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 1) damage += exStr;
+				else damage += Hero.heroDamageIntRange(0, exStr);
 			}
+			return damage;
 		}
 		return super.damageRoll(owner);
 	}
@@ -68,7 +79,7 @@ public class ThrowingStone extends MissileWeapon {
 	@Override
 	public float castDelay(Char user, int cell) {
 		return user instanceof Hero && ((Hero) user).justMoved
-				&& ((Hero) user).pointsInTalent(Talent.FLYING_LOCUST_STONE) > 2 ? 0 : super.castDelay(user, cell);
+				&& ((Hero) user).pointsInTalent(Talent.FLYING_LOCUST_STONE) >= 3 ? 0 : super.castDelay(user, cell);
 	}
 	@Override
 	public int value() {
