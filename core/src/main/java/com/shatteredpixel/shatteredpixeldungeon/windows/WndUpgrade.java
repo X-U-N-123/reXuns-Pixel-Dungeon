@@ -411,10 +411,10 @@ public class WndUpgrade extends Window {
 		}
 
 		//warning relating to arcane resin & gem powder
-		if (toUpgrade instanceof Wand && ((Wand) toUpgrade).resinBonus > 0){
+		if (toUpgrade instanceof Wand && ((Wand) toUpgrade).resinBonus > 0 && !(upgrader instanceof MagicalInfusion)){
 			bottom = addMessage(Messages.get(this, "resin"), CharSprite.WARNING, bottom);
 		}
-		if (toUpgrade instanceof Ring && ((Ring) toUpgrade).powderBonus > 0){
+		if (toUpgrade instanceof Ring && ((Ring) toUpgrade).powderBonus > 0 && !(upgrader instanceof MagicalInfusion)){
 			bottom = addMessage(Messages.get(this, "powder"), CharSprite.WARNING, bottom);
 		}
 
@@ -456,19 +456,26 @@ public class WndUpgrade extends Window {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				Item moreUpgradeItem;
+				Item moreUpgradeItem = null;
+				boolean usedIdentify = false;
+				Item modifiedUpgrader = upgrader;
 				do {
-					if (upgrader instanceof ScrollOfUpgrade) {
-						((ScrollOfUpgrade) upgrader).readAnimation();
-						((ScrollOfUpgrade) upgrader).upgradeItem(toUpgrade);
+					if (moreUpgradeItem != null)
+						modifiedUpgrader = moreUpgradeItem;
+
+					if (modifiedUpgrader instanceof ScrollOfUpgrade) {
+						((ScrollOfUpgrade) modifiedUpgrader).readAnimation();
+						((ScrollOfUpgrade) modifiedUpgrader).upgradeItem(toUpgrade);
 						Sample.INSTANCE.play(Assets.Sounds.READ);
-					} else if (upgrader instanceof MagicalInfusion) {
-						((MagicalInfusion) upgrader).useAnimation();
-						((MagicalInfusion) upgrader).upgradeItem(toUpgrade);
+					} else if (modifiedUpgrader instanceof MagicalInfusion) {
+						((MagicalInfusion) modifiedUpgrader).useAnimation();
+						((MagicalInfusion) modifiedUpgrader).upgradeItem(toUpgrade);
 					}
 
-					if (!force) upgrader.detach(Dungeon.hero.belongings.backpack);
+					if (!force || usedIdentify) modifiedUpgrader.detach(Dungeon.hero.belongings.backpack);
+					usedIdentify = true;
 					moreUpgradeItem = Dungeon.hero.belongings.getItem(upgrader.getClass());
+
 				} while (moreUpgradeItem != null && toUpgrade.isUpgradable());
 
 				hide();

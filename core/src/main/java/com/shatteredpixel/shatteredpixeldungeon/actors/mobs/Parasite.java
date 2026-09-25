@@ -50,7 +50,7 @@ public class Parasite extends RipperDemon {
 		maxLvl = 28;
 
 		lootChance = 1;
-		loot = Generator.randomMissile(5).random();
+		loot = Generator.Category.MIS_T6;
 	}
 
 	@Override

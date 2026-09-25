@@ -48,12 +48,12 @@ public class Venomous extends Weapon.Enchantment {
 			Corrosion corrosion = defender.buff(Corrosion.class);
 			if (corrosion == null) {
 				corrosion = Buff.affect(defender, Corrosion.class);
-				corrosion.set(1, 1, attacker.getClass());
+				corrosion.set(1, Math.round(powerMulti), attacker.getClass());
 				corrosion = defender.buff(Corrosion.class);
 			}
-			if (corrosion != null){
-				corrosion.extend(powerMulti * ((level / 2f) + 3));
-			}
+			if (corrosion != null)
+				corrosion.extend((level / 2f) + 3);
+
 			CellEmitter.center(defender.pos).burst(CorrosionParticle.SPLASH, 5);
 
 		}

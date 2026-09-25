@@ -33,7 +33,7 @@ public class Thrower extends Skeleton {
 	{
 		spriteClass = ThrowerSprite.class;
 
-		loot = Generator.Category.MISSILE;
+		loot = Generator.Category.MIS_T3;
 		lootChance = 3f; //to balance skeleton drop multiplier
 
 		properties.add(Property.UNDEAD);
