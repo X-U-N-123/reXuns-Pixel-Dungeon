@@ -31,7 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
-import com.shatteredpixel.shatteredpixeldungeon.items.armor.PlateArmor;
+import com.shatteredpixel.shatteredpixeldungeon.items.armor.LamellarArmor;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.Artifact;
 import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
@@ -132,12 +132,7 @@ public class Imp extends NPC {
 
 				DwarfToken tokens = Dungeon.hero.belongings.getItem(DwarfToken.class);
 				if (tokens != null && (tokens.quantity() >= 5 || (!Quest.alternative && tokens.quantity() >= 4))) {
-					Game.runOnRenderThread(new Callback() {
-						@Override
-						public void call() {
-							GameScene.show(new WndImpOld(Imp.this, tokens));
-						}
-					});
+					Game.runOnRenderThread(() -> GameScene.show(new WndImpOld(Imp.this, tokens)));
 				} else {
 					tell(Quest.alternative ?
 							Messages.get(this, "old_monks_2", Messages.titleCase(Dungeon.hero.name()))
@@ -186,12 +181,7 @@ public class Imp extends NPC {
 	}
 	
 	private void tell( String text ) {
-		Game.runOnRenderThread(new Callback() {
-			@Override
-			public void call() {
-				GameScene.show( new WndQuest( Imp.this, text ));
-			}
-		});
+		Game.runOnRenderThread(() -> GameScene.show( new WndQuest( Imp.this, text )));
 	}
 
 	public void flee() {
@@ -338,13 +328,13 @@ public class Imp extends NPC {
 				rewardOptions.add(ring);
 
 				if (Random.Int(2) == 0) {
-					rewardOptions.add(((Weapon)Generator.random(Generator.Category.WEP_T5)).enchant().identify(false).level(Random.IntRange(2, 4)));
-					rewardOptions.add(((Weapon)Generator.random(Generator.Category.MIS_T4)).enchant().identify(false).level(Random.IntRange(3, 5)));
-				} else {
+					rewardOptions.add(((Weapon)Generator.random(Generator.Category.WEP_T6)).enchant().identify(false).level(Random.IntRange(1, 3)));
 					rewardOptions.add(((Weapon)Generator.random(Generator.Category.MIS_T5)).enchant().identify(false).level(Random.IntRange(2, 4)));
-					rewardOptions.add(((Weapon)Generator.random(Generator.Category.WEP_T4)).enchant().identify(false).level(Random.IntRange(3, 5)));
+				} else {
+					rewardOptions.add(((Weapon)Generator.random(Generator.Category.MIS_T6)).enchant().identify(false).level(Random.IntRange(1, 3)));
+					rewardOptions.add(((Weapon)Generator.random(Generator.Category.WEP_T5)).enchant().identify(false).level(Random.IntRange(2, 4)));
 				}
-				rewardOptions.add(new PlateArmor().inscribe().identify(false).level(Random.IntRange(2, 4)));
+				rewardOptions.add(new LamellarArmor().inscribe().identify(false).level(Random.IntRange(1, 3)));
 				Wand w = (Wand) Generator.random(Generator.Category.WAND);
 				w.identify(false).level(Random.IntRange(2, 4));
 				w.curCharges = w.maxCharges;

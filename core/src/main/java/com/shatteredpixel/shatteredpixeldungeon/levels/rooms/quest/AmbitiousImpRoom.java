@@ -182,16 +182,13 @@ public class AmbitiousImpRoom extends SpecialRoom {
 	}
 
 	public static class WallBanners extends CustomTilemap {
+
 		{
 			texture = Assets.Environment.CITY_QUEST;
 
 			tileW = 7;
 			tileH = 3;
 		}
-
-		private final int BANNER_1 = 80;
-		private final int BANNER_2 = 81;
-		private final int BANNER__BOTTOM = 82;
 
 		@Override
 		public void pos(int pos) {
@@ -205,33 +202,35 @@ public class AmbitiousImpRoom extends SpecialRoom {
 			//up to five banners, which we place unless there's a door
 			int cell = tileX + Dungeon.level.width()*tileY;
 
+			int BANNER_1 = 80;
+			int BANNER_BOTTOM = 82;
 			if (!Dungeon.level.passable[cell+1]){
 				data[1] = BANNER_1 + Random.Int(2);
-				data[1+tileW] = BANNER__BOTTOM;
+				data[1+tileW] = BANNER_BOTTOM;
 			}
 
 			if (!Dungeon.level.passable[cell+3]) {
 				data[3] = BANNER_1 + Random.Int(2);
 				if (Dungeon.level.map[cell+3+Dungeon.level.width()] != Terrain.PEDESTAL) {
-					data[3 + tileW] = BANNER__BOTTOM;
+					data[3 + tileW] = BANNER_BOTTOM;
 				}
 			}
 
 			if (!Dungeon.level.passable[cell+5]) {
 				data[5] = BANNER_1 + Random.Int(2);
-				data[5 + tileW] = BANNER__BOTTOM;
+				data[5 + tileW] = BANNER_BOTTOM;
 			}
 
 			cell += Dungeon.level.width();
 
 			if (!Dungeon.level.passable[cell]) {
 				data[7] = BANNER_1 + Random.Int(2);
-				data[7 + tileW] = BANNER__BOTTOM;
+				data[7 + tileW] = BANNER_BOTTOM;
 			}
 
 			if (!Dungeon.level.passable[cell+6]) {
 				data[13] = BANNER_1 + Random.Int(2);
-				data[13 + tileW] = BANNER__BOTTOM;
+				data[13 + tileW] = BANNER_BOTTOM;
 			}
 
 			v.map( data, tileW );

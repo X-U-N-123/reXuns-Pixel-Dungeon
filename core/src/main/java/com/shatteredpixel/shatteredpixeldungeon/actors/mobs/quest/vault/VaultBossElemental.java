@@ -33,6 +33,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Chill;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Frost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Paralysis;
@@ -96,14 +97,11 @@ public class VaultBossElemental extends Mob {
 		formChances[form.ordinal()]--;
 	}
 
+	private boolean frostPrepared = false;
+
 	@Override
 	public int damageRoll() {
-		//frost form does less melee damage, as you're meant to fight it up-close
-		if (form == ElementalForm.FROST){
-			return Random.NormalIntRange( 15, 20 );
-		} else {
-			return Random.NormalIntRange( 20, 25 );
-		}
+		return Random.NormalIntRange( 20, 25 );
 	}
 
 	@Override
@@ -127,8 +125,8 @@ public class VaultBossElemental extends Mob {
 		} else if (form == ElementalForm.FROST
 				&& enemy instanceof Hero
 				&& ((Hero) enemy).belongings.attackingWeapon() instanceof MeleeWeapon) {
-			//halved evasion in frost form vs. melee attacks
-			return super.defenseSkill(enemy)/2;
+			//no evasion in frost form vs. melee attacks
+			return 0;
 		} else {
 			return super.defenseSkill(enemy);
 		}
@@ -241,6 +239,7 @@ public class VaultBossElemental extends Mob {
 				} else if (form == ElementalForm.SHOCK){
 					setupLightningBolt(enemy);
 				}
+				frostPrepared = false;
 
 				Dungeon.hero.interrupt();
 				lastEnemyPos = enemy.pos;
@@ -261,6 +260,7 @@ public class VaultBossElemental extends Mob {
 				if (form == ElementalForm.SHOCK){
 					spAttackCooldown = (int) (spAttackCooldown*0.67f);
 				}
+				frostPrepared = false;
 
 				Dungeon.hero.interrupt();
 				lastEnemyPos = enemy.pos;
@@ -282,6 +282,30 @@ public class VaultBossElemental extends Mob {
 		}
 
 		return result;
+	}
+
+	@Override
+	protected boolean doAttack(Char enemy) {
+		//give player a chance to attack it
+		if (form == ElementalForm.FROST && !frostPrepared){
+			frostPrepared = true;
+			spend(GameMath.gate(1, (int)Math.ceil(Dungeon.hero.attackDelay()), 3));
+			GLog.w(Messages.get(this, "frost_weak"));
+			return true;
+		}
+		return super.doAttack(enemy);
+	}
+
+	@Override
+	protected boolean getCloser(int target) {
+		frostPrepared = false;
+		return super.getCloser(target);
+	}
+
+	@Override
+	protected boolean getFurther(int target) {
+		frostPrepared = false;
+		return super.getFurther(target);
 	}
 
 	protected void zap() {
@@ -391,8 +415,10 @@ public class VaultBossElemental extends Mob {
 
 		int dmgTaken = preHP - HP;
 		if (dmgTaken > 0) {
-			envAttackCooldown -= dmgTaken/24f;
-			spAttackCooldown -= dmgTaken/12f;
+			envAttackCooldown -= dmgTaken/24;
+			spAttackCooldown -= dmgTaken/12;
+			if (Dungeon.hero.buff(Collapse.class) != null)
+				Dungeon.hero.buff(Collapse.class).incTotalTime(-dmgTaken);
 		}
 
 		if (HP <= (curbracket-1)*hpBracket){
@@ -500,6 +526,7 @@ public class VaultBossElemental extends Mob {
 
 	private static final String LAST_ENEMY_POS = "last_enemy_pos";
 	private static final String LIGHTNING_OFS = "lightning_ofs";
+	private static final String FROST_PREPARED = "prepared";
 
 	@Override
 	public void storeInBundle(Bundle bundle) {
@@ -512,6 +539,8 @@ public class VaultBossElemental extends Mob {
 
 		bundle.put(LAST_ENEMY_POS, lastEnemyPos);
 		bundle.put(LIGHTNING_OFS, lightningOfs);
+
+		bundle.put(FROST_PREPARED, frostPrepared);
 	}
 
 	@Override
@@ -525,6 +554,8 @@ public class VaultBossElemental extends Mob {
 
 		lastEnemyPos = bundle.getInt(LAST_ENEMY_POS);
 		lightningOfs = bundle.getInt(LIGHTNING_OFS);
+
+		frostPrepared = bundle.getBoolean(FROST_PREPARED);
 
 		BossHealthBar.assignBoss(this);
 	}

@@ -69,6 +69,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRetributio
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTerror;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTransmutation;
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.Support;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAggression;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfAugmentation;
 import com.shatteredpixel.shatteredpixeldungeon.items.stones.StoneOfBlast;
@@ -132,16 +133,15 @@ public class VaultLevel extends CityLevel {
 	protected boolean build() {
 		itemsToSpawn.clear();
 
-		for (int i = 0; i < 4; i++){
-			addItemToSpawn(createEquipment(0));
-		}
+		for (int i = 0; i < 4; i++) addItemToSpawn(createEquipment(0));
 		addItemToSpawn(new Dart());
-		for (int i = 0; i < 5; i++){
-			addItemToSpawn(createConsumabe(0));
+		for (int i = 0; i < 5; i++) addItemToSpawn(createConsumabe(0));
+		for (int i = 0; i < 3; i++)
+			addItemToSpawn(Generator.randomUsingDefaults(Generator.Category.FOOD));
+		if (Dungeon.isChallenged(Challenges.NO_RETURN)){
+			addItemToSpawn(new Support());
+			addItemToSpawn(new Support());
 		}
-		addItemToSpawn(Generator.randomUsingDefaults(Generator.Category.FOOD));
-		addItemToSpawn(Generator.randomUsingDefaults(Generator.Category.FOOD));
-		addItemToSpawn(Generator.randomUsingDefaults(Generator.Category.FOOD));
 
 		return super.build();
 	}
