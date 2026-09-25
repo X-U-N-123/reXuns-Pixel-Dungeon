@@ -692,7 +692,7 @@ public class WndJournal extends WndTabbed {
 
 				for (Bestiary bestiary : Bestiary.values()){
 					grid.addHeader("_" + Messages.titleCase(bestiary.title()) + "_ (" + bestiary.totalSeen() + "/" + bestiary.totalEntities() + "):");
-					addGridEntities(grid, bestiary.RARE.entities());
+					addGridEntities(grid, bestiary.entities());
 				}
 
 			} else {
