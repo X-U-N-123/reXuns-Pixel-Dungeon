@@ -70,7 +70,7 @@ public class LoopBuilder extends RegularBuilder {
 	private PointF loopCenter;
 	
 	@Override
-	public ArrayList<Room> build(ArrayList<Room> rooms) {
+	public ArrayList<Room> build(ArrayList<Room> rooms, boolean chaos) {
 		
 		setupRooms(rooms);
 		
@@ -99,7 +99,7 @@ public class LoopBuilder extends RegularBuilder {
 			pathTunnels[tunnels]--;
 			
 			for (int j = 0; j < tunnels; j++){
-				loop.add(ConnectionRoom.createRoom());
+				loop.add(ConnectionRoom.createRoom(chaos));
 			}
 		}
 		
@@ -122,7 +122,7 @@ public class LoopBuilder extends RegularBuilder {
 		// should just write a general function for stitching two rooms together in builder
 		while (!prev.connect(entrance)){
 			
-			ConnectionRoom c = ConnectionRoom.createRoom();
+			ConnectionRoom c = ConnectionRoom.createRoom(chaos);
 			if (placeRoom(loop, prev, c, angleBetweenRooms(prev, entrance)) == -1){
 				return null;
 			}
@@ -155,7 +155,7 @@ public class LoopBuilder extends RegularBuilder {
 		roomsToBranch.addAll(multiConnections);
 		roomsToBranch.addAll(singleConnections);
 		weightRooms(branchable);
-		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances)){
+		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances, chaos)){
 			return null;
 		}
 		

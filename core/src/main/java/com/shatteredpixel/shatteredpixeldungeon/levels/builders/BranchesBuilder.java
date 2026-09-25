@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class BranchesBuilder extends RegularBuilder {
 	
 	@Override
-	public ArrayList<Room> build(ArrayList<Room> rooms) {
+	public ArrayList<Room> build(ArrayList<Room> rooms, boolean chaos) {
 		
 		setupRooms( rooms );
 		
@@ -65,7 +65,7 @@ public class BranchesBuilder extends RegularBuilder {
 			pathTunnels[tunnels]--;
 
 			for (int j = 0; j < tunnels; j++){
-				ConnectionRoom t = ConnectionRoom.createRoom();
+				ConnectionRoom t = ConnectionRoom.createRoom(chaos);
 				float result;
 				do {
 					result = placeRoom(rooms, prev, t, Random.Float(360f));
@@ -88,7 +88,7 @@ public class BranchesBuilder extends RegularBuilder {
 		roomsToBranch.addAll(multiConnections);
 		if (exit != null) roomsToBranch.add(exit);
 		roomsToBranch.addAll(singleConnections);
-		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances)){
+		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances, chaos)){
 			return null;
 		}
 		

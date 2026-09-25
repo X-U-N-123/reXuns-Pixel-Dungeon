@@ -38,7 +38,7 @@ public abstract class Builder {
 	
 	//builders take a list of rooms and returns them as a connected map
 	//returns null on failure
-	public abstract ArrayList<Room> build(ArrayList<Room> rooms);
+	public abstract ArrayList<Room> build(ArrayList<Room> rooms, boolean chaos);
 	
 	protected static void findNeighbours(ArrayList<Room> rooms){
 		Room[] ra = rooms.toArray( new Room[0] );

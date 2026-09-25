@@ -41,7 +41,7 @@ public class GridBuilder extends Builder {
 	protected float extraConnectionChance = 0.55f;
 
 	@Override
-	public ArrayList<Room> build(ArrayList<Room> rooms) {
+	public ArrayList<Room> build(ArrayList<Room> rooms, boolean chaos) {
 		for(Room r : rooms){
 			r.setEmpty();
 		}

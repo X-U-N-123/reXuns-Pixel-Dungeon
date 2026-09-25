@@ -78,7 +78,13 @@ public abstract class ConnectionRoom extends Room {
 		chances[26] = chances[25] = chances[24] = chances[23] = chances[22];
 	}
 	
-	public static ConnectionRoom createRoom(){
+	public static ConnectionRoom createRoom(boolean chaos){
+		if (chaos){
+			int random = Random.Int(7);
+			if (random == 6) {
+				return new MazeConnectionRoom();
+			} else return Reflection.newInstance(rooms.get(random));
+		}
 		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));
 	}
 }

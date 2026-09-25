@@ -143,7 +143,7 @@ public abstract class RegularBuilder extends Builder {
 	//places the rooms in roomsToBranch into branches from rooms in branchable.
 	//note that the three arrays should be separate, they may contain the same rooms however
 	protected boolean createBranches(ArrayList<Room> rooms, ArrayList<Room> branchable,
-	                                     ArrayList<Room> roomsToBranch, float[] connChances){
+	                                     ArrayList<Room> roomsToBranch, float[] connChances, boolean chaos){
 		
 		int i = 0;
 		float angle;
@@ -174,7 +174,7 @@ public abstract class RegularBuilder extends Builder {
 			connectionChances[connectingRooms]--;
 			
 			for (int j = 0; j < connectingRooms; j++){
-				ConnectionRoom t = r instanceof SecretRoom ? new MazeConnectionRoom() : ConnectionRoom.createRoom();
+				ConnectionRoom t = r instanceof SecretRoom ? new MazeConnectionRoom() : ConnectionRoom.createRoom(chaos);
 				tries = 3;
 				
 				do {

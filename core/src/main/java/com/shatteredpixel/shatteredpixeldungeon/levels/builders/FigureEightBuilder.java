@@ -77,7 +77,7 @@ public class FigureEightBuilder extends RegularBuilder {
 	PointF firstLoopCenter, secondLoopCenter;
 	
 	@Override
-	public ArrayList<Room> build(ArrayList<Room> rooms) {
+	public ArrayList<Room> build(ArrayList<Room> rooms, boolean chaos) {
 		setupRooms(rooms);
 		
 		if (landmarkRoom == null){
@@ -124,7 +124,7 @@ public class FigureEightBuilder extends RegularBuilder {
 			pathTunnels[tunnels]--;
 
 			for (int j = 0; j < tunnels; j++){
-				firstLoop.add(ConnectionRoom.createRoom());
+				firstLoop.add(ConnectionRoom.createRoom(chaos));
 			}
 		}
 		ArrayList<Room> secondLoopTemp = new ArrayList<>();
@@ -144,7 +144,7 @@ public class FigureEightBuilder extends RegularBuilder {
 			pathTunnels[tunnels]--;
 
 			for (int j = 0; j < tunnels; j++){
-				secondLoop.add(ConnectionRoom.createRoom());
+				secondLoop.add(ConnectionRoom.createRoom(chaos));
 			}
 		}
 		
@@ -170,7 +170,7 @@ public class FigureEightBuilder extends RegularBuilder {
 		// should just write a general function for stitching two rooms together in builder
 		while (!prev.connect(landmarkRoom)){
 			
-			ConnectionRoom c = ConnectionRoom.createRoom();
+			ConnectionRoom c = ConnectionRoom.createRoom(chaos);
 			if (placeRoom(rooms, prev, c, angleBetweenRooms(prev, landmarkRoom)) == -1){
 				return null;
 			}
@@ -198,7 +198,7 @@ public class FigureEightBuilder extends RegularBuilder {
 		// should just write a general function for stitching two rooms together in builder
 		while (!prev.connect(landmarkRoom)){
 			
-			ConnectionRoom c = ConnectionRoom.createRoom();
+			ConnectionRoom c = ConnectionRoom.createRoom(chaos);
 			if (placeRoom(rooms, prev, c, angleBetweenRooms(prev, landmarkRoom)) == -1){
 				return null;
 			}
@@ -241,7 +241,7 @@ public class FigureEightBuilder extends RegularBuilder {
 		roomsToBranch.addAll(multiConnections);
 		roomsToBranch.addAll(singleConnections);
 		weightRooms(branchable);
-		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances)){
+		if (!createBranches(rooms, branchable, roomsToBranch, branchTunnelChances, chaos)){
 			return null;
 		}
 		
