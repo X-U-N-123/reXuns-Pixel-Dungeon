@@ -32,7 +32,7 @@ public class Ironball extends MissileWeapon {
         hitSoundPitch = 0.8f;
 
         tier = 6;
-        baseUses = 15;
+        baseUses = 12;
         sticky = false;
     }
 

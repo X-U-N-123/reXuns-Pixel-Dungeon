@@ -262,6 +262,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Clay;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.CoinDart;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.Dinnerknife;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FishingSpear;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FlyingClaw;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.FlyingCymbals;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCobble;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ForceCube;
@@ -712,9 +713,10 @@ public class Generator {
 					ThrowingHammer.class,
 					ForceCube.class,
 					Headdart.class,
-					FlyingCymbals.class
+					FlyingCymbals.class,
+					FlyingClaw.class
 			};
-			MIS_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2 };
+			MIS_T5.defaultProbs = new float[]{ 2, 2, 2, 2, 2, 2 };
 			MIS_T5.probs = MIS_T5.defaultProbs.clone();
 
 			MIS_T6.classes = new Class<?>[]{

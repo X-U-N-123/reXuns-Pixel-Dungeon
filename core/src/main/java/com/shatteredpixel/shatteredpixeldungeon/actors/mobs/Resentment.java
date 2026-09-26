@@ -69,7 +69,6 @@ public class Resentment extends Mob {
 
 	@Override
 	public void die( Object cause ){
-		flying = false;
 		super.die(cause);
 		Mob m = Dungeon.level.spawnMob(20);
 		if (m != null && alignment != Alignment.ENEMY) Buff.affect(m, Corruption.class);

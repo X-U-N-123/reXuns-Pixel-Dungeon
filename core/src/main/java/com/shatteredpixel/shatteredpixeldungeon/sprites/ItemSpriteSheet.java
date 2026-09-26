@@ -498,7 +498,7 @@ public class ItemSpriteSheet {
 	public static final int FORCE_CUBE      = MISSILE_WEP+28;
 	public static final int HEADDART        = MISSILE_WEP+29;
 	public static final int FLYING_CYMBALS  = MISSILE_WEP+30;
-	public static final int WORM_HOLE       = MISSILE_WEP+31;
+	public static final int FLYING_CLAW     = MISSILE_WEP+31;
 	public static final int IRON_THORN      = MISSILE_WEP+32;
 	public static final int IRONBALL        = MISSILE_WEP+33;
 	public static final int ANTIMATTER      = MISSILE_WEP+34;
@@ -538,7 +538,7 @@ public class ItemSpriteSheet {
 		assignItemRect(FORCE_CUBE,      11, 12);
 		assignItemRect(HEADDART,        14, 14);
 		assignItemRect(FLYING_CYMBALS,  14, 14);
-		assignItemRect(WORM_HOLE,       15, 15);
+		assignItemRect(FLYING_CLAW,     16, 16);
 		assignItemRect(IRON_THORN,      16, 16);
 		assignItemRect(IRONBALL,        12, 12);
 		assignItemRect(ANTIMATTER,      12, 11);
