@@ -31,7 +31,7 @@ public class Hoe extends MeleeWeapon {
     {
         image = ItemSpriteSheet.Hoe;
         hitSound = Assets.Sounds.HIT_STAB;
-        hitSoundPitch = 1.1f;
+        hitSoundPitch = 0.9f;
 
         tier = 4;
         ACC = 0.72f; //28% penalty to accuracy

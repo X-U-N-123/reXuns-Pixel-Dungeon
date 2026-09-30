@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Haste;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
@@ -60,7 +61,6 @@ public class DemonSentry extends Mob {
 		properties.add(Property.IMMOVABLE);
 		properties.add(Property.INORGANIC);
 
-		WANDERING = new Wandering();
 		state = WANDERING;
 	}
 
@@ -82,19 +82,17 @@ public class DemonSentry extends Mob {
 		callEnemy();
 	}
 
-	private class Wandering extends Mob.Wandering {
-
-		@Override
-		protected boolean noticeEnemy(){
-			super.noticeEnemy();
-			callEnemy();
-			return true;
-		}
+	@Override
+	protected boolean canAttack(Char enemy) {
+		return fieldOfView[enemy.pos];
 	}
 
 	@Override
-	protected boolean canAttack(Char enemy) {
-		return false;
+	protected boolean doAttack(Char enemy) {
+		callEnemy();
+		Invisibility.dispel(this);
+		spend( attackDelay() );
+		return true;
 	}
 
 	@Override

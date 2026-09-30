@@ -26,10 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Pushing;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
+import com.watabou.utils.Random;
 
 import java.util.ArrayList;
 
@@ -46,12 +50,8 @@ public class FlyingClaw extends MissileWeapon {
 
 		tier = 5;
 		baseUses = 5;
-	}
 
-	@Override
-	public float pickupDelay() {
-		if (onDrawback) return 0;
-		return super.pickupDelay();
+		defaultAction = AC_DRAWBACK;
 	}
 
 	@Override
@@ -66,14 +66,25 @@ public class FlyingClaw extends MissileWeapon {
 		super.rangedHit(enemy, cell);
 		if (onDrawback && !enemy.properties().contains(Char.Property.IMMOVABLE)){
 
-			Ballistica chain = new Ballistica(curUser.pos, cell, Ballistica.PROJECTILE);
+			Ballistica chain = new Ballistica(curUser.pos, cell, Ballistica.STOP_TARGET);
+
+			int projecting = 0;
+			if (hasEnchant(Projecting.class, curUser)){
+				projecting += 4;
+			}
+			if (Random.Int(3) < curUser.pointsInTalent(Talent.SHARED_ENCHANTMENT)){
+				SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
+				if (bow != null && bow.hasEnchant(Projecting.class, curUser))
+					projecting += 4;
+			}
 
 			int bestPos = -1;
 			for (int i : chain.subPath(1, chain.dist)){
 				//prefer to the earliest point on the path
-				if (!Dungeon.level.solid[i]
-						&& Actor.findChar(i) == null
-						&& (!Char.hasProp(enemy, Char.Property.LARGE) || Dungeon.level.openSpace[i])){
+				if (!Dungeon.level.solid[i] && Actor.findChar(i) == null
+						&& (!Char.hasProp(enemy, Char.Property.LARGE) || Dungeon.level.openSpace[i])
+						&& (new Ballistica(i, cell, Ballistica.PROJECTILE).collisionPos == cell
+						|| Dungeon.level.distance(i, cell) <= Math.round(projecting * Enchantment.genericProcChanceMultiplier(curUser)))){
 					bestPos = i;
 					break;
 				}

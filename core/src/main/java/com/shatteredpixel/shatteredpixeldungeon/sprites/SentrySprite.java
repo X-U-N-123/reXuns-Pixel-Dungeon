@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.SentryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.Game;
@@ -148,6 +149,21 @@ public abstract class SentrySprite extends MobSprite {
 		@Override
 		protected int texOffset() {
 			return 1;
+		}
+
+		@Override
+		public int blood() {
+			return 0x0f3d4d;
+		}
+
+		@Override
+		public void die() {
+			super.die();
+			if (visible) {
+				Splash.around(this, blood(), 15);
+				Sample.INSTANCE.play(Assets.Sounds.SHATTER, 0.7f);
+			}
+			killAndErase();
 		}
 	}
 
