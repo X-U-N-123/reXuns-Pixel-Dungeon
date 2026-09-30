@@ -32,7 +32,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hex;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Weakness;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
-import com.shatteredpixel.shatteredpixeldungeon.tiles.DungeonTilemap;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.BArray;
 import com.watabou.utils.PathFinder;
@@ -65,18 +64,19 @@ public class AdrenalineBomb extends Bomb {
 					if (ch.alignment == Dungeon.hero.alignment) {
 						Buff.affect(ch, Adrenaline.class,24.5f); //effectively 25 turns of adrenaline
 						Buff.affect(ch, Bless.class,     25f);
+						if (ch.sprite.visible)
+							new Flare(10, 32).color(0xFFFF00, true).show(ch.sprite, 2f);
 					} else {
 						Buff.affect(ch, Weakness.class,  25f);
 						Buff.affect(ch, Hex.class,       25f);
+						if (ch.sprite.visible)
+							new Flare(10, 32).color(0xFF0000, true).show(ch.sprite, 2f);
 					}
 				}
 			}
 		}
 
 		Sample.INSTANCE.play( Assets.Sounds.CHALLENGE );
-		if (Dungeon.level.heroFOV[cell])
-			new Flare(10, 64).color(0xFF0000, true)
-				.show(Dungeon.hero.sprite.parent, DungeonTilemap.tileCenterToWorld(cell), 2f);
 	}
 
 	@Override

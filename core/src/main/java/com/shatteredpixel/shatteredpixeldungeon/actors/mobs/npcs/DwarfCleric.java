@@ -65,7 +65,7 @@ public class DwarfCleric extends NPC {
 
 	@Override
 	public Notes.Landmark landmark() {
-		return Quest.rewardType == -1 ? null : Notes.Landmark.CLERIC;
+		return Quest.rewardType == -1 ? Notes.Landmark.CLERIC : null;
 	}
 
 	@Override
@@ -182,7 +182,7 @@ public class DwarfCleric extends NPC {
 		}
 
 		private static final String SPAWNED     = "spawned";
-		private static final String REWARD_GIVEN= "reward_given";
+		private static final String REWARD_TYPE = "reward_given";
 
 		private static final String GIVEN       = "given";
 		private static final String NODE        = "demon";
@@ -195,7 +195,7 @@ public class DwarfCleric extends NPC {
 
 			if (spawned) {
 				node.put( GIVEN, given );
-				node.put( REWARD_GIVEN, rewardType);
+				node.put(REWARD_TYPE, rewardType);
 			}
 
 			bundle.put( NODE, node );
@@ -208,18 +208,19 @@ public class DwarfCleric extends NPC {
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
 
 				given = node.getBoolean( GIVEN );
-				rewardType = node.getInt(REWARD_GIVEN);
+				rewardType = node.getInt(REWARD_TYPE);
 			}
 		}
 
 		public static ArrayList<Room> spawn(ArrayList<Room> rooms ) {
 			if (!spawned && (Dungeon.depth == devPickaxe.questDepth ||
-					(Dungeon.depth > 20 && Random.Int( 24 - Dungeon.depth ) == 0))) {
+					(Dungeon.depth > 21 && Random.Int( 25 - Dungeon.depth ) == 0))) {
 
 				rooms.add(new ClericHideRoom());
 				spawned = true;
 
 				given = false;
+				rewardType = -1;
 
 				devPickaxe.questDepth = -1;
 			}

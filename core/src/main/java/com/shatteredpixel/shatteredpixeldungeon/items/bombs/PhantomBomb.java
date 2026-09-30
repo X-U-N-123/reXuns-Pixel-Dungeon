@@ -61,7 +61,7 @@ public class PhantomBomb extends Bomb {
 
 			for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])){
 				if (new Ballistica(cell, m.pos, Ballistica.MAGIC_BOLT | Ballistica.IGNORE_SOFT_SOLID).collisionPos == m.pos
-						&& m.alignment == Char.Alignment.ENEMY && bombPos != cell){
+						&& m.alignment == Char.Alignment.ENEMY && bombPos != cell && m.pos != cell){
 					bombPos = m.pos;
 					break;
 				}
