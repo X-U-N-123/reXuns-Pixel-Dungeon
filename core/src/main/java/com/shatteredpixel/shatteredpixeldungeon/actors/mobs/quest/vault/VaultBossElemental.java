@@ -290,7 +290,8 @@ public class VaultBossElemental extends Mob {
 		if (form == ElementalForm.FROST && !frostPrepared){
 			frostPrepared = true;
 			spend(GameMath.gate(1, (int)Math.ceil(Dungeon.hero.attackDelay()), 3));
-			GLog.w(Messages.get(this, "frost_weak"));
+			GLog.w(Messages.get(this, "prepare"));
+			sprite.operate(enemy.pos);
 			return true;
 		}
 		return super.doAttack(enemy);
@@ -481,7 +482,7 @@ public class VaultBossElemental extends Mob {
 
 	@Override
 	public HashSet<Property> properties() {
-		HashSet<Property> props = new HashSet<>(properties);
+		HashSet<Property> props = super.properties();
 		if (form == ElementalForm.FIRE){
 			props.add(Property.FIERY);
 		} else if (form == ElementalForm.FROST){

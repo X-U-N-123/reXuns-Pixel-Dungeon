@@ -22,10 +22,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
-import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Warlock;
-import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
-import com.watabou.noosa.audio.Sample;
 
 public class EngineerSprite extends MobSprite {
 
@@ -45,31 +42,9 @@ public class EngineerSprite extends MobSprite {
 		attack = new Animation( 12, false );
 		attack.frames( frames, 0, 8, 9 );
 		
-		zap = attack.clone();
-		
 		die = new Animation( 15, false );
 		die.frames( frames, 0, 10, 12, 11, 13 );
 		
 		play( idle );
-	}
-	
-	public void zap( int cell ) {
-
-		super.zap( cell );
-
-		MagicMissile.boltFromChar( parent,
-				MagicMissile.SHADOW,
-				this,
-				cell,
-				() -> ((Warlock)ch).onZapComplete());
-		Sample.INSTANCE.play( Assets.Sounds.ZAP );
-	}
-	
-	@Override
-	public void onComplete( Animation anim ) {
-		if (anim == zap) {
-			idle();
-		}
-		super.onComplete( anim );
 	}
 }
