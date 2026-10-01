@@ -22,7 +22,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.sprites;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
+import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.watabou.noosa.TextureFilm;
+import com.watabou.noosa.audio.Sample;
 
 public class ClericSprite extends MobSprite {
 
@@ -42,9 +45,31 @@ public class ClericSprite extends MobSprite {
 		attack = new Animation( 12, false );
 		attack.frames( frames, 0, 5, 6 );
 
+		zap = attack.clone();
+
 		die = new Animation( 15, false );
 		die.frames( frames, 0, 7, 8, 8, 9, 10 );
 
 		play( idle );
+	}
+
+	public void zap( int cell ) {
+		super.zap( cell );
+
+		MagicMissile.boltFromChar( parent,
+				MagicMissile.LIGHT_MISSILE,
+				this,
+				cell,
+				() -> {
+					((DwarfCleric)ch).zap();
+					ch.next();
+				});
+		Sample.INSTANCE.play( Assets.Sounds.ZAP );
+	}
+
+	@Override
+	public void onComplete( Animation anim ) {
+		if (anim == zap) idle();
+		super.onComplete( anim );
 	}
 }

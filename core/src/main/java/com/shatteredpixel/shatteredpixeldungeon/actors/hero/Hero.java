@@ -580,9 +580,8 @@ public class Hero extends Char {
 					if (drug != null) drug.spend(3f);
 				}
 			}
-			if (DwarfCleric.Quest.rewardType == 0){
-				enemy.damage(Random.IntRange(1, Dungeon.hero.lvl / 3), new DwarfCleric.DwarfBless());
-			}
+			if (DwarfCleric.Quest.rewardType == 0)
+				enemy.damage(Random.IntRange(1, Dungeon.hero.lvl / 2), new DwarfCleric.DwarfBless());
 		}
 
 		attackTarget = null;
@@ -2070,10 +2069,6 @@ public class Hero extends Char {
 
 		if (buff(EvilUnfold.Evil.class) != null){
 			buff(EvilUnfold.Evil.class).delayTime(effectiveDamage);
-		}
-
-		if (buff(DwarfCleric.ClericTracker.class) != null && !(src instanceof Hunger)){
-			buff(DwarfCleric.ClericTracker.class).damage(effectiveDamage / 3);
 		}
 
 		//flash red when hit for serious damage.

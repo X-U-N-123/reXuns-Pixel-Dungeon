@@ -34,7 +34,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
-import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -164,7 +163,7 @@ public class devPickaxe extends Item {
 					questDepth = Dungeon.depth;
 					Imp.Quest.reset();
 				}
-				if (m instanceof DwarfCleric && Dungeon.level instanceof HallsLevel) {
+				if (m instanceof DwarfCleric && DwarfCleric.Quest.process == 0) {
 					questDepth = Dungeon.depth;
 					DwarfCleric.Quest.reset();
 				}

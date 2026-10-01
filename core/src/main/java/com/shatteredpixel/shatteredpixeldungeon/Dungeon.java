@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Amok;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Awareness;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Collapse;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Dread;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Light;
@@ -500,20 +501,16 @@ public class Dungeon {
 			hero.buff(AscensionChallenge.class).onLevelSwitch();
 		}
 
-		DwarfCleric.ClericTracker buff = hero.buff(DwarfCleric.ClericTracker.class);
-		if (buff != null && level instanceof CityLevel){
+		if (DwarfCleric.Quest.process == 3 && level instanceof CityLevel){
 			for (Room r : ((CityLevel)level).rooms()) {
-				if (r instanceof ChapelRoom) {
+				if (r instanceof ChapelRoom && !(Actor.findChar(((ChapelRoom) r).clericPos) instanceof DwarfCleric)) {
 
 					DwarfCleric npc = new DwarfCleric();
-					npc.HP = buff.HP;
+					npc.HP = DwarfCleric.Quest.finalHP;
 					npc.pos = ((ChapelRoom) r).clericPos;
 					level.mobs.add(npc);
 
-					npc.yell(Messages.get(DwarfCleric.class, "found_the_way", hero.name()));
-					hero.buff(DwarfCleric.ClericTracker.class).detach();
-
-					Statistics.questScores[4] += Math.min(3000, 50 * buff.HP);
+					Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 2).charID = npc.id();
 
 					break;
 				}

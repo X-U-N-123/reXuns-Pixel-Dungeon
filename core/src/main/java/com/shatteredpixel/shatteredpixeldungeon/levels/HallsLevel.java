@@ -81,8 +81,7 @@ public class HallsLevel extends RegularLevel {
 	public void playLevelMusic() {
         if (SPDSettings.useOldMusic()){
             Music.INSTANCE.play(Assets.Music.GAME, true);
-        } else if (Statistics.amuletObtained
-				|| (Dungeon.hero != null && Dungeon.hero.buff(DwarfCleric.ClericTracker.class) != null)){
+        } else if (Statistics.amuletObtained || DwarfCleric.Quest.process == 1){
 			Music.INSTANCE.play(Assets.Music.HALLS_TENSE, true);
 		} else {
 			Music.INSTANCE.playTracks(HALLS_TRACK_LIST, HALLS_TRACK_CHANCES, false);

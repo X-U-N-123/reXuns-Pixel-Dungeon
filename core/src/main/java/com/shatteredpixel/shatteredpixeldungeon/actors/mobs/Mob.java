@@ -76,6 +76,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.JusticeStrike;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DwarfCleric;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
@@ -1996,7 +1997,7 @@ public abstract class Mob extends Char {
 				
 			//preserve other intelligent allies if they are near the hero
 			} else if (mob.alignment == Alignment.ALLY
-					&& mob.intelligentAlly
+					&& (mob.intelligentAlly || (mob instanceof DwarfCleric && DwarfCleric.Quest.process == 1))
 					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
 				level.mobs.remove( mob );
 				heldAllies.add(mob);

@@ -21,20 +21,33 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
+import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Hunger;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.MagicImmune;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.ShieldBuff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Flare;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
+import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
+import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
 import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
+import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Notes;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.ChapelRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.ClericHideRoom;
+import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
@@ -42,55 +55,181 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ClericSprite;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
-import com.shatteredpixel.shatteredpixeldungeon.windows.WndQuest;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.audio.Music;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Callback;
 import com.watabou.utils.Random;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
-public class DwarfCleric extends NPC {
+public class DwarfCleric extends Mob {
 
 	protected static final int CLERIC_HP = 80;
 
 	{
 		spriteClass = ClericSprite.class;
 		HP = HT = CLERIC_HP;
+		EXP = 0;
+		defenseSkill = 25;
 
-		properties.add(Property.IMMOVABLE);
+		alignment = Alignment.ALLY;
+		intelligentAlly = true;
+
+		WANDERING = new Wandering();
+		state = WANDERING;
+		actPriority = MOB_PRIO + 1;
+	}
+
+	@Override
+	public HashSet<Property> properties() {
+		HashSet<Property> properties = super.properties();
+		if (Quest.process > 1)  properties.add(Property.IMMOVABLE);
+		return properties;
 	}
 
 	@Override
 	public Notes.Landmark landmark() {
-		return Quest.rewardType == -1 ? Notes.Landmark.CLERIC : null;
+		return (Quest.rewardType == -1 && Quest.process != 1) ? Notes.Landmark.CLERIC : null;
 	}
 
 	@Override
-	protected boolean act() {
-		if (Dungeon.hero.buff(AscensionChallenge.class) != null){
-			die(null);
-			return true;
-		}
-
-		return super.act();
-	}
-
-	@Override
-	public int defenseSkill( Char enemy ) {
-		return INFINITE_EVASION;
+	public int attackSkill( Char enemy ) {
+		return 35;
 	}
 
 	@Override
 	public void damage( int dmg, Object src ) {
-		//do nothing
+		if (Quest.process <= 1) {
+			boolean healthBfo = HP >= HT / 3;
+			super.damage(dmg, src);
+			if (healthBfo && HP < HT / 3) GLog.w(Messages.get(this, "low_hp"));
+		}
+	}
+
+	@Override
+	public float speed() {
+		return super.speed() * ((state == WANDERING && distance(Dungeon.hero) >= 4) ? 1.5f : 1);
+	}
+
+	@Override
+	protected boolean act() {
+		if (Dungeon.level instanceof CityLevel || Dungeon.level instanceof CityBossLevel){
+			yell(Messages.get(this, "found_the_way", Dungeon.hero.name()));
+			Quest.process = 3;
+			alignment = Alignment.NEUTRAL;
+			Quest.finalHP = HP;
+
+			Statistics.questScores[4] += Math.min(3000, 50 * HP);
+
+			boolean appeared = false;
+			if (Dungeon.level instanceof CityLevel){
+				for (Room r : ((CityLevel) Dungeon.level).rooms()) {
+					if (r instanceof ChapelRoom){
+
+						ScrollOfTeleportation.appear(this, ((ChapelRoom) r).clericPos);
+						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 1).charID = id();
+						appeared = true;
+						break;
+					}
+				}
+			}
+			if (!appeared){
+				destroy();
+				sprite.killAndErase();
+
+				CellEmitter.get(pos).start(Speck.factory(Speck.LIGHT), 0.15f, 5);
+				Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+			}
+		}
+		if (Quest.process >= 2) diactivate();
+		if (state == WANDERING) target = Dungeon.hero.pos;
+		return super.act();
+	}
+
+	@Override
+	public void die(Object cause) {
+		super.die(cause);
+		if (Quest.process == 1){
+			GLog.n(Messages.get(this, "died"));
+
+			if (!SPDSettings.useOldMusic())
+				Music.INSTANCE.fadeOut(1f, () -> {
+					if (Dungeon.level != null) Dungeon.level.playLevelMusic();
+				});
+		}
+		Quest.process = 2;
+		Quest.finalHP = 0;
+	}
+
+	protected class Wandering extends Mob.Wandering {
+		@Override
+		protected int randomDestination() {
+			if (Dungeon.hero != null && Quest.process >= 1) return Dungeon.hero.pos;
+			else return super.randomDestination();
+		}
+	}
+
+	@Override
+	protected boolean getCloser( int target ) {
+		if (state == HUNTING) {
+			return enemySeen && getFurther( target );
+		} else {
+			return Quest.process < 2 && super.getCloser( target );
+		}
+	}
+
+	@Override
+	protected boolean getFurther(int target) {
+		return Quest.process < 2 && super.getFurther(target);
+	}
+
+	@Override
+	protected boolean canAttack(Char enemy) {
+		return buff(MagicImmune.class) == null && Quest.process <= 1 && !Dungeon.level.adjacent(pos, enemy.pos)
+				&& new Ballistica(pos, enemy.pos, Ballistica.PROJECTILE).collisionPos == enemy.pos
+				&& enemy.buff(MagicImmune.class) == null;
+	}
+
+	@Override
+	protected boolean doAttack(Char enemy) {
+		if (buff(MagicImmune.class) != null) return false;
+
+		if (sprite != null && (sprite.visible || enemy.sprite.visible)) {
+			sprite.zap( enemy.pos );
+			return false;
+		} else {
+			zap();
+			return true;
+		}
+	}
+
+	public void zap() {
+		spend( TICK );
+		if (buff(MagicImmune.class) == null) return;
+
+		Invisibility.dispel(this);
+		Char enemy = this.enemy;
+		if (hit( this, enemy, true )) {
+
+				enemy.damage( Math.round(Random.NormalIntRange( 10, 15 )), new DwarfBless());
+
+			if (enemy == Dungeon.hero && !enemy.isAlive()) {
+				Badges.validateDeathFromFriendlyMagic();
+				Dungeon.fail( this );
+				GLog.n( Messages.get(this, "bolt_kill") );
+			}
+		} else {
+			enemy.sprite.showStatus( CharSprite.NEUTRAL, enemy.defenseVerb() );
+		}
 	}
 
 	@Override
 	public boolean add( Buff buff ) {
-		return false;
+		return Quest.process <= 1 && super.add(buff);
 	}
 
 	@Override
@@ -105,7 +244,7 @@ public class DwarfCleric extends NPC {
 
 		if (c != Dungeon.hero) return true;
 
-		if (!Quest.given){
+		if (Quest.process == 0) {
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
@@ -116,25 +255,22 @@ public class DwarfCleric extends NPC {
 						protected void onSelect(int index) {
 							super.onSelect(index);
 							if (index == 0){
-								Quest.given = true;
 								Quest.rewardType = -1;
 								Notes.remove(Notes.Landmark.CLERIC);
-
-								Buff.affect(c, ClericTracker.class);
-								die(null);
+								Quest.process = 1;
 
 								if (!SPDSettings.useOldMusic())
 									Music.INSTANCE.fadeOut(1f, () -> {
-										if (Dungeon.level != null) {
-											Dungeon.level.playLevelMusic();
-										}
+										if (Dungeon.level != null) Dungeon.level.playLevelMusic();
 									});
 							}
 						}
 					});
 				}
 			});
-		} else if (Quest.rewardType == -1){
+		} else if (Quest.process == 1) {
+			return super.interact(c);
+		} else if (Quest.rewardType == -1 && Quest.process == 3){
 			Game.runOnRenderThread(new Callback() {
 				@Override
 				public void call() {
@@ -149,42 +285,51 @@ public class DwarfCleric extends NPC {
 							c.HP = Math.min(c.HP + c.HT/3, c.HT);
 							c.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(c.HT/3), FloatingText.HEALING);
 							c.buff(Hunger.class).affectHunger(450);
-							if (index == 1)
-								Buff.affect(c, DwarfShield.class);
+
+							if (index == 1) Buff.affect(c, DwarfShield.class);
 
 							new Flare( 5, 32 ).color( 0xFFFF00, true ).show( c.sprite, 2f );
+							Sample.INSTANCE.play(Assets.Sounds.TELEPORT);
+
 							sprite.attack(c.pos);
 							Notes.remove(Notes.Landmark.CLERIC);
 						}
 					});
 				}
 			});
-		} else {
-			Game.runOnRenderThread(() -> GameScene.show( new WndQuest( DwarfCleric.this, Messages.get(this, "desc_recover") )));
-		}
+		} else GLog.w(Messages.get(this, "desc_recover"));
 
 		return true;
+	}
+
+	@Override
+	public void restoreFromBundle(Bundle bundle) {
+		super.restoreFromBundle(bundle);
+		if (Quest.process >= 2) alignment = Alignment.NEUTRAL;
 	}
 
 	public static class Quest {
 
 		private static boolean spawned;
 
-		//variables shared by both quests
-		private static boolean given;
+		public static int process;
+		//0 for not started, 1 for processing, 2 for died, 3 for succeeded
 		public static int rewardType;
 		//-1 for not given, 0 for hostile, 1 for protective
+		public static int finalHP;
 
 		public static void reset() {
 			spawned = false;
-			given = false;
+			process = 0;
 			rewardType = -1;
+			finalHP = 0;
 		}
 
 		private static final String SPAWNED     = "spawned";
 		private static final String REWARD_TYPE = "reward_given";
+		private static final String PROCESS = "process";
+		private static final String FINAL_HP = "final_hp";
 
-		private static final String GIVEN       = "given";
 		private static final String NODE        = "demon";
 
 		public static void storeInBundle(Bundle bundle){
@@ -194,8 +339,9 @@ public class DwarfCleric extends NPC {
 			node.put( SPAWNED, spawned );
 
 			if (spawned) {
-				node.put( GIVEN, given );
+				node.put(PROCESS, process);
 				node.put(REWARD_TYPE, rewardType);
+				node.put(FINAL_HP, finalHP);
 			}
 
 			bundle.put( NODE, node );
@@ -206,9 +352,9 @@ public class DwarfCleric extends NPC {
 			Bundle node = bundle.getBundle( NODE );
 
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
-
-				given = node.getBoolean( GIVEN );
+				process = node.getInt(PROCESS);
 				rewardType = node.getInt(REWARD_TYPE);
+				finalHP = node.getInt(FINAL_HP);
 			}
 		}
 
@@ -219,7 +365,6 @@ public class DwarfCleric extends NPC {
 				rooms.add(new ClericHideRoom());
 				spawned = true;
 
-				given = false;
 				rewardType = -1;
 
 				devPickaxe.questDepth = -1;
@@ -239,56 +384,6 @@ public class DwarfCleric extends NPC {
 	public static String description(int depth) {
 		if (depth == 19) return Messages.get(DwarfCleric.class, "desc_recover");
 		return Messages.get(DwarfCleric.class, "desc");
-	}
-
-	public static class ClericTracker extends Buff {
-
-		{
-			revivePersists = true;
-		}
-
-		public int HP = CLERIC_HP;
-
-		@Override
-		public int icon() {
-			return BuffIndicator.CLERIC;
-		}
-
-		private static final String HEALTH = "hp";
-
-		@Override
-		public void storeInBundle(Bundle bundle) {
-			super.storeInBundle(bundle);
-			bundle.put(HEALTH, HP);
-		}
-
-		@Override
-		public void restoreFromBundle(Bundle bundle) {
-			super.restoreFromBundle(bundle);
-			HP = bundle.getInt(HEALTH);
-		}
-
-		@Override
-		public String iconTextDisplay() {
-			return Integer.toString(HP);
-		}
-
-		@Override
-		public String desc() {
-			return Messages.get(this, "desc", HP);
-		}
-
-		public void damage(int damage){
-			int preHP = HP;
-			HP -= damage;
-			if (preHP >= CLERIC_HP / 4 && HP < CLERIC_HP / 4)
-				GLog.w(Messages.get(this, "low_hp"));
-
-			if (HP <= 0){
-				detach();
-				GLog.n(Messages.get(this, "died"));
-			}
-		}
 	}
 
 	public static class DwarfShield extends ShieldBuff {

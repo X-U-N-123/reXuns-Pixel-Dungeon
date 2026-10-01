@@ -351,9 +351,8 @@ public abstract class Wand extends Item {
 			deferred.extend(Dungeon.hero.lvl * Dungeon.hero.pointsInTalent(Talent.IONIZING_RADIATION) / 4f);
 		}
 
-		if (DwarfCleric.Quest.rewardType == 0){
-			target.damage(Random.IntRange(1, Dungeon.hero.lvl / 3), new DwarfCleric.DwarfBless());
-		}
+		if (DwarfCleric.Quest.rewardType == 0)
+			target.damage(Random.IntRange(1, Dungeon.hero.lvl / 2), new DwarfCleric.DwarfBless());
 
 		dmg += Math.round(dmg * Statistics.elixirManaDrunk * 0.1f);
 
