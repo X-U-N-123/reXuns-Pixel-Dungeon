@@ -228,7 +228,7 @@ public class SmokeBomb extends ArmorAbility {
 		}
 
 		@Override
-		public void showAlert() {
+		public void showAlert(int color) {
 			//do nothing
 		}
 

@@ -340,7 +340,7 @@ public class Detonator extends ArmorAbility {
 
 		//no emotions for detonator
 		@Override
-		public void showAlert() {}
+		public void showAlert(int color) {}
 		@Override
 		public void showLost() {}
 		@Override

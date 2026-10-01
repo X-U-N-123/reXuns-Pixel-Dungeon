@@ -60,7 +60,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Regeneration;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Sleep;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulHandle;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SoulMark;
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.SwarmIntelTracker;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Terror;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -321,7 +320,7 @@ public abstract class Mob extends Char {
 		alerted = false;
 		
 		if (justAlerted){
-			sprite.showAlert();
+			sprite.showAlert(0xFFFFFF);
 		} else {
 			sprite.hideAlert();
 			sprite.hideLost();
@@ -385,10 +384,26 @@ public abstract class Mob extends Char {
 					mob.beckon(	enemy.pos);
 				}
 			}
-			Buff.affect( Dungeon.hero, SwarmIntelTracker.class );
+			sprite.showAlert(swarmAlertColor());
 		} else {
 			timeSeenAt = Float.MAX_VALUE;
 		}
+	}
+
+	private int swarmAlertColor(){
+		int color = 0xFFFFFF;
+		if (!Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE)) return color;
+
+		if (swarmAlertRange() > 12) color = 0xFF44FF;
+		else switch (swarmAlertRange()){
+			case 1: case 2:   color = 0x4444FF; break;
+			case 3: case 4:   color = 0x44FFFF; break;
+			case 5: case 6:   color = 0x44FF44; break;
+			case 7: case 8:   color = 0xFFFF44; break;
+			case 9: case 10:  color = 0xFF4444; break;
+			case 11: case 12: color = 0xFF44FF; break;
+		}
+		return color;
 	}
 
 	public int swarmAlertRange(){
@@ -1398,29 +1413,32 @@ public abstract class Mob extends Char {
 			for (Buff b : champion) desc += "\n_" + Messages.titleCase(b.name()) + "_  " + b.desc();
 		}
 
-		String dev_desc = "";
-		String plunder = "";
+		String devDesc = "";
+		String chalDesc = "";
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
 			int inc = StoneofIntelligence.LootandExpinc();
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
 			if (buff(BrokenArmor.class) != null) armor = 0;
-			dev_desc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
+			devDesc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
 				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, 1/speed(), getClass().getSimpleName(),
 				Messages.decimalFormat("#.##", cooldown()), id(), actPriority, spawningWeight());
 
-			dev_desc += "\n" + Messages.get(this, "property");
-			for (Property prop : properties().toArray(new Property[0])) dev_desc += Messages.get(this, prop.toString());
+			devDesc += "\n" + Messages.get(this, "property");
+			for (Property prop : properties().toArray(new Property[0])) devDesc += Messages.get(this, prop.toString());
 
-			dev_desc += "\n" + Messages.get(this, "state") + Messages.get(this, state.getClass().getSimpleName())
+			devDesc += "\n" + Messages.get(this, "state") + Messages.get(this, state.getClass().getSimpleName())
 					  + "  " + Messages.get(this, "alignment") + Messages.get(this, alignment.toString()) + "\n\n";
 		}
-		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) plunder += "\n\n" + Messages.get(this, "plunder");
+		if (Dungeon.isChallenged(Challenges.CRAZY_LOOT) && plunderedItem != null) chalDesc += "\n" + Messages.get(this, "plunder");
+		if (Dungeon.isChallenged(Challenges.SWARM_INTELLIGENCE) && swarmAlertRange() > 0)
+			chalDesc += "\n" + Messages.get(this, "swarm_range", swarmAlertRange());
+		if (!chalDesc.isEmpty()) chalDesc = "\n" + chalDesc;
 
-		return dev_desc + desc + plunder;
+		return devDesc + desc + chalDesc;
 	}
 	
 	public void notice() {
-		sprite.showAlert();
+		sprite.showAlert(swarmAlertColor());
 	}
 	
 	public void yell( String str ) {
@@ -1878,7 +1896,7 @@ public abstract class Mob extends Char {
 				return 1 / (distance( enemy ) + enemy.stealth());
 			}
 
-			float movementDir = PointF.angle(Dungeon.level.cellToPoint(previousPos), Dungeon.level.cellToPoint(pos))/PointF.G2R;;
+			float movementDir = PointF.angle(Dungeon.level.cellToPoint(previousPos), Dungeon.level.cellToPoint(pos))/PointF.G2R;
 			float enemyDir = PointF.angle(Dungeon.level.cellToPoint(pos), Dungeon.level.cellToPoint(enemy.pos))/PointF.G2R;
 			//classic wandering detection if enemy is touching a 75 degree cone of vision and within 6 tiles
 			if (Math.abs(enemyDir - movementDir) <= 37.5f && Dungeon.level.distance(pos, enemy.pos) <= 6){

@@ -72,7 +72,7 @@ public class BarricadeSprite extends MobSprite {
 
     //walls show no emotions
     @Override
-    public void showAlert() {}
+    public void showAlert(int color) {}
     @Override
     public void showLost() {}
     @Override

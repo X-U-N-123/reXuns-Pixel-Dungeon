@@ -364,7 +364,7 @@ public class devSpyglass extends Item {
 				protected void onClick() {
 					super.onClick();
 					mob.state = mob.HUNTING;
-					mob.sprite.showAlert();
+					mob.sprite.showAlert(0xFFFFFF);
 					indicator.x = left();
 					indicator.y = top();
 				}
