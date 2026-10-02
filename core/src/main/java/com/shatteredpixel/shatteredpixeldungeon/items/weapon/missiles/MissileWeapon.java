@@ -48,7 +48,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.CursedWand;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.SpiritBow;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.curses.Explosive;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Projecting;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -319,15 +318,9 @@ abstract public class MissileWeapon extends Weapon {
 		if (attacker instanceof Hero){
 			if (Random.Int(3) < ((Hero) attacker).pointsInTalent(Talent.SHARED_ENCHANTMENT)){
 				SpiritBow bow = Dungeon.hero.belongings.getItem(SpiritBow.class);
-				if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null) {
-				if (bow.enchantment instanceof Crystal){
-					//crystal specifically needs to proc on the bow, but it's just based on dmg so it doesn't really matter
-					damage = bow.enchantment.proc(bow, attacker, defender, damage);
-				} else {
+				if (bow != null && bow.enchantment != null && Dungeon.hero.buff(MagicImmune.class) == null)
 					damage = bow.enchantment.proc(this, attacker, defender, damage);
-				}
 			}
-		}
 
 			if ((Dungeon.level.map[defender.pos] == Terrain.FURROWED_GRASS
 					|| Dungeon.level.map[defender.pos] == Terrain.GRASS
@@ -521,10 +514,6 @@ abstract public class MissileWeapon extends Weapon {
 			usages *= RingOfSharpshooting.durabilityMultiplier( Dungeon.hero );
 		}
 
-		if (enchantment instanceof Crystal){
-			usages = Math.min(usages/2f, 50); //cannot exceed 50 uses with crystal enchant
-		}
-
 		//at 100 uses, items just last forever.
 		if (usages >= 100f) return 0;
 
@@ -540,13 +529,6 @@ abstract public class MissileWeapon extends Weapon {
 
 	@Override
 	public Weapon enchant(Enchantment ench) {
-		if (ench instanceof Crystal){
-			((Crystal) ench).setThrownWep();
-			//start repairing if thrown wep was already damaged
-			if (durability < MAX_DURABILITY) {
-				Buff.affect(Dungeon.hero, Crystal.CrystalRepair.class);
-			}
-		}
 		if (ench == null){
 			Buff.affect(Dungeon.hero, UpgradedSetTracker.class).appliedEnchants.remove(setID);
 		} else {

@@ -44,7 +44,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.MetalPart;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfForce;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfRecharging;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -428,9 +427,6 @@ public class MeleeWeapon extends Weapon {
 		int price = 20 * tier;
 		if (hasGoodEnchant()) {
 			price *= 1.5f;
-			if (enchantment instanceof Crystal){
-				price *= 3;
-			}
 		}
 		if (cursedKnown && (cursed || hasCurseEnchant())) {
 			price /= 2;

@@ -49,7 +49,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blocki
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Blooming;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Chilling;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Corrupting;
-import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Crystal;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Elastic;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Eldritch;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Grim;
@@ -124,7 +123,6 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
         enchPrio.put(Blooming.class, 0);
         enchPrio.put(Chilling.class, 1);
         enchPrio.put(Corrupting.class, 0);
-        enchPrio.put(Crystal.class, 0);
         enchPrio.put(Elastic.class, 1);
         enchPrio.put(Eldritch.class, 0);
         enchPrio.put(Grim.class, 0);
