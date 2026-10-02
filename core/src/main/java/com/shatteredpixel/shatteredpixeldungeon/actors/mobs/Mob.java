@@ -1103,7 +1103,7 @@ public abstract class Mob extends Char {
 
 				AscensionChallenge.processEnemyKill(this, true);
 
-				int exp = hero.lvl <= maxLvl + StoneofIntelligence.LootandExpinc() ? EXP : 0;
+				int exp = hero.lvl <= maxLvl ? EXP : 0;
 
 				//during ascent, under-levelled enemies grant 10 xp each until level 30
 				// after this enemy kills which reduce the amulet curse still grant 10 effective xp
@@ -1416,11 +1416,10 @@ public abstract class Mob extends Char {
 		String devDesc = "";
 		String chalDesc = "";
 		if (Dungeon.isChallenged(Challenges.X_U_NS_POWER)){
-			int inc = StoneofIntelligence.LootandExpinc();
 			int armor = Math.round(drRoll() * AscensionChallenge.statModifier(this));
 			if (buff(BrokenArmor.class) != null) armor = 0;
 			devDesc = Messages.get(this, "dev_info", HP, HT, attackSkill(this), defenseSkill(this),
-				EXP, maxLvl + inc, damageRoll(), attackDelay(), armor, 1/speed(), getClass().getSimpleName(),
+				EXP, maxLvl, damageRoll(), attackDelay(), armor, 1/speed(), getClass().getSimpleName(),
 				Messages.decimalFormat("#.##", cooldown()), id(), actPriority, spawningWeight());
 
 			devDesc += "\n" + Messages.get(this, "property");

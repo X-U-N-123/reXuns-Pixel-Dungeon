@@ -30,7 +30,6 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.effects.FloatingText;
-import com.shatteredpixel.shatteredpixeldungeon.items.trinkets.StoneofIntelligence;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.CharSprite;
 
@@ -74,7 +73,7 @@ public abstract class AllyBuff extends Buff {
 
 			AscensionChallenge.processEnemyKill(enemy, false);
 
-			int exp = hero.lvl <= enemy.maxLvl ? enemy.EXP + StoneofIntelligence.LootandExpinc() : 0;
+			int exp = hero.lvl <= enemy.maxLvl ? enemy.EXP : 0;
 			if (exp > 0) {
 				hero.sprite.showStatusWithIcon(CharSprite.POSITIVE, Integer.toString(exp), FloatingText.EXPERIENCE);
 			}

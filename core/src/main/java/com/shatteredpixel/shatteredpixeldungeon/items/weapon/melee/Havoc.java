@@ -29,12 +29,15 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Invisibility;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Brute;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
+import com.shatteredpixel.shatteredpixeldungeon.items.Item;
+import com.shatteredpixel.shatteredpixeldungeon.levels.VaultLevel;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
 import com.watabou.utils.Bundle;
+import com.watabou.utils.Random;
 
 public class Havoc extends MeleeWeapon {
 
@@ -62,8 +65,11 @@ public class Havoc extends MeleeWeapon {
     @Override
     public int proc(Char attacker, Char defender, int damage) {
         if(defender.HP <= damage && defender.buff(Brute.BruteRage.class) == null
-                && !(defender instanceof Ghoul && ((Ghoul) defender).timesDowned() > 0))//preventting brute and ghoul
+                && !(defender instanceof Ghoul && ((Ghoul) defender).timesDowned() > 0)) {//preventting brute and ghoul
             enemiesKilled++;
+            if (Dungeon.level instanceof VaultLevel) enemiesKilled ++;
+        }
+
 
         return super.proc( attacker, defender, damage );
     }
@@ -131,6 +137,18 @@ public class Havoc extends MeleeWeapon {
     public String upgradeAbilityStat(int level){
         int dmgBoost = 2 + level;
         return augment.damageFactor(min(level)+dmgBoost) + "-" + augment.damageFactor(max(level)+dmgBoost);
+    }
+
+    @Override
+    public Item random() {
+        super.random();
+
+        //we use a separate RNG here so that variance due to things like parchment scrap
+        //does not affect levelgen
+        Random.pushGenerator(Random.Long());
+        if (Dungeon.level instanceof VaultLevel) enemiesKilled = Random.Int(5, 10);
+        Random.popGenerator();
+        return this;
     }
 
     private static final String ENEMIESKILLED = "Enemies_Killed";
