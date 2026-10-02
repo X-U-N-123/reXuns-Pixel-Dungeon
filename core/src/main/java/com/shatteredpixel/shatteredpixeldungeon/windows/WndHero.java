@@ -64,10 +64,11 @@ public class WndHero extends WndTabbed {
 	private static final int WIDTH		= 120;
 	private static final int HEIGHT		= 125;
 	
-	private StatusTab stats;
-	private StatisticsTab statistic;
-	private TalentsTab talents;
-	private BuffsTab buffs;
+	private final StatusTab stats;
+	private final StatisticsTab statistic;
+	private final TalentsTab talents;
+	private final BuffsTab buffs;
+	private final CustomTab custom;
 
 	public static int lastIdx = 0;
 
@@ -91,6 +92,9 @@ public class WndHero extends WndTabbed {
 		add( buffs );
 		buffs.setRect(0, 0, WIDTH, HEIGHT);
 		buffs.setupList();
+
+		custom = new CustomTab();
+		add( custom );
 		
 		add( new IconTab( Icons.get(Icons.RANKINGS) ) {
 			protected void select( boolean value ) {
@@ -131,6 +135,18 @@ public class WndHero extends WndTabbed {
 				buffs.visible = buffs.active = selected;
 			}
 		} );
+		add( new IconTab( Icons.get(Icons.PREFS) ) {
+			protected void select( boolean value ) {
+				super.select( value );
+				if (selected) {
+					lastIdx = 4;
+					if (!custom.visible) {
+						custom.initialize();
+					}
+				}
+				custom.visible = custom.active = selected;
+			}
+		} );
 
 		layoutTabs();
 
@@ -158,7 +174,7 @@ public class WndHero extends WndTabbed {
 		buffs.layout();
 	}
 
-	private class StatusTab extends Group {
+	private static class StatusTab extends Group {
 		
 		private static final int GAP = 5;
 		
@@ -270,7 +286,7 @@ public class WndHero extends WndTabbed {
 		}
 	}
 
-	private class StatisticsTab extends Group {
+	private static class StatisticsTab extends Group {
 
 		private static final int GAP = 5;
 
@@ -342,7 +358,73 @@ public class WndHero extends WndTabbed {
 		}
 	}
 
-	public class TalentsTab extends Component {
+	private static class CustomTab extends Group {
+
+		private static final int GAP = 5;
+
+		private float pos;
+
+		public CustomTab() {
+			initialize();
+		}
+		public void initialize(){
+
+			for (Gizmo g : members){
+				if (g != null) g.destroy();
+			}
+			clear();
+			pos = 3;
+
+			if (Dungeon.customize){
+				statSlot(Messages.get(this, "water_fill"), Float.toString(Dungeon.waterFill));
+				statSlot(Messages.get(this, "water_smooth"), Dungeon.waterOffset);
+				statSlot(Messages.get(this, "grass_fill"), Float.toString(Dungeon.grassFill));
+				statSlot(Messages.get(this, "grass_smooth"), Dungeon.grassOffset);
+				statSlot(Messages.get(this, "trap_min"), Dungeon.trapMin);
+				statSlot(Messages.get(this, "trap_max"), Dungeon.trapMaxOffset);
+				statSlot(Messages.get(this, "room_offset"), Dungeon.roomOffset);
+				statSlot(Messages.get(this, "special_offset"), Dungeon.specialOffset);
+				statSlot(Messages.get(this, "mob_offset"), Dungeon.mobOffset);
+				statSlot(Messages.get(this, "item_offset"), Dungeon.itemOffset);
+				statSlot(Messages.get(this, "grow_rate"), Dungeon.growRate);
+			} else {
+				RenderedTextBlock txt = PixelScene.renderTextBlock( Messages.get(this, "no_customize"), 8 );
+				txt.setPos(0, pos + (6 - txt.height())/2);
+				PixelScene.align(txt);
+				add( txt );
+			}
+		}
+
+		private void statSlot( String label, String value ) {
+
+			int size = 8;
+			RenderedTextBlock txt;
+			do {
+				txt = PixelScene.renderTextBlock( label, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.5f);
+			txt.setPos(0, pos + (6 - txt.height())/2);
+			PixelScene.align(txt);
+			add( txt );
+
+			size = 8;
+			do {
+				txt = PixelScene.renderTextBlock( value, size );
+				size--;
+			} while (txt.width() >= WIDTH * 0.5f);
+			txt.setPos(WIDTH * 0.5f, pos + (6 - txt.height())/2);
+			PixelScene.align(txt);
+			add( txt );
+
+			pos += GAP + txt.height();
+		}
+
+		private void statSlot( String label, int value ) {
+			statSlot( label, Integer.toString( value ) );
+		}
+	}
+
+	public static class TalentsTab extends Component {
 
 		TalentsPane pane;
 
@@ -361,13 +443,13 @@ public class WndHero extends WndTabbed {
 
 	}
 	
-	private class BuffsTab extends Component {
+	private static class BuffsTab extends Component {
 		
 		private static final int GAP = 2;
 		
 		private float pos;
 		private ScrollPane buffList;
-		private ArrayList<BuffSlot> slots = new ArrayList<>();
+		private final ArrayList<BuffSlot> slots = new ArrayList<>();
 
 		@Override
 		protected void createChildren() {
@@ -409,9 +491,9 @@ public class WndHero extends WndTabbed {
 			buffList.setSize(buffList.width(), buffList.height());
 		}
 
-		private class BuffSlot extends Component {
+		private static class BuffSlot extends Component {
 
-			private Buff buff;
+			private final Buff buff;
 
 			Image icon;
 			RenderedTextBlock txt;

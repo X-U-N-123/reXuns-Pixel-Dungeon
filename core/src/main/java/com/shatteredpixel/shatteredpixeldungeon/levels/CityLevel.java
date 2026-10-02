@@ -120,9 +120,13 @@ public class CityLevel extends RegularLevel {
 
 	@Override
 	protected Painter painter() {
+		float waterFill = feeling == Feeling.WATER ? 0.90f : 0.30f;
+		if (Dungeon.customize && Dungeon.waterFill >= 0) waterFill = Dungeon.waterFill;
+		float grassFill = feeling == Feeling.GRASS ? 0.80f : 0.20f;
+		if (Dungeon.customize && Dungeon.grassFill >= 0) grassFill = Dungeon.grassFill;
 		return new CityPainter()
-				.setWater(feeling == Feeling.WATER ? 0.90f : 0.30f, 4)
-				.setGrass(feeling == Feeling.GRASS ? 0.80f : 0.20f, 3)
+				.setWater(waterFill, 4 + (Dungeon.customize ? Dungeon.waterOffset : 0))
+				.setGrass(grassFill, 3 + (Dungeon.customize ? Dungeon.grassOffset : 0))
 				.setTraps(nTraps(), trapClasses(), trapChances());
 	}
 

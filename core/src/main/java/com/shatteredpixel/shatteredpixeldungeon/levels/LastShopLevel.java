@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
@@ -33,9 +34,9 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.builders.LineBuilder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.CityPainter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ImpShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.entrance.EntranceRoom;
 import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.exit.ExitRoom;
-import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard.ImpShopRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.noosa.Group;
 import com.watabou.utils.Point;
@@ -99,8 +100,10 @@ public class LastShopLevel extends RegularLevel {
 	@Override
 	protected Painter painter() {
 		return new CityPainter()
-				.setWater( 0.10f, 4 )
-				.setGrass( 0.10f, 3 );
+				.setWater( (Dungeon.customize && Dungeon.waterFill >= 0) ? Dungeon.waterFill : 0.10f,
+						4 + (Dungeon.customize ? Dungeon.waterOffset : 0) )
+				.setGrass( (Dungeon.customize && Dungeon.grassFill >= 0) ? Dungeon.grassFill : 0.10f,
+						3 + (Dungeon.customize ? Dungeon.grassOffset : 0) );
 	}
 	
 	@Override

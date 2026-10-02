@@ -352,6 +352,8 @@ public abstract class Level implements Bundlable {
 		createItems();
 
 		Random.popGenerator();
+
+		if (Dungeon.customize && Dungeon.viewDist > 0) viewDistance = Dungeon.viewDist;
 	}
 	
 	public void setSize(int w, int h){

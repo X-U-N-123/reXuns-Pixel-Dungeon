@@ -426,7 +426,8 @@ public abstract class RegularPainter extends Painter {
 					count++;
 				}
 			}
-			l.map[i] = (Random.Float() < count / 12f) ? Terrain.HIGH_GRASS : Terrain.GRASS;
+			l.map[i] = (Random.Float() < count / (Dungeon.customize ? Dungeon.growRate : 12f))
+					? Terrain.HIGH_GRASS : Terrain.GRASS;
 		}
 	}
 	

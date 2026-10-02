@@ -88,7 +88,7 @@ public class Bones {
 
 		//seeded runs don't leave items
 		//This is to prevent using specific seeds to transport items to regular runs
-		if (!Dungeon.customSeedText.isEmpty()){
+		if (Dungeon.customize){
 			return null;
 		}
 
@@ -196,7 +196,7 @@ public class Bones {
 				depth = 0;
 
 				//challenged or seeded runs don't get items from prior runs
-				if (Dungeon.challenges != 0 || !Dungeon.customSeedText.isEmpty()){
+				if (Dungeon.challenges != 0 || Dungeon.customize){
 					item = null;
 				}
 

@@ -144,6 +144,7 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			standards = (int)Math.ceil(standards * 1.5f);
 		}
+		if (Dungeon.customize) standards += Dungeon.roomOffset;
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s;
 			do {
@@ -162,6 +163,7 @@ public abstract class RegularLevel extends Level {
 		if (feeling == Feeling.LARGE){
 			specials++;
 		}
+		if (Dungeon.customize) specials += Dungeon.specialOffset;
 		SpecialRoom.initForFloor();
 		for (int i = 0; i < specials; i++) {
 			SpecialRoom s = SpecialRoom.createRoom();
@@ -208,7 +210,9 @@ public abstract class RegularLevel extends Level {
 	protected abstract Painter painter();
 	
 	protected int nTraps() {
-		return Random.NormalIntRange( 2, 3 + (Dungeon.depth/5) );
+		int min = Dungeon.customize ? Dungeon.trapMin : 2;
+		int max = Math.max(min, Dungeon.depth/5 + (Dungeon.customize ? Dungeon.trapMaxOffset : 0));
+		return Random.NormalIntRange( min, max );
 	}
 	
 	protected Class<?>[] trapClasses(){
@@ -221,15 +225,16 @@ public abstract class RegularLevel extends Level {
 	
 	@Override
 	public int mobLimit() {
-		if (Dungeon.depth <= 1){
-			if (!Statistics.amuletObtained) return 0;
-			else                            return 10;
-		}
-
 		int mobs = 3 + Dungeon.depth % 5 + Random.Int(3);
 		if (feeling == Feeling.LARGE){
 			mobs = (int)Math.ceil(mobs * 1.33f);
 		}
+		if (Dungeon.depth <= 1){
+			if (!Statistics.amuletObtained) mobs = 0;
+			else                            mobs = 10;
+		}
+		if (Dungeon.customize) mobs += Dungeon.mobOffset;
+
 		return mobs;
 	}
 	
@@ -400,6 +405,7 @@ public abstract class RegularLevel extends Level {
 			nItems += 2;
 		}
 		if (Dungeon.hero.heroClass == HeroClass.PILLAGER) nItems ++;
+		if (Dungeon.customize) nItems += Dungeon.itemOffset;
 		
 		for (int i=0; i < nItems; i++) {
 

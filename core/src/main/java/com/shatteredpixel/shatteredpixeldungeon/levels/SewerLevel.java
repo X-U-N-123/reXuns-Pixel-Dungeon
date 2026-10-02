@@ -104,9 +104,13 @@ public class SewerLevel extends RegularLevel {
 	
 	@Override
 	protected Painter painter() {
+		float waterFill = feeling == Feeling.WATER ? 0.85f : 0.30f;
+		if (Dungeon.customize && Dungeon.waterFill >= 0) waterFill = Dungeon.waterFill;
+		float grassFill = feeling == Feeling.GRASS ? 0.80f : 0.20f;
+		if (Dungeon.customize && Dungeon.grassFill >= 0) grassFill = Dungeon.grassFill;
 		return new SewerPainter()
-				.setWater(feeling == Feeling.WATER ? 0.85f : 0.30f, 5)
-				.setGrass(feeling == Feeling.GRASS ? 0.80f : 0.20f, 4)
+				.setWater(waterFill, 5 + (Dungeon.customize ? Dungeon.waterOffset : 0))
+				.setGrass(grassFill, 4 + (Dungeon.customize ? Dungeon.grassOffset : 0))
 				.setTraps(nTraps(), trapClasses(), trapChances());
 	}
 	

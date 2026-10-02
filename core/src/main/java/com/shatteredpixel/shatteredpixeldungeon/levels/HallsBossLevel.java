@@ -149,7 +149,7 @@ public class HallsBossLevel extends Level {
 
 		Painter.fill(this, ROOM_LEFT-1, ROOM_TOP-1, 11, 11, Terrain.EMPTY );
 
-		patch = Patch.generate(width, height, 0.30f, 3, true);
+		patch = Patch.generate(width, height, (Dungeon.customize && Dungeon.waterFill >= 0) ? Dungeon.waterFill : 0.30f, 3 + (Dungeon.customize ? Dungeon.waterOffset : 0), true);
 		for (int i = 0; i < length(); i++) {
 			if ((map[i] == Terrain.EMPTY || map[i] == Terrain.STATUE || map[i] == Terrain.REGION_DECO) && patch[i]) {
 				map[i] = Terrain.WATER;

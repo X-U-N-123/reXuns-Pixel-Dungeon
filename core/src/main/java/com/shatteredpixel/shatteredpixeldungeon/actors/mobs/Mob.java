@@ -2015,7 +2015,7 @@ public abstract class Mob extends Char {
 				
 			//preserve other intelligent allies if they are near the hero
 			} else if (mob.alignment == Alignment.ALLY
-					&& (mob.intelligentAlly || (mob instanceof DwarfCleric && DwarfCleric.Quest.process == 1))
+					&& (mob.intelligentAlly && (!(mob instanceof DwarfCleric) || DwarfCleric.Quest.process == 1))
 					&& Dungeon.level.distance(holdFromPos, mob.pos) <= 5){
 				level.mobs.remove( mob );
 				heldAllies.add(mob);

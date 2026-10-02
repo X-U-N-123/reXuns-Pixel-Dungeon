@@ -252,7 +252,7 @@ public enum Icons {
 				icon.frame( icon.texture.uvRectBySize( 160, 16, 15, 14 ) );
 				break;
 			case SEED:
-				icon.frame( icon.texture.uvRectBySize( 176, 16, 15, 10 ) );
+				icon.frame( icon.texture.uvRectBySize( 179, 16, 10, 10 ) );
 				break;
 			case LEFTARROW:
 				icon.frame( icon.texture.uvRectBySize( 192, 16, 14, 9 ) );
@@ -553,7 +553,7 @@ public enum Icons {
 
 	private static int runTypeOfsY(){
 		if ((Dungeon.daily && Dungeon.dailyReplay)
-				|| (!Dungeon.daily && !Dungeon.customSeedText.isEmpty())){
+				|| (!Dungeon.daily && Dungeon.customize)){
 			return 8;
 		} else {
 			return 0;

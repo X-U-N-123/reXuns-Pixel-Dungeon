@@ -227,6 +227,20 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_VICTORY_NAGGED= "victory_nagged";
 	public static final String KEY_VAULT_INJURE_WARNS = "vault_injure_warns";
 
+	public static final String KEY_CUSTOMIZE	 = "customized";
+	public static final String KEY_WATER_FILL	 = "water_fill";
+	public static final String WATER_SMOOTH		 = "water_offset";
+	public static final String KEY_GRASS_FILL	 = "grass_fill";
+	public static final String GRASS_SMOOTH		 = "grass_offset";
+	public static final String KEY_TRAP_MIN		 = "trap_min";
+	public static final String KEY_TRAP_MAX		 = "trap_max_offset";
+	public static final String KEY_ROOM_OFFSET   = "room_offset";
+	public static final String KEY_SPECIAL_OFFSET= "special_offset";
+	public static final String KEY_ITEM_OFFSET   = "item_offset";
+	public static final String KEY_MOB_OFFSET    = "mob_offset";
+	public static final String KEY_VIEW_DIST     = "view_dist";
+	public static final String KEY_GROW_RATE     = "grow_rate";
+
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
 	}
@@ -281,6 +295,113 @@ public class SPDSettings extends GameSettings {
 
 	public static int vaultInjureWarns() {
 		return getInt(KEY_VAULT_INJURE_WARNS, 0);
+	}
+
+
+	public static void customized(boolean value ) {
+		put( KEY_CUSTOMIZE, value );
+	}
+
+	public static boolean customized() {
+		return getBoolean(KEY_CUSTOMIZE, false );
+	}
+
+	public static void waterOffset(int value){
+		put( WATER_SMOOTH, value );
+	}
+
+	public static int waterOffset(){
+		return getInt(WATER_SMOOTH, 0 );
+	}
+
+	public static void waterFill(int value){
+		put( KEY_WATER_FILL, value );
+	}
+
+	//a float actually, *10 before stored
+	public static int waterFill(){
+		return getInt(KEY_WATER_FILL, 3 );
+	}
+
+	public static void grassOffset(int value){
+		put( GRASS_SMOOTH, value );
+	}
+
+	public static int grassOffset(){
+		return getInt(GRASS_SMOOTH, 0 );
+	}
+
+	public static void grassFill(int value){
+		put( KEY_GRASS_FILL, value );
+	}
+
+	//a float actually, *10 before stored
+	public static int grassFill(){
+		return getInt(KEY_GRASS_FILL, 2 );
+	}
+
+	public static void trapMin(int value){
+		put( KEY_TRAP_MIN, value );
+	}
+
+	public static int trapMin(){
+		return getInt(KEY_TRAP_MIN, 2 );
+	}
+
+	public static void trapMax(int value){
+		put( KEY_TRAP_MAX, value );
+	}
+
+	public static int trapMax(){
+		return getInt(KEY_TRAP_MAX, 0 );
+	}
+
+	public static void roomOffset(int value){
+		put( KEY_ROOM_OFFSET, value );
+	}
+
+	public static int roomOffset(){
+		return getInt(KEY_ROOM_OFFSET, 0 );
+	}
+
+	public static void specialOffset(int value){
+		put( KEY_SPECIAL_OFFSET, value );
+	}
+
+	public static int specialOffset(){
+		return getInt(KEY_SPECIAL_OFFSET, 0 );
+	}
+
+	public static void itemOffset(int value){
+		put( KEY_ITEM_OFFSET, value );
+	}
+
+	public static int itemOffset(){
+		return getInt(KEY_ITEM_OFFSET, 0 );
+	}
+
+	public static void mobOffset(int value){
+		put( KEY_MOB_OFFSET, value );
+	}
+
+	public static int mobOffset(){
+		return getInt(KEY_MOB_OFFSET, 0 );
+	}
+
+	public static void viewDist(int value){
+		put( KEY_VIEW_DIST, value );
+	}
+
+	public static int viewDist(){
+		return getInt(KEY_VIEW_DIST, 8 );
+	}
+
+	public static void growRate(int value){
+		put( KEY_GROW_RATE, value );
+	}
+
+	public static int growRate(){
+		return getInt(KEY_GROW_RATE, 12 );
 	}
 
 	//Input

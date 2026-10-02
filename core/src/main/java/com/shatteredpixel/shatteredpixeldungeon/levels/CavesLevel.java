@@ -110,9 +110,13 @@ public class CavesLevel extends RegularLevel {
 	
 	@Override
 	protected Painter painter() {
+		float waterFill = feeling == Feeling.WATER ? 0.85f : 0.30f;
+		if (Dungeon.customize && Dungeon.waterFill >= 0) waterFill = Dungeon.waterFill;
+		float grassFill = feeling == Feeling.GRASS ? 0.65f : 0.15f;
+		if (Dungeon.customize && Dungeon.grassFill >= 0) grassFill = Dungeon.grassFill;
 		return new CavesPainter()
-				.setWater(feeling == Feeling.WATER ? 0.85f : 0.30f, 6)
-				.setGrass(feeling == Feeling.GRASS ? 0.65f : 0.15f, 3)
+				.setWater(waterFill, 6 + (Dungeon.customize ? Dungeon.waterOffset : 0))
+				.setGrass(grassFill, 3 + (Dungeon.customize ? Dungeon.grassOffset : 0))
 				.setTraps(nTraps(), trapClasses(), trapChances());
 	}
 	

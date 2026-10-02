@@ -154,7 +154,7 @@ public class VaultLevel extends CityLevel {
 		VaultRoom.setupChances();
 
 		int i = 0;
-		while (i < 9){
+		while (i < 9 + (Dungeon.customize ? Dungeon.roomOffset : 0)){
 			VaultRoom r = VaultRoom.createRoom();
 			i += r.sizeFactor();
 			initRooms.add(r);
@@ -163,7 +163,7 @@ public class VaultLevel extends CityLevel {
 		initRooms.add( new VaultSimpleEnemyTreasureRoom() );
 
 		VaultTreasureRoom.generateRoomList();
-		for (i = 0; i < 7; i++){
+		for (i = 0; i < 7 + (Dungeon.customize ? Dungeon.specialOffset : 0); i++){
 			initRooms.add(VaultTreasureRoom.nextRoom());
 		}
 
@@ -193,8 +193,12 @@ public class VaultLevel extends CityLevel {
 			public float hiddenDoorChance( Level l ){
 				return 0; //no hidden doors in the vault
 			}
-		}.setWater(0.15f, 12) //water is less common and more clustered (a few leaks with lack of maintenance)
-				.setGrass(0.30f, 3) //grass is a little more common (overgrowth over time)
+		}.setWater((Dungeon.customize && Dungeon.waterFill >= 0) ? Dungeon.waterFill : 0.15f,
+						12 + (Dungeon.customize ? Dungeon.waterOffset : 0))
+				//water is less common and more clustered (a few leaks with lack of maintenance)
+				.setGrass((Dungeon.customize && Dungeon.grassFill >= 0) ? Dungeon.grassFill : 0.30f,
+						3 + (Dungeon.customize ? Dungeon.grassOffset : 0))
+				//grass is a little more common (overgrowth over time)
 				.setTraps(nTraps(), trapClasses(), trapChances());
 	}
 

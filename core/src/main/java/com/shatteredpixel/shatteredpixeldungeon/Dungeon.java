@@ -68,7 +68,6 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.CavesBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CavesLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.CityLevel;
-import com.shatteredpixel.shatteredpixeldungeon.levels.DeadEndLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.HallsLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.LastLevel;
@@ -76,6 +75,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.MiningLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.PrisonLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RandomCaveLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerBossLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.SewerLevel;
@@ -113,7 +113,7 @@ public class Dungeon {
 
 	//enum of items which have limited spawns, records how many have spawned
 	//could all be their own separate numbers, but this allows iterating, much nicer for bundling/initializing.
-	public static enum LimitedDrops {
+	public enum LimitedDrops {
 		//limited world drops
 		STRENGTH_POTIONS,
 		UPGRADE_SCROLLS,
@@ -230,6 +230,21 @@ public class Dungeon {
 	public static long seed;
 	public static long lastPlayed;
 
+	//about customization
+	public static boolean customize;
+	public static int waterOffset;
+	public static float waterFill;
+	public static int grassOffset;
+	public static float grassFill;
+	public static int trapMin;
+	public static int trapMaxOffset;
+	public static int roomOffset;
+	public static int specialOffset;
+	public static int itemOffset;
+	public static int mobOffset;
+	public static int viewDist;
+	public static int growRate;
+
 	//we initialize the seed separately so that things like interlevelscene can access it early
 	public static void initSeed(){
 		if (daily) {
@@ -238,7 +253,7 @@ public class Dungeon {
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.ROOT);
 			format.setTimeZone(TimeZone.getTimeZone("UTC"));
 			customSeedText = format.format(new Date(SPDSettings.lastDaily()));
-		} else if (!SPDSettings.customSeed().isEmpty()){
+		} else if (!SPDSettings.customSeed().isEmpty() && SPDSettings.customized()){
 			customSeedText = SPDSettings.customSeed();
 			seed = DungeonSeed.convertFromText(customSeedText);
 		} else {
@@ -252,6 +267,20 @@ public class Dungeon {
 		initialVersion = version = Game.versionCode;
 		challenges = SPDSettings.challenges();
 		mobsToChampion = 1;
+
+		customize = SPDSettings.customized();
+		waterOffset = SPDSettings.waterOffset();
+		waterFill = SPDSettings.waterFill() / 10f;
+		grassOffset = SPDSettings.grassOffset();
+		grassFill = SPDSettings.grassFill() / 10f;
+		trapMin = SPDSettings.trapMin();
+		trapMaxOffset = SPDSettings.trapMax();
+		roomOffset = SPDSettings.roomOffset();
+		specialOffset = SPDSettings.specialOffset();
+		itemOffset = SPDSettings.itemOffset();
+		mobOffset = SPDSettings.mobOffset();
+		viewDist = SPDSettings.viewDist();
+		growRate = SPDSettings.growRate();
 
 		Actor.clear();
 		Actor.resetNextID();
@@ -369,7 +398,7 @@ public class Dungeon {
 					level = new LastLevel();
 					break;
 				default:
-					level = new DeadEndLevel();
+					level = new RandomCaveLevel();
 			}
 		} else if (branch == 1) {
 			switch (depth) {
@@ -386,14 +415,14 @@ public class Dungeon {
 					level = new VaultLevel();
 					break;
 				default:
-					level = new DeadEndLevel();
+					level = new RandomCaveLevel();
 			}
 		} else {
-			level = new DeadEndLevel();
+			level = new RandomCaveLevel();
 		}
 
-		//dead end levels get cleared, don't count as generated
-		if (!(level instanceof DeadEndLevel)){
+		//random cave levels get cleared, don't count as generated
+		if (!(level instanceof RandomCaveLevel)){
 			//this assumes that we will never have a depth value outside the range 0 to 999
 			// or -500 to 499, etc.
 			if (!generatedLevels.contains(depth + 1000*branch)) {
@@ -654,6 +683,20 @@ public class Dungeon {
 	private static final String QUESTS		= "quests";
 	private static final String BADGES		= "badges";
 	
+	private static final String CUSTOMIZED  = "customized";
+	private static final String WATER_OFFSET= "water_offset";
+	private static final String WATER_FILL  = "water_fill";
+	private static final String GRASS_OFFSET= "grass_offset";
+	private static final String GRASS_FILL  = "grass_fill";
+	private static final String TRAP_MIN    = "trap_min";
+	private static final String TRAP_MAX    = "trap_max_offset";
+	private static final String ROOM_OFFSET = "room_offset";
+	private static final String SPECIAL_OFFSET = "special_offset";
+	private static final String ITEM_OFFSET = "item_offset";
+	private static final String MOB_OFFSET  = "mob_offset";
+	private static final String VIEW_DIST   = "view_dist";
+	private static final String GROW_RATE   = "grow_rate";
+
 	public static void saveGame( int save ) {
 		try {
 			Bundle bundle = new Bundle();
@@ -721,6 +764,20 @@ public class Dungeon {
 			Bundle badges = new Bundle();
 			Badges.saveLocal( badges );
 			bundle.put( BADGES, badges );
+
+			bundle.put(CUSTOMIZED, customize);
+			bundle.put(WATER_FILL, waterFill);
+			bundle.put(WATER_OFFSET, waterOffset);
+			bundle.put(GRASS_FILL, grassFill);
+			bundle.put(GRASS_OFFSET, grassOffset);
+			bundle.put(TRAP_MIN, trapMin);
+			bundle.put(TRAP_MAX, trapMaxOffset);
+			bundle.put(ROOM_OFFSET, roomOffset);
+			bundle.put(SPECIAL_OFFSET, specialOffset);
+			bundle.put(ITEM_OFFSET, itemOffset);
+			bundle.put(MOB_OFFSET, mobOffset);
+			bundle.put(VIEW_DIST, viewDist);
+			bundle.put(GROW_RATE, growRate);
 			
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 			
@@ -857,6 +914,19 @@ public class Dungeon {
 		Statistics.restoreFromBundle( bundle );
 		Generator.restoreFromBundle( bundle );
 
+		customize = bundle.getBoolean( CUSTOMIZED );
+		waterFill = bundle.getFloat(WATER_FILL);
+		waterOffset = bundle.getInt(WATER_OFFSET);
+		grassFill = bundle.getFloat(GRASS_FILL);
+		grassOffset = bundle.getInt(GRASS_OFFSET);
+		trapMin = bundle.getInt(TRAP_MIN);
+		trapMaxOffset = bundle.getInt(TRAP_MAX);
+		roomOffset = bundle.getInt(ROOM_OFFSET);
+		specialOffset = bundle.getInt(SPECIAL_OFFSET);
+		itemOffset = bundle.getInt(ITEM_OFFSET);
+		mobOffset = bundle.getInt(MOB_OFFSET);
+		viewDist = bundle.getInt(VIEW_DIST);
+		growRate = bundle.getInt(GROW_RATE);
 	}
 	
 	public static Level loadLevel( int save ) throws IOException {

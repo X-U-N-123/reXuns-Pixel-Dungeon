@@ -23,6 +23,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Bones;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
@@ -95,6 +96,7 @@ public class SewerBossLevel extends SewerLevel {
 		initRooms.add( roomExit = new SewerBossExitRoom() );
 		
 		int standards = standardRooms(true);
+		if (Dungeon.customize) standards += Dungeon.roomOffset;
 		for (int i = 0; i < standards; i++) {
 			StandardRoom s = StandardRoom.createRoom(false);
 			//force to normal size
@@ -126,18 +128,15 @@ public class SewerBossLevel extends SewerLevel {
 	@Override
 	protected Painter painter() {
 		return new SewerPainter()
-				.setWater(0.50f, 5)
-				.setGrass(0.20f, 4)
-				.setTraps(nTraps(), trapClasses(), trapChances());
-	}
-	
-	protected int nTraps() {
-		return 0;
+				.setWater((Dungeon.customize && Dungeon.waterFill >= 0) ? Dungeon.waterFill : 0.50f,
+						5 + (Dungeon.customize ? Dungeon.waterOffset : 0))
+				.setGrass((Dungeon.customize && Dungeon.grassFill >= 0) ? Dungeon.grassFill : 0.20f,
+						4 + (Dungeon.customize ? Dungeon.grassOffset : 0))
+				.setTraps(0, trapClasses(), trapChances());
 	}
 
 	@Override
-	protected void createMobs() {
-	}
+	protected void createMobs() {}
 	
 	public Actor addRespawner() {
 		return null;

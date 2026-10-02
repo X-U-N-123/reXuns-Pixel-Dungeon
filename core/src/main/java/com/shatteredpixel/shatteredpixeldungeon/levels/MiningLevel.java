@@ -146,10 +146,14 @@ public class MiningLevel extends CavesLevel {
 
 	@Override
 	protected Painter painter() {
+		float waterFill = Blacksmith.Quest.Type() == Blacksmith.Quest.FUNGI ? 0.1f : 0.35f;
+		if (Dungeon.customize && Dungeon.waterFill >= 0) waterFill = Dungeon.waterFill;
+		float grassFill = Blacksmith.Quest.Type() == Blacksmith.Quest.FUNGI ? 0.65f : 0.10f;
+		if (Dungeon.customize && Dungeon.grassFill >= 0) grassFill = Dungeon.grassFill;
 		return new MiningLevelPainter()
 				.setGold(Random.NormalIntRange(45, 47))
-				.setWater(Blacksmith.Quest.Type() == Blacksmith.Quest.FUNGI ? 0.1f : 0.35f, 6)
-				.setGrass(Blacksmith.Quest.Type() == Blacksmith.Quest.FUNGI ? 0.65f : 0.10f, 3);
+				.setWater(waterFill, 6 + (Dungeon.customize ? Dungeon.waterOffset : 0))
+				.setGrass(grassFill, 3 + (Dungeon.customize ? Dungeon.grassOffset : 0));
 	}
 
 	@Override
