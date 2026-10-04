@@ -35,7 +35,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Wandmaker;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special.LaboratoryRoom;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.CellSelector;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -70,6 +73,7 @@ public class devPickaxe extends Item {
 	private int radius = 1;
 	private int chosenTerrain = 0;
 	public static int questDepth;
+	public static int labDepth = -1;
 
 	{
 		defaultAction = AC_MINE;
@@ -168,6 +172,13 @@ public class devPickaxe extends Item {
 					DwarfCleric.Quest.reset();
 				}
 			}
+			if (Dungeon.level instanceof RegularLevel)
+				for (Room r : ((RegularLevel) Dungeon.level).rooms())
+					if (r instanceof LaboratoryRoom) {
+						labDepth = Dungeon.depth;
+						break;
+					}
+
 			InterlevelScene.mode = InterlevelScene.Mode.RESET;
 			Game.switchScene(InterlevelScene.class);
 			defaultAction = AC_RESET;

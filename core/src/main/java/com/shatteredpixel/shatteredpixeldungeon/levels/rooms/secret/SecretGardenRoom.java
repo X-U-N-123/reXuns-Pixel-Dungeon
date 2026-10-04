@@ -59,8 +59,12 @@ public class SecretGardenRoom extends SecretRoom {
 		int starPos = plantPos(level);
 		if (Dungeon.isChallenged(Challenges.NO_HERBALISM)) {
 			level.drop(new Starflower.Seed(), starPos);
-			for (int i = 0; i < 3 + Random.Int(3); i++)
-				level.drop(Generator.randomUsingDefaults(Generator.Category.SEED), plantPos(level));
+			Painter.set(level, starPos, Terrain.GRASS);
+			for (int i = 0; i < 4 + Random.Int(3); i++) {
+				int plantPos = plantPos(level);
+				level.drop(Generator.randomUsingDefaults(Generator.Category.SEED), plantPos);
+				Painter.set(level, plantPos, Terrain.GRASS);
+			}
 		} else {
 			level.plant(new Starflower.Seed(), starPos);
 			level.plant(new WandOfRegrowth.Seedpod.Seed(), plantPos(level));

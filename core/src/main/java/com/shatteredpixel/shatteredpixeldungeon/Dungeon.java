@@ -57,6 +57,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.TrackingDevice;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
+import com.shatteredpixel.shatteredpixeldungeon.items.devPickaxe;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.Potion;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.RingOfVision;
@@ -650,6 +651,11 @@ public class Dungeon {
 
 	public static boolean labRoomNeeded(){
 		//one laboratory each floor set, in floor 3 or 4, 1/2 chance each floor
+		if (devPickaxe.labDepth == depth) {
+			devPickaxe.labDepth = -1;
+			return true;
+		}
+
 		int region = 1+depth/5;
 		if (region > LimitedDrops.LAB_ROOM.count){
 			int floorThisRegion = depth%5;
