@@ -191,7 +191,7 @@ public abstract class RegularLevel extends Level {
 	
 	protected Builder builder(){
 		if (feeling == Feeling.CHAOS){
-			return new BranchesBuilder();
+			return new BranchesBuilder().setPathLength(0.25f, new float[]{0, 0, 1});
 		}
 		if (Random.Int(2) == 0){
 			return new LoopBuilder()

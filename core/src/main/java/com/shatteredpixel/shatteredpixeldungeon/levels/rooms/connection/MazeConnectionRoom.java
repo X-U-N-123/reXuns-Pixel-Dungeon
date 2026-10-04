@@ -29,7 +29,14 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.watabou.utils.Random;
 
 public class MazeConnectionRoom extends ConnectionRoom {
-	
+
+	boolean forHidden = true;
+
+	@Override
+	public int minWidth() {return 4;}
+	@Override
+	public int minHeight() {return 4;}
+
 	@Override
 	public void paint(Level level) {
 		Painter.fill(level, this, 1, Terrain.EMPTY);
@@ -57,7 +64,7 @@ public class MazeConnectionRoom extends ConnectionRoom {
 		
 		for (Door door : connected.values()) {
 
-			if (Random.Float() <= WornLock.revealHiddenDoorChance()) {
+			if (!forHidden || Random.Float() <= WornLock.revealHiddenDoorChance()) {
 				door.set( Door.Type.UNLOCKED );
 			} else {
 				door.set( Door.Type.HIDDEN );
@@ -67,6 +74,6 @@ public class MazeConnectionRoom extends ConnectionRoom {
 	
 	@Override
 	public int maxConnections(int direction) {
-		return 2;
+		return forHidden ? 2 : super.maxConnections(direction);
 	}
 }

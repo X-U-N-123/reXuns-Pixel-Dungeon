@@ -82,7 +82,9 @@ public abstract class ConnectionRoom extends Room {
 		if (chaos){
 			int random = Random.Int(7);
 			if (random == 6) {
-				return new MazeConnectionRoom();
+				MazeConnectionRoom maze = new MazeConnectionRoom();
+				maze.forHidden = false;
+				return maze;
 			} else return Reflection.newInstance(rooms.get(random));
 		}
 		return Reflection.newInstance(rooms.get(Random.chances(chances[Dungeon.depth])));

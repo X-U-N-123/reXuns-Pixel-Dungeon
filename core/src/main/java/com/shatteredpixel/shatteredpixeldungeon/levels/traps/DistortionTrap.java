@@ -101,8 +101,8 @@ public class DistortionTrap extends Trap{
 				case 3: case 5 : default:
 					int floor;
 					do {
-						floor = Random.Int(25);
-					} while( Dungeon.bossLevel(floor));
+						floor = Random.Int(1, 25);
+					} while( Dungeon.bossLevel(floor) || floor - Dungeon.depth > 8);
 					mob = Reflection.newInstance(MobSpawner.getMobRotation(floor).get(0));
 					break;
 				case 2:
