@@ -340,9 +340,9 @@ public class DwarfCleric extends Mob {
 
 			if (spawned) {
 				node.put(PROCESS, process);
-				node.put(REWARD_TYPE, rewardType);
 				node.put(FINAL_HP, finalHP);
 			}
+			node.put(REWARD_TYPE, rewardType);
 
 			bundle.put( NODE, node );
 		}
@@ -353,9 +353,9 @@ public class DwarfCleric extends Mob {
 
 			if (!node.isNull() && (spawned = node.getBoolean( SPAWNED ))) {
 				process = node.getInt(PROCESS);
-				rewardType = node.getInt(REWARD_TYPE);
 				finalHP = node.getInt(FINAL_HP);
 			}
+			rewardType = node.getInt(REWARD_TYPE);
 		}
 
 		public static ArrayList<Room> spawn(ArrayList<Room> rooms ) {

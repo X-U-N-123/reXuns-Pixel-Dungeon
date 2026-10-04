@@ -50,6 +50,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.glyphs.AntiMagic;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.Wand;
+import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfAvalanche;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfLightning;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.enchantments.Shocking;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.MeleeWeapon;
@@ -391,7 +392,7 @@ public class VaultBossElemental extends Mob {
 			}
 		//shock form is resistant to melee and weak to magic
 		} else if ( form == ElementalForm.SHOCK ){
-			if (AntiMagic.RESISTS.contains(src.getClass())){
+			if (AntiMagic.RESISTS.contains(src.getClass()) || src instanceof WandOfAvalanche){
 				if (!weakAnnounced){
 					GLog.p(Messages.get(this, "shock_weak"));
 					weakAnnounced = true;
