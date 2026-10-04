@@ -332,8 +332,8 @@ public class FloatingText extends RenderedTextBlock {
 	public static int getHitReasonIcon(Char attacker, float accRoll, Char defender, float defRoll){
 		HashMap<Integer, Float> hitReasons = new HashMap<>();
 
-		//go through some garunteed hit interactions first
-		if (defRoll == 0 && (defender.buff(GuidingLight.Illuminated.class) != null || attacker.buff(Smite.SmiteTracker.class) != null)){
+		//go through some guaranteed hit interactions first
+		if (defRoll == 0 && defender.buff(GuidingLight.Illuminated.class) != null){
 			return HIT_BLS;
 		}
 		//when stunned, its a garunteed hit
@@ -412,7 +412,7 @@ public class FloatingText extends RenderedTextBlock {
 		if (attacker instanceof Hero){
 			if (((Hero) attacker).subClass == HeroSubClass.GUARD && attacker.shielding() > 0)
 				hitReasons.put(HIT_GUARD, 1.2f);
-			
+
 			if (((Hero) attacker).heroClass == HeroClass.EXPLORER
 					&& (Dungeon.level.map[attacker.pos] == Terrain.EMPTY || Dungeon.level.map[attacker.pos] == Terrain.EMPTY_DECO))
 				hitReasons.put(HIT_EXPLO, 1.15f);

@@ -50,7 +50,7 @@ public class PoisonDartTrap extends Trap {
 		shape = CROSSHAIR;
 		
 		canBeHidden = false;
-		avoidsHallways = true;
+		avoidsClosedSpaces = true;
 	}
 	
 	protected int poisonAmount(){

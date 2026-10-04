@@ -270,7 +270,7 @@ public class QuickSlotButton extends Button {
 
 	public static void set(int slotNum, Item item){
 		Dungeon.quickslot.setSlot( slotNum , item );
-		refresh();
+		Item.updateQuickslot();
 	}
 
 	private static Item select(int slotNum){
