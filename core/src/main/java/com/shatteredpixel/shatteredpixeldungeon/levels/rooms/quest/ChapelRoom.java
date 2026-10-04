@@ -64,12 +64,12 @@ public class ChapelRoom extends SpecialRoom {
 		LecternOverhang overhang = new LecternOverhang();
 		if (entrance().x > center().x) {
 			Painter.fill(level, left + 4, top + 6, 1, 1, Terrain.STATUE_SP);
-			lectern.pos(left + 4, top + 5);
+			lectern.pos(left + 4, top + 6);
 			overhang.pos(left + 4, top + 5);
 			clericPos = left + 4 + level.width() * (top + 7);
 		} else {
 			Painter.fill(level, left + 5, top + 6, 1, 1, Terrain.STATUE_SP);
-			lectern.pos(left + 5, top + 5);
+			lectern.pos(left + 5, top + 6);
 			overhang.pos(left + 5, top + 5);
 			clericPos = left + 5 + level.width() * (top + 7);
 		}
@@ -116,8 +116,7 @@ public class ChapelRoom extends SpecialRoom {
 		{
 			texture = Assets.Environment.CITY_QUEST;
 
-			tileW = 1;
-			tileH = 2;
+			tileW = tileH = 1;
 		}
 
 		final int TEX_WIDTH = 256;
@@ -125,19 +124,17 @@ public class ChapelRoom extends SpecialRoom {
 		@Override
 		public Tilemap create() {
 			Tilemap v = super.create();
-			v.map(mapSimpleImage(0, 8, TEX_WIDTH), 1);
+			v.map(mapSimpleImage(11, 1, TEX_WIDTH), 1);
 			return v;
 		}
 
 		@Override
 		public String name(int tileX, int tileY) {
-			if (tileY == 0) return null;
 			return Messages.get(this, "name");
 		}
 
 		@Override
 		public String desc(int tileX, int tileY) {
-			if (tileY == 0) return null;
 			return Messages.get(this, "desc");
 		}
 	}
@@ -147,8 +144,7 @@ public class ChapelRoom extends SpecialRoom {
 		{
 			texture = Assets.Environment.CITY_QUEST;
 
-			tileW = 1;
-			tileH = 1;
+			tileW = tileH = 1;
 		}
 
 		final int TEX_WIDTH = 256;
@@ -156,24 +152,10 @@ public class ChapelRoom extends SpecialRoom {
 		@Override
 		public Tilemap create() {
 			Tilemap v = super.create();
-			v.map(mapSimpleImage(0, 8, TEX_WIDTH), 1);
+			v.map(mapSimpleImage(11, 0, TEX_WIDTH), 1);
 			return v;
 		}
-
-		@Override
-		public String name(int tileX, int tileY) {
-			if (tileY == 0) return null;
-			return Messages.get(this, "name");
-		}
-
-		@Override
-		public String desc(int tileX, int tileY) {
-			if (tileY == 0) return null;
-			return Messages.get(this, "desc");
-		}
 	}
-
-
 
 	public static final String CLERIC_POS = "cleric_pos";
 
