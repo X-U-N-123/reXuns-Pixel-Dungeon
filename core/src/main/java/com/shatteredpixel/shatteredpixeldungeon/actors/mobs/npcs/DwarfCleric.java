@@ -133,6 +133,8 @@ public class DwarfCleric extends Mob {
 						ScrollOfTeleportation.appear(this, ((ChapelRoom) r).clericPos);
 						Buff.append(Dungeon.hero, TalismanOfForesight.CharAwareness.class, 1).charID = id();
 						appeared = true;
+
+						sprite.idle();
 						break;
 					}
 				}

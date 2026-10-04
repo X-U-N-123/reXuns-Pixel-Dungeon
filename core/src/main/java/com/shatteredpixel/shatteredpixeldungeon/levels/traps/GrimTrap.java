@@ -112,10 +112,7 @@ public class GrimTrap extends Trap {
 					//instant kill, use a mix of current HP and max HP, just like psi blast (for resistances)
 					int damage = Math.round(finalTarget.HT/2f + finalTarget.HP/2f);
 
-					//can't do more than 90% HT for the hero specifically
-					if (finalTarget == Dungeon.hero){
-						damage = (int)Math.min(damage, finalTarget.HT*0.9f);
-					}
+					if (finalTarget instanceof Hero) damage = Math.min(damage, finalTarget.HT - 1);
 
 					final int finalDmg = damage;
 					if (Dungeon.level.heroFOV[pos] || Dungeon.level.heroFOV[target.pos]) {
