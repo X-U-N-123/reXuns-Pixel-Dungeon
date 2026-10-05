@@ -44,8 +44,6 @@ public class PotionOfHealing extends Potion {
 
 	{
 		icon = ItemSpriteSheet.Icons.POTION_HEALING;
-
-		bones = true;
 	}
 	
 	@Override
@@ -88,5 +86,19 @@ public class PotionOfHealing extends Potion {
 	@Override
 	public int value() {
 		return isKnown() ? 30 * quantity : super.value();
+	}
+
+	@Override
+	public String name() {
+		if (isKnown() && Dungeon.isChallenged(Challenges.NO_HEALING) && Dungeon.hero != null)
+			return Messages.get(this, "name_poison");
+		else return super.name();
+	}
+
+	@Override
+	public String desc() {
+		if (isKnown() && Dungeon.isChallenged(Challenges.NO_HEALING) && Dungeon.hero != null)
+			return Messages.get(this, "desc_poison");
+		else return super.desc();
 	}
 }

@@ -237,9 +237,10 @@ public class Potion extends Item {
 
 	@Override
 	public String defaultAction() {
-		if (isKnown() && mustThrowPots.contains(this.getClass())) {
+		if (isKnown() && mustThrowPots.contains(getClass())) {
 			return AC_THROW;
-		} else if (isKnown() && canThrowPots.contains(this.getClass())){
+		} else if (isKnown() && (canThrowPots.contains(getClass()) ||
+				(this instanceof PotionOfHealing && Dungeon.isChallenged(Challenges.NO_HEALING)))){
 			return AC_CHOOSE;
 		} else {
 			return AC_DRINK;
@@ -294,7 +295,8 @@ public class Potion extends Item {
 
 		if (isKnown()
 				&& !mustThrowPots.contains(this.getClass())
-				&& !canThrowPots.contains(this.getClass())) {
+				&& !canThrowPots.contains(this.getClass())
+				&& !(this instanceof PotionOfHealing && Dungeon.isChallenged(Challenges.NO_HEALING))) {
 		
 			GameScene.show(
 				new WndOptions(new ItemSprite(this),
