@@ -103,7 +103,7 @@ public class DwarfCleric extends Mob {
 
 	@Override
 	public void damage( int dmg, Object src ) {
-		if (Quest.process <= 1) {
+		if (Quest.process == 1) {
 			boolean healthBfo = HP >= HT / 3;
 			super.damage(dmg, src);
 			if (healthBfo && HP < HT / 3) GLog.w(Messages.get(this, "low_hp"));
@@ -217,7 +217,7 @@ public class DwarfCleric extends Mob {
 		Char enemy = this.enemy;
 		if (hit( this, enemy, true )) {
 
-				enemy.damage( Math.round(Random.NormalIntRange( 10, 15 )), new DwarfBless());
+			enemy.damage( Math.round(Random.NormalIntRange( 12, 18 )), new DwarfBless());
 
 			if (enemy == Dungeon.hero && !enemy.isAlive()) {
 				Badges.validateDeathFromFriendlyMagic();

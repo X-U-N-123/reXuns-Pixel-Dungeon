@@ -48,6 +48,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndHeroInfo;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndKeyBindings;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTabbed;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndVictoryCongrats;
@@ -56,6 +57,8 @@ import com.watabou.input.PointerEvent;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.Gizmo;
+import com.watabou.noosa.Group;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.NinePatch;
 import com.watabou.noosa.PointerArea;
@@ -653,7 +656,7 @@ public class HeroSelectScene extends PixelScene {
 			};
 			customButton.leftJustify = true;
 			customButton.icon(Icons.get(Icons.PREFS));
-			if (!SPDSettings.customSeed().isEmpty()) customButton.icon().hardlight(1f, 1.5f, 0.67f);
+			if (SPDSettings.customized()) customButton.icon().hardlight(1f, 1.5f, 0.67f);
 			buttons.add(customButton);
 			add(customButton);
 
@@ -971,41 +974,17 @@ public class HeroSelectScene extends PixelScene {
 
 	private static final int WIDTH = 120;
 
-	public static class CustomWindow extends Window {
+	public static class CustomWindow extends WndTabbed {
 
-		private final ArrayList<Component> components = new ArrayList<>();
-		
-		IconButton seedBtn;
+		private final IconButton seedBtn;
+
+		private final TerrainTab terrain;
+		private final ColonizationTab colo;
+
+		private static int lastIdx = 0;
 
 		public CustomWindow(){
 			super();
-
-			CheckBox useCustomize = new CheckBox(Messages.get(this, "customize")){
-				@Override
-				public void checked(boolean value) {
-					super.checked(value);
-					SPDSettings.customized(value);
-					for (Component s : components){
-						s.active = value;
-						if (s instanceof StyledButton){
-							((StyledButton) s).alpha(value ? 1 : 0.3f);
-						} else if (s instanceof IconButton) {
-							if (value) {
-								((IconButton) s).icon().resetColor();
-								if (s == seedBtn && !SPDSettings.customSeed().isEmpty()){
-									((IconButton) s).icon().hardlight(1f, 1.5f, 0.67f);
-								}
-							}
-							else ((IconButton) s).icon().hardlight(0x666666);
-						} else if (s instanceof OptionSlider) {
-							((OptionSlider) s).enable(value);
-						}
-					}
-				}
-			};
-			useCustomize.checked(SPDSettings.customized());
-			useCustomize.setRect(0, 0, WIDTH - 18, 16);
-			add(useCustomize);
 
 			seedBtn = new IconButton(Icons.get(Icons.SEED)){
 				@Override
@@ -1047,21 +1026,85 @@ public class HeroSelectScene extends PixelScene {
 					return Messages.get(CustomWindow.class, "custom_seed", SPDSettings.customSeed());
 				}
 			};
-			components.add(seedBtn);
 			if (!SPDSettings.customSeed().isEmpty()) seedBtn.icon().hardlight(1f, 1.5f, 0.67f);
-			else if (!useCustomize.checked()) {
-				seedBtn.icon().hardlight(0x666666);
-				seedBtn.active = false;
-			}
-			seedBtn.setRect(useCustomize.right() + 4, useCustomize.top() + 2, 12, 12);
+			seedBtn.setRect(106, 2, 12, 12);
 			add(seedBtn);
+
+			CheckBox useCustomize = new CheckBox(Messages.get(this, "customize")) {
+				@Override
+				public void checked(boolean value) {
+					super.checked(value);
+					SPDSettings.customized(value);
+
+					seedBtn.active = value;
+					if (value) {
+						seedBtn.icon().resetColor();
+						if (!SPDSettings.customSeed().isEmpty()) {
+							seedBtn.icon().hardlight(1f, 1.5f, 0.67f);
+						}
+					} else seedBtn.icon().hardlight(0x666666);
+
+					if (lastIdx == 0 && terrain != null) terrain.initialize(value);
+					else if (lastIdx == 1 && colo != null) colo.initialize(value);
+				}
+			};
+			useCustomize.checked(SPDSettings.customized());
+			useCustomize.setRect(0, 0, WIDTH - 18, 16);
+			add(useCustomize);
+
+			terrain = new TerrainTab(useCustomize.checked());
+			add(terrain);
+			add( new IconTab( Icons.get(Icons.TERRAIN) ) {
+				protected void select( boolean value ) {
+					super.select( value );
+					if (selected) {
+						if (!terrain.visible)
+							terrain.initialize(useCustomize.checked());
+						lastIdx = 0;
+					}
+					terrain.visible = terrain.active = selected;
+				}
+			} );
+
+			colo = new ColonizationTab(useCustomize.checked());
+			add(colo);
+			add( new IconTab( Icons.get(Icons.BACKPACK_LRG) ) {
+				protected void select( boolean value ) {
+					super.select( value );
+					if (selected) {
+						if (!colo.visible)
+							colo.initialize(useCustomize.checked());
+						lastIdx = 1;
+					}
+					colo.visible = colo.active = selected;
+				}
+			} );
+
+			resize(WIDTH, 118);
+
+			select(lastIdx);
+			layoutTabs();
+		}
+	}
+
+	private static class TerrainTab extends Group{
+
+		public TerrainTab(boolean active) {
+			initialize(active);
+		}
+
+		public void initialize(boolean active) {
+			for (Gizmo g : members){
+				if (g != null) g.destroy();
+			}
+			clear();
 
 			RedButton btnTrapMin = new RedButton(Messages.get(this, "trap_min", SPDSettings.trapMin())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "trap_min_title"),
-							Messages.get(CustomWindow.class, "trap_min_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "trap_min_title"),
+							Messages.get(TerrainTab.class, "trap_min_desc"),
 							Integer.toString(SPDSettings.trapMin()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1070,27 +1113,27 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("\\d+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.trapMin(Math.min(level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "trap_min", SPDSettings.trapMin()));
+								text(Messages.get(TerrainTab.class, "trap_min", SPDSettings.trapMin()));
 							} else {
 								SPDSettings.trapMin(2); //default value
-								text(Messages.get(CustomWindow.class, "trap_min", SPDSettings.trapMin()));
+								text(Messages.get(TerrainTab.class, "trap_min", SPDSettings.trapMin()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnTrapMin);
-			btnTrapMin.setRect(0, useCustomize.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnTrapMin.active = useCustomize.checked();
-			btnTrapMin.alpha(useCustomize.checked() ? 1f : 0.3f);
+			add(btnTrapMin);
+			btnTrapMin.setRect(0, 18, (WIDTH - 2) / 2, 16);
+			btnTrapMin.active = active;
+			btnTrapMin.alpha(active ? 1f : 0.3f);
 			add(btnTrapMin);
 
 			RedButton btnTrapMax = new RedButton(Messages.get(this, "trap_max", SPDSettings.trapMax())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "trap_max_title"),
-							Messages.get(CustomWindow.class, "trap_max_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "trap_max_title"),
+							Messages.get(TerrainTab.class, "trap_max_desc"),
 							Integer.toString(SPDSettings.trapMax()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1099,27 +1142,27 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("-?[0-9]+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.trapMax((int)GameMath.gate(-8, level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "trap_max", SPDSettings.trapMax()));
+								text(Messages.get(TerrainTab.class, "trap_max", SPDSettings.trapMax()));
 							} else {
 								SPDSettings.trapMax(0);
-								text(Messages.get(CustomWindow.class, "trap_max", SPDSettings.trapMax()));
+								text(Messages.get(TerrainTab.class, "trap_max", SPDSettings.trapMax()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnTrapMax);
-			btnTrapMax.setRect(btnTrapMin.right() + 2, useCustomize.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnTrapMax.active = useCustomize.checked();
-			btnTrapMax.alpha(useCustomize.checked() ? 1f : 0.3f);
+			add(btnTrapMax);
+			btnTrapMax.setRect(btnTrapMin.right() + 2, btnTrapMin.top(), (WIDTH - 2) / 2, 16);
+			btnTrapMax.active = active;
+			btnTrapMax.alpha(active ? 1f : 0.3f);
 			add(btnTrapMax);
 
 			RedButton btnRoomOffset = new RedButton(Messages.get(this, "room_offset", SPDSettings.roomOffset())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "room_offset_title"),
-							Messages.get(CustomWindow.class, "room_offset_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "room_offset_title"),
+							Messages.get(TerrainTab.class, "room_offset_desc"),
 							Integer.toString(SPDSettings.roomOffset()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1128,27 +1171,27 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("-?[0-9]+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.roomOffset((int)GameMath.gate(-15, level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "room_offset", SPDSettings.roomOffset()));
+								text(Messages.get(TerrainTab.class, "room_offset", SPDSettings.roomOffset()));
 							} else {
 								SPDSettings.roomOffset(0);
-								text(Messages.get(CustomWindow.class, "room_offset", SPDSettings.roomOffset()));
+								text(Messages.get(TerrainTab.class, "room_offset", SPDSettings.roomOffset()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnRoomOffset);
+			add(btnRoomOffset);
 			btnRoomOffset.setRect(0, btnTrapMin.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnRoomOffset.active = useCustomize.checked();
-			btnRoomOffset.alpha(useCustomize.checked() ? 1f : 0.3f);
+			btnRoomOffset.active = active;
+			btnRoomOffset.alpha(active ? 1f : 0.3f);
 			add(btnRoomOffset);
 
 			RedButton btnSpecialOffset = new RedButton(Messages.get(this, "special_offset", SPDSettings.specialOffset())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "special_offset_title"),
-							Messages.get(CustomWindow.class, "special_offset_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "special_offset_title"),
+							Messages.get(TerrainTab.class, "special_offset_desc"),
 							Integer.toString(SPDSettings.specialOffset()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1157,114 +1200,27 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("-?[0-9]+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.specialOffset((int)GameMath.gate(-4, level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "special_offset", SPDSettings.specialOffset()));
+								text(Messages.get(TerrainTab.class, "special_offset", SPDSettings.specialOffset()));
 							} else {
 								SPDSettings.specialOffset(0);
-								text(Messages.get(CustomWindow.class, "special_offset", SPDSettings.specialOffset()));
+								text(Messages.get(TerrainTab.class, "special_offset", SPDSettings.specialOffset()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnSpecialOffset);
-			btnSpecialOffset.setRect(btnRoomOffset.right() + 2, btnTrapMin.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnSpecialOffset.active = useCustomize.checked();
-			btnSpecialOffset.alpha(useCustomize.checked() ? 1f : 0.3f);
 			add(btnSpecialOffset);
-
-			RedButton btnItemOffset = new RedButton(Messages.get(this, "item_offset", SPDSettings.itemOffset())){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "item_offset_title"),
-							Messages.get(CustomWindow.class, "item_offset_desc"),
-							Integer.toString(SPDSettings.itemOffset()), Short.MAX_VALUE, false,
-							Messages.get(HeroSelectScene.class, "set"),
-							Messages.get(HeroSelectScene.class, "clear")){
-						@Override
-						public void onSelect(boolean positive, String text) {
-							if (positive && text.matches("-?[0-9]+")) {
-								int level = Integer.parseInt(text);
-								SPDSettings.itemOffset((int)GameMath.gate(-8, level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "item_offset", SPDSettings.itemOffset()));
-							} else {
-								SPDSettings.itemOffset(0);
-								text(Messages.get(CustomWindow.class, "item_offset", SPDSettings.itemOffset()));
-							}
-						}
-					});
-				}
-			};
-			components.add(btnItemOffset);
-			btnItemOffset.setRect(0, btnRoomOffset.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnItemOffset.active = useCustomize.checked();
-			btnItemOffset.alpha(useCustomize.checked() ? 1f : 0.3f);
-			add(btnItemOffset);
-
-			RedButton btnMobOffset = new RedButton(Messages.get(this, "mob_offset", SPDSettings.mobOffset())){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "mob_offset_title"),
-							Messages.get(CustomWindow.class, "mob_offset_desc"),
-							Integer.toString(SPDSettings.mobOffset()), Short.MAX_VALUE, false,
-							Messages.get(HeroSelectScene.class, "set"),
-							Messages.get(HeroSelectScene.class, "clear")){
-						@Override
-						public void onSelect(boolean positive, String text) {
-							if (positive && text.matches("-?[0-9]+")) {
-								int level = Integer.parseInt(text);
-								SPDSettings.mobOffset((int)GameMath.gate(-12, level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "mob_offset", SPDSettings.mobOffset()));
-							} else {
-								SPDSettings.mobOffset(0);
-								text(Messages.get(CustomWindow.class, "mob_offset", SPDSettings.mobOffset()));
-							}
-						}
-					});
-				}
-			};
-			components.add(btnMobOffset);
-			btnMobOffset.setRect( btnItemOffset.right() + 2, btnRoomOffset.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnMobOffset.active = useCustomize.checked();
-			btnMobOffset.alpha(useCustomize.checked() ? 1f : 0.3f);
-			add(btnMobOffset);
-
-			RedButton btnViewDist = new RedButton(Messages.get(this, "view_dist", SPDSettings.viewDist())){
-				@Override
-				protected void onClick() {
-					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "view_dist_title"),
-							Messages.get(CustomWindow.class, "view_dist_desc"),
-							Integer.toString(SPDSettings.viewDist()), Short.MAX_VALUE, false,
-							Messages.get(HeroSelectScene.class, "set"),
-							Messages.get(HeroSelectScene.class, "clear")){
-						@Override
-						public void onSelect(boolean positive, String text) {
-							if (positive && text.matches("\\d+")) {
-								int level = Integer.parseInt(text);
-								SPDSettings.viewDist(Math.min(level, Short.MAX_VALUE));
-								text(Messages.get(CustomWindow.class, "view_dist", SPDSettings.viewDist()));
-							} else {
-								SPDSettings.viewDist(0);
-								text(Messages.get(CustomWindow.class, "view_dist", SPDSettings.viewDist()));
-							}
-						}
-					});
-				}
-			};
-			components.add(btnViewDist);
-			btnViewDist.setRect(0, btnItemOffset.bottom() + 2, WIDTH, 16);
-			btnViewDist.active = useCustomize.checked();
-			btnViewDist.alpha(useCustomize.checked() ? 1f : 0.3f);
-			add(btnViewDist);
+			btnSpecialOffset.setRect(btnRoomOffset.right() + 2, btnTrapMin.bottom() + 2, (WIDTH - 2) / 2, 16);
+			btnSpecialOffset.active = active;
+			btnSpecialOffset.alpha(active ? 1f : 0.3f);
+			add(btnSpecialOffset);
 
 			RedButton btnWaterSmooth = new RedButton(Messages.get(this, "water_smooth", SPDSettings.waterOffset())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "water_smooth_title"),
-							Messages.get(CustomWindow.class, "water_smooth_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "water_smooth_title"),
+							Messages.get(TerrainTab.class, "water_smooth_desc"),
 							Integer.toString(SPDSettings.waterOffset()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1273,19 +1229,19 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("-?[0-9]+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.waterOffset(level);
-								text(Messages.get(CustomWindow.class, "water_smooth", SPDSettings.waterOffset()));
+								text(Messages.get(TerrainTab.class, "water_smooth", SPDSettings.waterOffset()));
 							} else {
 								SPDSettings.waterOffset(0);
-								text(Messages.get(CustomWindow.class, "water_smooth", SPDSettings.waterOffset()));
+								text(Messages.get(TerrainTab.class, "water_smooth", SPDSettings.waterOffset()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnWaterSmooth);
-			btnWaterSmooth.setRect(0, btnViewDist.bottom() + 2, (WIDTH - 2) / 2, 16);
-			btnWaterSmooth.active = useCustomize.checked();
-			btnWaterSmooth.alpha(useCustomize.checked() ? 1f : 0.3f);
+			add(btnWaterSmooth);
+			btnWaterSmooth.setRect(0, btnRoomOffset.bottom() + 2, (WIDTH - 2) / 2, 16);
+			btnWaterSmooth.active = active;
+			btnWaterSmooth.alpha(active ? 1f : 0.3f);
 			add(btnWaterSmooth);
 
 			OptionSlider waterFill = new OptionSlider(Messages.get(this, "water_fill"), Messages.get(this, "default"), "1", -1, 10){
@@ -1294,18 +1250,18 @@ public class HeroSelectScene extends PixelScene {
 					SPDSettings.waterFill(getSelectedValue());
 				}
 			};
-			components.add(waterFill);
+			add(waterFill);
 			waterFill.setSelectedValue(SPDSettings.waterFill());
 			waterFill.setRect(0, btnWaterSmooth.bottom() + 2, (WIDTH - 2) / 2, 24);
-			waterFill.enable(useCustomize.checked());
+			waterFill.enable(active);
 			add(waterFill);
 
 			RedButton btnGrassSmooth = new RedButton(Messages.get(this, "grass_smooth", SPDSettings.grassOffset())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "grass_smooth_title"),
-							Messages.get(CustomWindow.class, "grass_smooth_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "grass_smooth_title"),
+							Messages.get(TerrainTab.class, "grass_smooth_desc"),
 							Integer.toString(SPDSettings.grassOffset()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1314,19 +1270,19 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("\\d+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.grassOffset(level);
-								text(Messages.get(CustomWindow.class, "grass_smooth", SPDSettings.grassOffset()));
+								text(Messages.get(TerrainTab.class, "grass_smooth", SPDSettings.grassOffset()));
 							} else {
 								SPDSettings.grassOffset(0);
-								text(Messages.get(CustomWindow.class, "grass_smooth", SPDSettings.grassOffset()));
+								text(Messages.get(TerrainTab.class, "grass_smooth", SPDSettings.grassOffset()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnGrassSmooth);
+			add(btnGrassSmooth);
 			btnGrassSmooth.setRect(btnWaterSmooth.right() + 2, btnWaterSmooth.top(), (WIDTH - 2) / 2, 16);
-			btnGrassSmooth.active = useCustomize.checked();
-			btnGrassSmooth.alpha(useCustomize.checked() ? 1f : 0.3f);
+			btnGrassSmooth.active = active;
+			btnGrassSmooth.alpha(active ? 1f : 0.3f);
 			add(btnGrassSmooth);
 
 			OptionSlider grassFill = new OptionSlider(Messages.get(this, "grass_fill"), Messages.get(this, "default"), "1", -1, 10){
@@ -1335,18 +1291,18 @@ public class HeroSelectScene extends PixelScene {
 					SPDSettings.grassFill(getSelectedValue());
 				}
 			};
-			components.add(grassFill);
+			add(grassFill);
 			grassFill.setSelectedValue(SPDSettings.grassFill());
 			grassFill.setRect(waterFill.right() + 2, waterFill.top(), (WIDTH - 2) / 2, 24);
-			grassFill.enable(useCustomize.checked());
+			grassFill.enable(active);
 			add(grassFill);
 
 			RedButton btnGrowRate = new RedButton(Messages.get(this, "grow_rate", SPDSettings.growRate())){
 				@Override
 				protected void onClick() {
 					super.onClick();
-					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(CustomWindow.class, "grow_rate_title"),
-							Messages.get(CustomWindow.class, "grow_rate_desc"),
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(TerrainTab.class, "grow_rate_title"),
+							Messages.get(TerrainTab.class, "grow_rate_desc"),
 							Integer.toString(SPDSettings.growRate()), Short.MAX_VALUE, false,
 							Messages.get(HeroSelectScene.class, "set"),
 							Messages.get(HeroSelectScene.class, "clear")){
@@ -1355,23 +1311,180 @@ public class HeroSelectScene extends PixelScene {
 							if (positive && text.matches("-?[0-9]+")) {
 								int level = Integer.parseInt(text);
 								SPDSettings.growRate(level);
-								text(Messages.get(CustomWindow.class, "grow_rate", SPDSettings.growRate()));
+								text(Messages.get(TerrainTab.class, "grow_rate", SPDSettings.growRate()));
 							} else {
 								SPDSettings.grassOffset(12);
-								text(Messages.get(CustomWindow.class, "grow_rate", SPDSettings.growRate()));
+								text(Messages.get(TerrainTab.class, "grow_rate", SPDSettings.growRate()));
 							}
 						}
 					});
 				}
 			};
-			components.add(btnGrowRate);
-			btnGrowRate.setRect(0, grassFill.bottom() + 2, WIDTH, 16);
-			btnGrowRate.active = useCustomize.checked();
-			btnGrowRate.alpha(useCustomize.checked() ? 1f : 0.3f);
 			add(btnGrowRate);
-
-			//OptionSlider
-			resize(WIDTH, (int)btnGrowRate.bottom());
+			btnGrowRate.setRect(0, grassFill.bottom() + 2, WIDTH, 16);
+			btnGrowRate.active = active;
+			btnGrowRate.alpha(active ? 1f : 0.3f);
+			add(btnGrowRate);
 		}
+	}
+
+	private static class ColonizationTab extends Group{
+
+		public ColonizationTab(boolean active){
+			initialize(active);
+		}
+
+		private void initialize(boolean active) {
+			for (Gizmo g : members){
+				if (g != null) g.destroy();
+			}
+			clear();
+
+			RedButton btnItemOffset = new RedButton(Messages.get(this, "item_offset", SPDSettings.itemOffset())){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(ColonizationTab.class, "item_offset_title"),
+							Messages.get(ColonizationTab.class, "item_offset_desc"),
+							Integer.toString(SPDSettings.itemOffset()), Short.MAX_VALUE, false,
+							Messages.get(HeroSelectScene.class, "set"),
+							Messages.get(HeroSelectScene.class, "clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							if (positive && text.matches("-?[0-9]+")) {
+								int level = Integer.parseInt(text);
+								SPDSettings.itemOffset((int)GameMath.gate(-8, level, Short.MAX_VALUE));
+								text(Messages.get(ColonizationTab.class, "item_offset", SPDSettings.itemOffset()));
+							} else {
+								SPDSettings.itemOffset(0);
+								text(Messages.get(ColonizationTab.class, "item_offset", SPDSettings.itemOffset()));
+							}
+						}
+					});
+				}
+			};
+			add(btnItemOffset);
+			btnItemOffset.setRect(0, 18, WIDTH, 16);
+			btnItemOffset.active = active;
+			btnItemOffset.alpha(active ? 1f : 0.3f);
+			add(btnItemOffset);
+
+			RedButton btnMobOffset = new RedButton(Messages.get(this, "mob_offset", SPDSettings.mobOffset())){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(ColonizationTab.class, "mob_offset_title"),
+							Messages.get(ColonizationTab.class, "mob_offset_desc"),
+							Integer.toString(SPDSettings.mobOffset()), Short.MAX_VALUE, false,
+							Messages.get(HeroSelectScene.class, "set"),
+							Messages.get(HeroSelectScene.class, "clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							if (positive && text.matches("-?[0-9]+")) {
+								int level = Integer.parseInt(text);
+								SPDSettings.mobOffset((int)GameMath.gate(-12, level, Short.MAX_VALUE));
+								text(Messages.get(ColonizationTab.class, "mob_offset", SPDSettings.mobOffset()));
+							} else {
+								SPDSettings.mobOffset(0);
+								text(Messages.get(ColonizationTab.class, "mob_offset", SPDSettings.mobOffset()));
+							}
+						}
+					});
+				}
+			};
+			add(btnMobOffset);
+			btnMobOffset.setRect( 0, btnItemOffset.bottom() + 2, WIDTH, 16);
+			btnMobOffset.active = active;
+			btnMobOffset.alpha(active ? 1f : 0.3f);
+			add(btnMobOffset);
+
+			RedButton btnMobRegen = new RedButton(Messages.get(this, "mob_regen", SPDSettings.mobRegen())){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(ColonizationTab.class, "mob_regen_title"),
+							Messages.get(ColonizationTab.class, "mob_regen_desc"),
+							Integer.toString(SPDSettings.mobRegen()), Short.MAX_VALUE, false,
+							Messages.get(HeroSelectScene.class, "set"),
+							Messages.get(HeroSelectScene.class, "clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							if (positive && text.matches("\\d+")) {
+								int level = Integer.parseInt(text);
+								SPDSettings.mobRegen(Math.min(level, Short.MAX_VALUE));
+								text(Messages.get(ColonizationTab.class, "mob_regen", SPDSettings.mobRegen()));
+							} else {
+								SPDSettings.mobRegen(50);
+								text(Messages.get(ColonizationTab.class, "mob_regen", SPDSettings.mobRegen()));
+							}
+						}
+					});
+				}
+			};
+			add(btnMobRegen);
+			btnMobRegen.setRect( 0, btnMobOffset.bottom() + 2, WIDTH, 16);
+			btnMobRegen.active = active;
+			btnMobRegen.alpha(active ? 1f : 0.3f);
+			add(btnMobRegen);
+
+			RedButton btnViewDist = new RedButton(Messages.get(this, "view_dist", SPDSettings.viewDist())){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(ColonizationTab.class, "view_dist_title"),
+							Messages.get(ColonizationTab.class, "view_dist_desc"),
+							Integer.toString(SPDSettings.viewDist()), Short.MAX_VALUE, false,
+							Messages.get(HeroSelectScene.class, "set"),
+							Messages.get(HeroSelectScene.class, "clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							if (positive && text.matches("\\d+")) {
+								int level = Integer.parseInt(text);
+								SPDSettings.viewDist(Math.min(level, Short.MAX_VALUE));
+								text(Messages.get(ColonizationTab.class, "view_dist", SPDSettings.viewDist()));
+							} else {
+								SPDSettings.viewDist(0);
+								text(Messages.get(ColonizationTab.class, "view_dist", SPDSettings.viewDist()));
+							}
+						}
+					});
+				}
+			};
+			add(btnViewDist);
+			btnViewDist.setRect(0, btnMobRegen.bottom() + 2, WIDTH, 16);
+			btnViewDist.active = active;
+			btnViewDist.alpha(active ? 1f : 0.3f);
+			add(btnViewDist);
+
+			RedButton btnFeelingChance = new RedButton(Messages.get(this, "feeling", SPDSettings.feelingChance())){
+				@Override
+				protected void onClick() {
+					super.onClick();
+					ShatteredPixelDungeon.scene().addToFront( new WndTextInput(Messages.get(ColonizationTab.class, "feeling_title"),
+							Messages.get(ColonizationTab.class, "feeling_desc"),
+							Integer.toString(SPDSettings.feelingChance()), Short.MAX_VALUE, false,
+							Messages.get(HeroSelectScene.class, "set"),
+							Messages.get(HeroSelectScene.class, "clear")){
+						@Override
+						public void onSelect(boolean positive, String text) {
+							if (positive && text.matches("\\d+")) {
+								int level = Integer.parseInt(text);
+								SPDSettings.feelingChance((int)GameMath.gate(8, level, Short.MAX_VALUE));
+								text(Messages.get(ColonizationTab.class, "feeling", SPDSettings.feelingChance()));
+							} else {
+								SPDSettings.feelingChance(16);
+								text(Messages.get(ColonizationTab.class, "feeling", SPDSettings.feelingChance()));
+							}
+						}
+					});
+				}
+			};
+			add(btnFeelingChance);
+			btnFeelingChance.setRect(0, btnViewDist.bottom() + 2, WIDTH, 16);
+			btnFeelingChance.active = active;
+			btnFeelingChance.alpha(active ? 1f : 0.3f);
+			add(btnFeelingChance);
+		}
+
 	}
 }

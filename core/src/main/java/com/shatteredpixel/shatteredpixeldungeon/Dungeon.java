@@ -245,6 +245,8 @@ public class Dungeon {
 	public static int mobOffset;
 	public static int viewDist;
 	public static int growRate;
+	public static int regenRate;
+	public static int feelingChance;
 
 	//we initialize the seed separately so that things like interlevelscene can access it early
 	public static void initSeed(){
@@ -282,6 +284,8 @@ public class Dungeon {
 		mobOffset = SPDSettings.mobOffset();
 		viewDist = SPDSettings.viewDist();
 		growRate = SPDSettings.growRate();
+		regenRate = SPDSettings.mobRegen();
+		feelingChance = SPDSettings.feelingChance();
 
 		Actor.clear();
 		Actor.resetNextID();
@@ -702,6 +706,8 @@ public class Dungeon {
 	private static final String MOB_OFFSET  = "mob_offset";
 	private static final String VIEW_DIST   = "view_dist";
 	private static final String GROW_RATE   = "grow_rate";
+	private static final String REGEN_RATE  = "regen_rate";
+	private static final String FEELING_CHANCE= "feeling_chance";
 
 	public static void saveGame( int save ) {
 		try {
@@ -784,6 +790,8 @@ public class Dungeon {
 			bundle.put(MOB_OFFSET, mobOffset);
 			bundle.put(VIEW_DIST, viewDist);
 			bundle.put(GROW_RATE, growRate);
+			bundle.put(REGEN_RATE, regenRate);
+			bundle.put(FEELING_CHANCE, feelingChance);
 			
 			FileUtils.bundleToFile( GamesInProgress.gameFile(save), bundle);
 			
@@ -933,6 +941,8 @@ public class Dungeon {
 		mobOffset = bundle.getInt(MOB_OFFSET);
 		viewDist = bundle.getInt(VIEW_DIST);
 		growRate = bundle.getInt(GROW_RATE);
+		regenRate = bundle.getInt(REGEN_RATE);
+		feelingChance = bundle.getInt(FEELING_CHANCE);
 	}
 	
 	public static Level loadLevel( int save ) throws IOException {

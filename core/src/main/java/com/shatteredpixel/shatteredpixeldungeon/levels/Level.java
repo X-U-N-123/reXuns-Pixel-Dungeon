@@ -164,7 +164,7 @@ public abstract class Level implements Bundlable {
 	protected int height;
 	protected int length;
 	
-	protected static final float TIME_TO_RESPAWN	= 50;
+	protected static final int TIME_TO_RESPAWN	= 50;
 
 	public int version;
 	
@@ -238,6 +238,8 @@ public abstract class Level implements Bundlable {
 		TargetedCell.cells.clear();
 		Random.pushGenerator( Dungeon.seedCurDepth() );
 
+		if (Dungeon.customize && Dungeon.viewDist > 0) viewDistance = Dungeon.viewDist;
+
 		//TODO maybe just make this part of RegularLevel?
 		if (!Dungeon.bossLevel() && Dungeon.branch == 0) {
 
@@ -277,7 +279,7 @@ public abstract class Level implements Bundlable {
 			if (Dungeon.depth > 1) {
 				//50% chance of getting a level feeling
 				//6.25% chance for each feeling
-				switch (Random.Int( 16 )) {
+				switch (Random.Int( Dungeon.customize ? Dungeon.feelingChance : 16)) {
 					case 0:
 						feeling = Feeling.CHASM;
 						break;
@@ -352,8 +354,6 @@ public abstract class Level implements Bundlable {
 		createItems();
 
 		Random.popGenerator();
-
-		if (Dungeon.customize && Dungeon.viewDist > 0) viewDistance = Dungeon.viewDist;
 	}
 	
 	public void setSize(int w, int h){
@@ -808,20 +808,19 @@ public abstract class Level implements Bundlable {
 	}
 
 	public float respawnCooldown(){
+		int timeToRespawn = Dungeon.customize ? Dungeon.regenRate : TIME_TO_RESPAWN;
 		float cooldown;
 		if (Statistics.amuletObtained){
 			if (Dungeon.depth == 1){
 				//very fast spawns on floor 1! 0/2/4/6/8/10/12, etc.
-				cooldown = (Dungeon.level.mobCount()) * (TIME_TO_RESPAWN / 25f);
+				cooldown = (Dungeon.level.mobCount()) * (timeToRespawn / 25f);
 			} else {
 				//respawn time is 5/5/10/15/20/25/25, etc.
-				cooldown = Math.round(GameMath.gate( TIME_TO_RESPAWN/10f, Dungeon.level.mobCount() * (TIME_TO_RESPAWN / 10f), TIME_TO_RESPAWN / 2f));
+				cooldown = Math.round(GameMath.gate( timeToRespawn/10f, Dungeon.level.mobCount() * (timeToRespawn / 10f), timeToRespawn / 2f));
 			}
-		} else if (Dungeon.level.feeling == Feeling.DARK){
-			cooldown = 4*TIME_TO_RESPAWN/5f;
-		} else {
-			cooldown = TIME_TO_RESPAWN;
-		}
+		} else if (Dungeon.level.feeling == Feeling.DARK) cooldown = 4*timeToRespawn/5f;
+		else cooldown = timeToRespawn;
+
 		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();
 	}
 

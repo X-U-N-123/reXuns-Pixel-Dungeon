@@ -179,7 +179,7 @@ public class MiningLevel extends CavesLevel {
 	@Override
 	public float respawnCooldown() {
 		//normal enemies respawn much more slowly here
-		return 3*TIME_TO_RESPAWN;
+		return 3 * (Dungeon.customize ? Dungeon.regenRate : TIME_TO_RESPAWN);
 	}
 
 	@Override

@@ -236,10 +236,12 @@ public class SPDSettings extends GameSettings {
 	public static final String KEY_TRAP_MAX		 = "trap_max_offset";
 	public static final String KEY_ROOM_OFFSET   = "room_offset";
 	public static final String KEY_SPECIAL_OFFSET= "special_offset";
+	public static final String KEY_GROW_RATE     = "grow_rate";
 	public static final String KEY_ITEM_OFFSET   = "item_offset";
 	public static final String KEY_MOB_OFFSET    = "mob_offset";
 	public static final String KEY_VIEW_DIST     = "view_dist";
-	public static final String KEY_GROW_RATE     = "grow_rate";
+	public static final String KEY_MOB_REGEN     = "mob_regen";
+	public static final String KEY_FEELING_CHANCE= "feeling_chance";
 
 	public static void intro( boolean value ) {
 		put( KEY_INTRO, value );
@@ -402,6 +404,22 @@ public class SPDSettings extends GameSettings {
 
 	public static int growRate(){
 		return getInt(KEY_GROW_RATE, 12 );
+	}
+
+	public static void mobRegen(int value){
+		put( KEY_MOB_REGEN, value );
+	}
+
+	public static int mobRegen(){
+		return getInt(KEY_MOB_REGEN, 50 );
+	}
+
+	public static void feelingChance(int value){
+		put( KEY_FEELING_CHANCE, value );
+	}
+
+	public static int feelingChance(){
+		return getInt(KEY_FEELING_CHANCE, 8 );
 	}
 
 	//Input
