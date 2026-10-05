@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee;
 
+import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -76,6 +77,7 @@ import com.shatteredpixel.shatteredpixeldungeon.windows.WndOptions;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndTextInput;
 import com.watabou.input.GameAction;
 import com.watabou.noosa.Game;
+import com.watabou.noosa.audio.Sample;
 import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Reflection;
@@ -1041,13 +1043,13 @@ public class BladeOfMimic extends MeleeWeapon { //copied from Magic Ling Pixel D
 
                     @Override
                     public void onClick(float x, float y) {
-                        int max_size = checkBoxes.size();
-                        for (int i = 0; i < max_size; ++i) {
-                            if (checkBoxes.get(i).onClick(x, y))
+                        int maxSize = checkBoxes.size();
+                        for (int i = 0; i < maxSize; i++)
+                            if (checkBoxes.get(i).onClick(x, y)) {
+                                Sample.INSTANCE.play(Assets.Sounds.CLICK);
                                 break;
-                        }
+                            }
                     }
-
                 };
                 add(list);
                 Component content = list.content();
