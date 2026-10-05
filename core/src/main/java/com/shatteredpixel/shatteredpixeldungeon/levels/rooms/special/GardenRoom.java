@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.painters.Painter;
 import com.shatteredpixel.shatteredpixeldungeon.plants.BlandfruitBush;
+import com.shatteredpixel.shatteredpixeldungeon.plants.Firebloom;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.watabou.utils.Random;
 
@@ -42,7 +43,10 @@ public class GardenRoom extends SpecialRoom {
 		
 		entrance().set( Door.Type.REGULAR );
 
-		Plant.Seed seed = (Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED);
+		Plant.Seed seed;
+		do {
+			seed = (Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED);
+		} while (seed instanceof Firebloom.Seed);
 
 		int bushes = Random.Int(3);
 		int pos = plantPos(level);

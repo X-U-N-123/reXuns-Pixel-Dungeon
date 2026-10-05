@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.standard;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -78,30 +80,56 @@ public class PlantsRoom extends StandardRoom {
 			if (Math.min(width(), height()) >= 11) {
 				Painter.drawLine(level, new Point(left+2, center.y), new Point(right-2, center.y), Terrain.HIGH_GRASS);
 				Painter.drawLine(level, new Point(center.x, top+2), new Point(center.x, bottom-2), Terrain.HIGH_GRASS);
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x-1, center.y-1)));
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x+1, center.y-1)));
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x-1, center.y+1)));
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x+1, center.y+1)));
+				if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x - 1, center.y - 1)));
+					Painter.set(level, new Point(center.x - 1, center.y - 1), Terrain.GRASS);
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x + 1, center.y - 1)));
+					Painter.set(level, new Point(center.x + 1, center.y - 1), Terrain.GRASS);
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x - 1, center.y + 1)));
+					Painter.set(level, new Point(center.x - 1, center.y + 1), Terrain.GRASS);
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x + 1, center.y + 1)));
+					Painter.set(level, new Point(center.x + 1, center.y + 1), Terrain.GRASS);
+				} else {
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x - 1, center.y - 1)));
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x + 1, center.y - 1)));
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x - 1, center.y + 1)));
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x + 1, center.y + 1)));
+				}
 			
 			//place 2 plants otherwise
 			//left/right
 			} else if (width() > height() || (width() == height() && Random.Int(2) == 0)){
 				Painter.drawLine(level, new Point(center.x, top+2), new Point(center.x, bottom-2), Terrain.HIGH_GRASS);
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x-1, center.y)));
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x+1, center.y)));
+				if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x - 1, center.y)));
+					Painter.set(level, new Point(center.x - 1, center.y), Terrain.GRASS);
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x + 1, center.y)));
+					Painter.set(level, new Point(center.x + 1, center.y), Terrain.GRASS);
+				} else {
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x - 1, center.y)));
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x + 1, center.y)));
+				}
 			
 			//top/bottom
 			} else {
-				Painter.drawLine(level, new Point(left+2, center.y), new Point(right-2, center.y), Terrain.HIGH_GRASS);
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x, center.y-1)));
-				level.plant( randomSeed(), level.pointToCell(new Point(center.x, center.y+1)));
+				Painter.drawLine(level, new Point(left + 2, center.y), new Point(right - 2, center.y), Terrain.HIGH_GRASS);
+				if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x, center.y - 1)));
+					Painter.set(level, new Point(center.x, center.y - 1), Terrain.GRASS);
+					level.drop(randomSeed(), level.pointToCell(new Point(center.x, center.y + 1)));
+					Painter.set(level, new Point(center.x, center.y + 1), Terrain.GRASS);
+				} else {
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x, center.y - 1)));
+					level.plant(randomSeed(), level.pointToCell(new Point(center.x, center.y + 1)));
+				}
 			
 			}
 			
 		//place just one plant for smaller sized rooms
-		} else {
-			level.plant( randomSeed(), level.pointToCell(center));
-		}
+		} else if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+			level.drop( randomSeed(), level.pointToCell(center));
+			Painter.set(level, center, Terrain.GRASS);
+		} else level.plant( randomSeed(), level.pointToCell(center));
 		
 		for (Door door : connected.values()) {
 			door.set( Door.Type.REGULAR );

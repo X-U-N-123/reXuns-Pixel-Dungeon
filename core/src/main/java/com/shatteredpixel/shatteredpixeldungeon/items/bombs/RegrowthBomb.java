@@ -21,6 +21,7 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items.bombs;
 
+import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Actor;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
@@ -30,6 +31,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Splash;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfHealing;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
+import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Plant;
 import com.shatteredpixel.shatteredpixeldungeon.plants.Starflower;
@@ -92,7 +94,12 @@ public class RegrowthBomb extends Bomb {
 		for (int i = 0; i < plants; i++) {
 			Integer plantPos = Random.element(plantCandidates);
 			if (plantPos != null) {
-				Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), plantPos);
+				if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+					Dungeon.level.drop(Generator.randomUsingDefaults(Generator.Category.SEED), plantPos);
+					Level.set(plantPos, Terrain.GRASS);
+				} else {
+					Dungeon.level.plant((Plant.Seed) Generator.randomUsingDefaults(Generator.Category.SEED), plantPos);
+				}
 				plantCandidates.remove(plantPos);
 			}
 		}
@@ -111,7 +118,11 @@ public class RegrowthBomb extends Bomb {
 					plant = new Starflower.Seed();
 					break;
 			}
-			Dungeon.level.plant( plant, plantPos);
+			if (Dungeon.isChallenged(Challenges.NO_HERBALISM)){
+				Level.set(plantPos, Terrain.HIGH_GRASS);
+			} else {
+				Dungeon.level.plant( plant, plantPos);
+			}
 		}
 	}
 	
