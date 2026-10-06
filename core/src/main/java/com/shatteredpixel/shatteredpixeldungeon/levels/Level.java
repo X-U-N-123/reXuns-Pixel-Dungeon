@@ -79,7 +79,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Stylus;
-import com.shatteredpixel.shatteredpixeldungeon.items.Torch;
 import com.shatteredpixel.shatteredpixeldungeon.items.TrackingDevice;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TalismanOfForesight;
@@ -326,7 +325,6 @@ public abstract class Level implements Bundlable {
 				}
 				if (feeling == Feeling.DARK) {
 					viewDistance = Math.round(3 * viewDistance / 4f);
-					addItemToSpawn(new Torch());
 				}
 			}
 		}
@@ -818,7 +816,7 @@ public abstract class Level implements Bundlable {
 				//respawn time is 5/5/10/15/20/25/25, etc.
 				cooldown = Math.round(GameMath.gate( timeToRespawn/10f, Dungeon.level.mobCount() * (timeToRespawn / 10f), timeToRespawn / 2f));
 			}
-		} else if (Dungeon.level.feeling == Feeling.DARK) cooldown = 4*timeToRespawn/5f;
+		} else if (Dungeon.level.feeling == Feeling.DARK) cooldown = 5*timeToRespawn/6f;
 		else cooldown = timeToRespawn;
 
 		return cooldown / DimensionalSundial.spawnMultiplierAtCurrentTime();

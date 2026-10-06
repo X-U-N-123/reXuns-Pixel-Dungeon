@@ -23,9 +23,14 @@ package com.shatteredpixel.shatteredpixeldungeon.items.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
+import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.quest.vault.VaultBossElemental;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.ScrollOfTeleportation;
 import com.shatteredpixel.shatteredpixeldungeon.items.spells.Spell;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.levels.RegularLevel;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.Room;
+import com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.VaultFinalRoom;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 
@@ -40,7 +45,17 @@ public class VaultBeacon extends Spell {
 
 	@Override
 	protected void onCast(Hero hero) {
-		if (ScrollOfTeleportation.teleportToLocation(hero, Dungeon.level.entrance())){
+		int dest = Dungeon.level.entrance();
+
+		for (Mob m : Dungeon.level.mobs.toArray(new Mob[0])) if (m instanceof VaultBossElemental) {
+			for (Room r : ((RegularLevel) Dungeon.level).rooms())
+				if (r instanceof VaultFinalRoom) {
+					dest = Dungeon.level.pointToCell(r.center());
+					break;
+				}
+			break;
+		}
+		if (ScrollOfTeleportation.teleportToLocation(hero, dest)){
 			hero.spendAndNext( 1f );
 			Catalog.countUse(getClass());
 			detach(hero.belongings.backpack);
