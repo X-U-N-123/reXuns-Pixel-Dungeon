@@ -1353,7 +1353,7 @@ public class HeroSelectScene extends PixelScene {
 						public void onSelect(boolean positive, String text) {
 							if (positive && text.matches("-?[0-9]+")) {
 								int level = Integer.parseInt(text);
-								SPDSettings.itemOffset((int)GameMath.gate(-8, level, Short.MAX_VALUE));
+								SPDSettings.itemOffset((int)GameMath.gate(-9, level, Short.MAX_VALUE));
 								text(Messages.get(ColonizationTab.class, "item_offset", SPDSettings.itemOffset()));
 							} else {
 								SPDSettings.itemOffset(0);

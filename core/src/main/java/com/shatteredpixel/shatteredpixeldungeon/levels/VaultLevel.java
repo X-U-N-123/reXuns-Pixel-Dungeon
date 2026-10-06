@@ -85,6 +85,7 @@ import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfCorruption;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfRegrowth;
 import com.shatteredpixel.shatteredpixeldungeon.items.wands.WandOfTransfusion;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
+import com.shatteredpixel.shatteredpixeldungeon.items.weapon.melee.Havoc;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.darts.Dart;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.Builder;
 import com.shatteredpixel.shatteredpixeldungeon.levels.builders.GridBuilder;
@@ -133,9 +134,10 @@ public class VaultLevel extends CityLevel {
 	protected boolean build() {
 		itemsToSpawn.clear();
 
-		for (int i = 0; i < 4; i++) addItemToSpawn(createEquipment(0));
+		int customDec = Dungeon.customize ? Dungeon.itemOffset : 0;
+		for (int i = 0; i < 4 + Math.floor(customDec/2f); i++) addItemToSpawn(createEquipment(0));
 		addItemToSpawn(new Dart());
-		for (int i = 0; i < 5; i++) addItemToSpawn(createConsumabe(0));
+		for (int i = 0; i < 5 + Math.ceil(customDec/2f); i++) addItemToSpawn(createConsumabe(0));
 		for (int i = 0; i < 3; i++)
 			addItemToSpawn(Generator.randomUsingDefaults(Generator.Category.FOOD));
 		if (Dungeon.isChallenged(Challenges.NO_RETURN)){
@@ -253,8 +255,6 @@ public class VaultLevel extends CityLevel {
 			switch (lootTier) {
 				default:
 				case 0:
-					loot = Generator.randomUsingDefaults(Generator.Category.WEP_T2);
-					break;
 				case 1:
 					loot = Generator.randomUsingDefaults(Generator.Category.WEP_T2);
 					break;
@@ -265,8 +265,7 @@ public class VaultLevel extends CityLevel {
 					loot = Generator.randomUsingDefaults(Generator.Category.WEP_T4);
 					break;
 			}
-		//T2 weapon duplicates allowed, because so many can be generated
-		} while (lootTier > 1 && generatedClasses.contains(loot.getClass()));
+		} while (generatedClasses.contains(loot.getClass()));
 		generatedClasses.add(loot.getClass());
 		if (lootTier == 0) { //always +0 at T0
 			loot.level(lootTier);
@@ -277,6 +276,11 @@ public class VaultLevel extends CityLevel {
 			((Weapon) loot).enchant(null);
 		} else {
 			((Weapon) loot).enchant();
+		}
+		if (loot instanceof Havoc){
+			Random.pushGenerator(Random.Long());
+			((Havoc)loot).enemiesKilled = Random.IntRange(0, 5);
+			Random.popGenerator();
 		}
 		lootList.add(loot);
 
@@ -297,14 +301,18 @@ public class VaultLevel extends CityLevel {
 					loot = Generator.randomUsingDefaults(Generator.Category.WEP_T5);
 					break;
 			}
-		//T2 weapon duplicates allowed, because so many can be generated
-		} while (lootTier > 0 && generatedClasses.contains(loot.getClass()));
+		} while (generatedClasses.contains(loot.getClass()));
 		generatedClasses.add(loot.getClass());
 		loot.level(lootTier);
 		if (Random.Int(3) >= lootTier) {
 			((Weapon) loot).enchant(null);
 		} else {
 			((Weapon) loot).enchant();
+		}
+		if (loot instanceof Havoc){
+			Random.pushGenerator(Random.Long());
+			((Havoc)loot).enemiesKilled = Random.IntRange(5, 10);
+			Random.popGenerator();
 		}
 		lootList.add(loot);
 
@@ -479,8 +487,7 @@ public class VaultLevel extends CityLevel {
 					Reflection.newInstance(Random.oneOf(PotionOfExperience.class, PotionOfInvisibility.class)),
 					Reflection.newInstance(Random.oneOf(Earthroot.Seed.class, Starflower.Seed.class)),
 					Reflection.newInstance(Random.oneOf(ScrollOfRetribution.class, ScrollOfTransmutation.class)),
-					Reflection.newInstance(Random.oneOf(StoneOfEnchantment.class, StoneOfAugmentation.class)),
-					new PotionOfHealing()));
+					Reflection.newInstance(Random.oneOf(StoneOfEnchantment.class, StoneOfAugmentation.class))));
 			Collections.shuffle(consumableLoot.get(3));
 		}
 	}
@@ -627,7 +634,6 @@ public class VaultLevel extends CityLevel {
 			Random.popGenerator();
 		}
 
-		//generate one extra healing potion that is (almost)guaranteed to be in a room adjacent to the entrance
 		int tries = 1000;
 		int cell;
 		Room r;
@@ -636,7 +642,6 @@ public class VaultLevel extends CityLevel {
 			r = room(cell);
 			tries--;
 		} while (!r.connected.containsKey(roomEntrance) && tries > 0);
-		drop( new PotionOfHealing(), cell ).type = Heap.Type.HEAP;
 		if (map[cell] == Terrain.HIGH_GRASS || map[cell] == Terrain.FURROWED_GRASS) {
 			map[cell] = Terrain.GRASS;
 			losBlocking[cell] = false;
