@@ -102,7 +102,7 @@ public class DistortionTrap extends Trap{
 					int floor;
 					do {
 						floor = Random.Int(1, 25);
-					} while( Dungeon.bossLevel(floor) || floor - Dungeon.depth > 8);
+					} while( Dungeon.bossLevel(floor) || floor - Dungeon.scalingDepth() > 8);
 					mob = Reflection.newInstance(MobSpawner.getMobRotation(floor).get(0));
 					break;
 				case 2:
@@ -125,7 +125,9 @@ public class DistortionTrap extends Trap{
 					}
 					break;
 				case 4:
-					mob = Reflection.newInstance(Random.element(MobSpawner.RARE_ALTS.values()));
+					do {
+						mob = Reflection.newInstance(Random.element(MobSpawner.RARE_ALTS.values()));
+					} while (mob == null || mob.maxLvl > Dungeon.scalingDepth() + 12);
 					break;
 			}
 
