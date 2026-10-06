@@ -212,6 +212,8 @@ public class HeroSelectScene extends PixelScene {
 				super.onClick();
 				optionsPane.visible = !optionsPane.visible;
 				optionsPane.active = !optionsPane.active;
+				if (SPDSettings.customized()) optionsPane.customButton.icon().hardlight(1f, 1.5f, 0.67f);
+				else optionsPane.customButton.icon().resetColor();
 			}
 
 			@Override
@@ -240,6 +242,7 @@ public class HeroSelectScene extends PixelScene {
 			Dungeon.challenges = 0;
 			SPDSettings.challenges(0);
 			SPDSettings.customSeed("");
+			SPDSettings.customized(false);
 		}
 
 		if (landscape()){
@@ -406,7 +409,7 @@ public class HeroSelectScene extends PixelScene {
 	}
 
 	private void updateOptionsColor(){
-		if (!SPDSettings.customSeed().isEmpty()){
+		if (SPDSettings.customized()){
 			btnOptions.icon().hardlight(1f, 1.5f, 0.67f);
 		} else if (SPDSettings.challenges() != 0){
 			btnOptions.icon().hardlight(2f, 1.33f, 0.5f);
@@ -631,6 +634,7 @@ public class HeroSelectScene extends PixelScene {
 		private ArrayList<ColorBlock> spacers;
 
 		protected StyledButton challengeButton;
+		protected StyledButton customButton;
 
 		@Override
 		protected void createChildren() {
@@ -640,7 +644,7 @@ public class HeroSelectScene extends PixelScene {
 
 			buttons = new ArrayList<>();
 			spacers = new ArrayList<>();
-			StyledButton customButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "custom"), 6){
+			customButton = new StyledButton(Chrome.Type.BLANK, Messages.get(HeroSelectScene.class, "custom"), 6){
 				@Override
 				protected void onClick() {
 					if (!Badges.isUnlocked(Badges.Badge.VICTORY) && !DeviceCompat.isDebug()){
